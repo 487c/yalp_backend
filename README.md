@@ -29,11 +29,12 @@ Backendsoftware für das softare tool.
 ### Abrufen von Kursen zu einem User
 
 > GET /courses
- 
+
 **Body**
+
 ```json
 {
-  "userId": "max.mustermann@bmg.de",
+  "userId": "max.mustermann@bmg.de"
 }
 ```
 
@@ -42,16 +43,20 @@ Backendsoftware für das softare tool.
 > POST /course
 
 **Body**
+
 ```json
 {
-  "name": "Datenbankmanagement",
+  "name": "Datenbankmanagement"
 }
 ```
 
 **Response**
+
 ```json
 {
-    "entryCode": "AEHFH13132DKSKL"
+  "entryCode": "AEHFH13132DKSKL",
+  "id": 1
+
 }
 ```
 
@@ -60,19 +65,31 @@ Backendsoftware für das softare tool.
 > POST /script
 
 **Body**
+
 ```json
 {
   "base64Data": "AEF3...",
-  "class": "Datenbankenmanagement",
+  "classId": 132,
   "sizeKB": 130
+}
+```
+
+**Response**
+
+```json
+{
+  "cards": [
+    { "id": 1, "front": "Was beschreibt das ACID Prinzip?", "back": "A - Atomic \\n C..." }
+  ]
 }
 ```
 
 ### Abrufen von Karten
 
 > GET /cards
- 
+
 **Body**
+
 ```json
 {
   "userId": "Nils",
@@ -81,24 +98,65 @@ Backendsoftware für das softare tool.
 }
 ```
 
+### Abrufen von Skripten zu einem Kurs
+
+> GET /scripts
+
+**Body**
+
+```json
+{
+  "classId": 123
+}
+```
+
+**Response**
+
+```json
+{
+  "scripts": [{ "name": "Datenbanken Teil 1", "id": 1312 }]
+}
+```
+
+### Abrufen von Kursen einem User
+
+> GET /courses
+
+**Body**
+
+```json
+{
+  "userId": 123
+}
+```
+
+**Response**
+
+```json
+{
+  "courses": [{ "name": "Datenbankmanagement", "id": 1312 }]
+}
+```
 
 ### Abrufen eines Skriptes
 
 > GET /script
- 
+
 **Body**
+
 ```json
 {
   "scriptId": 1312
 }
-``` 
+```
 
 **Response**
+
 ```json
 {
   "base64Data": "AADFJA13"
 }
-`````
+```
 
 ## Development
 

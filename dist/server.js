@@ -28,6 +28,7 @@ const storage = multer_1.default.diskStorage({
 });
 const upload = (0, multer_1.default)({ storage });
 const port = 3000;
+/** Anlegen, Abrufen Skripte und Übersicht von Skripten */
 app.post("/script", upload.single("pdfFile"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.file) {
@@ -42,8 +43,32 @@ app.post("/script", upload.single("pdfFile"), (req, res) => __awaiter(void 0, vo
         res.status(500).send("Error printing PDF.");
     }
 }));
+app.get("/scripts", (req, res) => {
+    res.send("Gettings scripts for course");
+});
+app.get("/script", (req, res) => {
+    res.send("Getting a script.");
+});
+/** Anlegen, Abrufen Skripte und Übersicht von Karten*/
 app.get("/cards", (req, res) => {
-    res.send("Posting a page");
+    res.send("Getting cards for course");
+});
+app.post("/card", (req, res) => {
+    res.send("Writing a card for course");
+});
+/** Anlegen, Abrufen Skripte und Übersicht von Kursen*/
+app.get("/courses", (req, res) => {
+    res.send("Getting courses for user");
+});
+app.post("/course", (req, res) => {
+    res.send("Creating a course for user.");
+});
+/** Anlegen, Abrufen Skripte und Übersicht von */
+app.get("/courses", (req, res) => {
+    res.send("Getting courses for user");
+});
+app.post("/course", (req, res) => {
+    res.send("Creating a course for user.");
 });
 // Server setup
 app.listen(port, () => {
