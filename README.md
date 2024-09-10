@@ -6,6 +6,9 @@ Backendsoftware für das softare tool.
 
 !!! KISS Prinzip !!!
 
+Die Schnittstelle wurde mit OpenApi implementiert und über das [Tool](http://localhost:3000/api-documentation/) kann die Api getestet werden.
+
+
 ## Features
 
 ### Minimalanforderungen
