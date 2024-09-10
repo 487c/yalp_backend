@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  yalp_backend:
+    build:
+      context: .
+    environment:
+      NODE_ENV: production
+    # volumes:
+    #   - ./backend/yalp_backend:files
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+  
+  postgres:
+    image: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ./backend/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=testimonials
+      - POSTGRES_USER=yalp_user
+      - POSTGRES_DB=yalp_db
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
