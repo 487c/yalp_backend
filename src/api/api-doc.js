@@ -1,3 +1,8 @@
+import { CardSchema } from "./models/card.js";
+import { CourseSchema } from "./models/course.js";
+import { ScriptSchema } from "./models/script.js";
+import { UserSchema } from "./models/user.js";
+
 export default {
   swagger: "2.0",
   basePath: "/",
@@ -6,41 +11,16 @@ export default {
     version: "1.0.0",
   },
   definitions: {
-    User: {
-      type: "object",
-      properties: {
-        guid: {
-          type: "number",
-        },
-        mail: {
-          type: "string",
-        },
-      },
-      required: ["guid", "mail"],
-    },
-    Script: {
-      type: "object",
-      properties: {
-        guid: {
-          type: "string",
-        },
-        name: {
-          type: "string",
-        },
-        courseGuid: {
-          type: "string",
-        },
-      },
-      required: ["guid", "message", "courseGuid"],
-    },
-    Course:{
-      type: "object",
-      properties:{
-        guid:{
-          type:"string",
-        }
-      }
-    }
+    UserSchema,
+    ScriptSchema,
+    CourseSchema,
+    CardSchema,
   },
   paths: {},
+  tags: [
+    {
+      description: "Authentification",
+      name: "Login",
+    },
+  ],
 };

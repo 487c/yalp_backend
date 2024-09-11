@@ -14,6 +14,9 @@ export default {
 };
 
 function get(req, res) {
+  try {
+    const name = req.params.name;
+  } catch (e) {}
   res.status(200).json({
     token: "ABC",
   });
@@ -28,7 +31,7 @@ get.apiDoc = {
       name: "name",
       in: "path",
       type: "string",
-      pattern: "/^[^s@]+@[^s@]+.[^s@]+$/",
+      // pattern: "",
       required: true,
       description: "The name of the user.",
     },
@@ -47,11 +50,11 @@ get.apiDoc = {
       },
     },
 
-    default: {
-      description: "Unexpected error",
-      schema: {
-        $ref: "#/definitions/Error",
-      },
-    },
+    // default: {
+    //   description: "Unexpected error",
+    //   schema: {
+    //     $ref: "#/definitions/Error",
+    //   },
+    // },
   },
 };

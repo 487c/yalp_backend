@@ -1,14 +1,8 @@
 import express from "express";
 import { initialize } from "express-openapi";
 import v1WorldsService from "./api/services/worldsService.js";
-import v1ApiDoc from "./api/api-doc.js";
+import apiDoc from "./api/api-doc.js";
 import swaggerUi from "swagger-ui-express";
-import fs from "fs";
-import path, {dirname} from "path";
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const app = express();
 app.use(
@@ -22,8 +16,7 @@ app.use(
 );
 initialize({
   app,
-  apiDoc: fs.readFileSync(path.resolve(__dirname, "./api/api-doc.yml"), "utf8"),
-  //apiDoc: v1ApiDoc,
+  apiDoc: apiDoc,
   dependencies: {
     worldsService: v1WorldsService,
   },
