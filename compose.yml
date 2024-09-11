@@ -1,31 +1,39 @@
 services:
-  yalp_backend:
-    build:
-      context: .
-    environment:
-      NODE_ENV: production
-    # volumes:
-    #   - ./backend/yalp_backend:files
-    ports:
-      - 3000:3000
-    depends_on:
-      - mongo
-  
+  # yalp_backend:
+  #   build:
+  #     context: .
+  #   environment:
+  #     NODE_ENV: production
+  #   # volumes:
+  #   #   - ./backend/yalp_backend:files
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     - mongo
 
   mongo:
     image: mongo
+    container_name: mongodb
     restart: always
+    env_file:
+      - .env
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_PASSWORD: 4acutely_mulled0_Somal3_Outscore
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/mongo:/data/db
+      - ./mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
 
   mongo-express:
     image: mongo-express
+    container_name: mongodb_express
     restart: always
     ports:
       - 8081:8081
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 4acutely_mulled0_Somal3_Outscore
+      ME_CONFIG_MONGODB_URL: mongodb://root:4acutely_mulled0_Somal3_Outscore@mongo:27017/
       ME_CONFIG_BASICAUTH: false
