@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   yalp_backend:
     build:
@@ -11,25 +9,23 @@ services:
     ports:
       - 3000:3000
     depends_on:
-      - postgres
+      - mongo
   
-  postgres:
-    image: postgres
-    ports:
-      - 5432:5432
-    volumes:
-      - ./backend/postgres:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo
+    restart: always
     environment:
-      - POSTGRES_PASSWORD=testimonials
-      - POSTGRES_USER=yalp_user
-      - POSTGRES_DB=yalp_db
-    healthcheck:
-      test: [ "CMD", "pg_isready" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-  adminer:
-    image: adminer
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  mongo-express:
+    image: mongo-express
     restart: always
     ports:
-      - 8080:8080
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_BASICAUTH: false

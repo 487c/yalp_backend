@@ -5,7 +5,7 @@
   "main": "./src/server.js",
   "scripts": {
     "test": "jest --passWithNoTests",
-    "start": "nodemon ./src/server.js"
+    "start": "nodemon -e yml,js,json ./src/server.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
     "install": "^0.13.0",
     "jest-environment-jsdom": "^29.7.0",
     "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.4",
     "npm": "^10.8.3",
     "swagger-ui-express": "^5.0.1"
   },
