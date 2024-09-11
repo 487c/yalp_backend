@@ -1,17 +1,15 @@
 services:
-  # yalp_backend:
-  #   build:
-  #     context: .
-  #   environment:
-  #     NODE_ENV: production
-  #   # volumes:
-  #   #   - ./backend/yalp_backend:files
-  #   ports:
-  #     - 3000:3000
-  #   depends_on:
-  #     - mongo
+  yalp_backend:
+    image: ghcr.io/waffelmeister/yalp_backend:main
+    container_name: yalp_backend
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongodb
 
-  mongo:
+  mongodb:
     image: mongo
     container_name: mongodb
     restart: always
@@ -35,5 +33,5 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: 4acutely_mulled0_Somal3_Outscore
-      ME_CONFIG_MONGODB_URL: mongodb://root:4acutely_mulled0_Somal3_Outscore@mongo:27017/
+      ME_CONFIG_MONGODB_URL: mongodb://root:4acutely_mulled0_Somal3_Outscore@mongodb:27017/
       ME_CONFIG_BASICAUTH: false
