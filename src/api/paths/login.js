@@ -11,13 +11,14 @@ async function POST(req, res) {
   try {
     const login = req.body.login;
     const user = await UserModel.findOne({ login: login });
+
     if (!user) {
       res.status(404).json("User not found.");
       return;
     }
 
     res.status(200).json({
-      token: generateAccessToken(login),
+      token: generateAccessToken(user._id),
       expiresInSeconds: process.env.TOKEN_DURATION_SECONDS,
       timestamp: new Date().valueOf(),
     });

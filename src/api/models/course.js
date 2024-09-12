@@ -1,14 +1,15 @@
 import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
 import { modelOpts } from "../options.js";
+import referralCodeGenerator from "referral-code-generator";
 
-export const course = mongoose.model("Course", {
+export const CourseModel = mongoose.model("Course", {
   name: {
     type: String,
     description: "Anzeigename des Kurses.",
     required: true,
   },
-  users: {
+  userIds: {
     type: [String],
     description: "Ids der User",
     required: true,
@@ -16,8 +17,17 @@ export const course = mongoose.model("Course", {
   scripts: {
     type: [String],
     description: "Ids von Skripten zu einer Kurs.",
-    required: true
-  }
+    required: true,
+  },
+  code: {
+    type: String,
+    description: "Invite Code für andere User",
+    required: true,
+  },
 });
 
-export const CourseSchema = m2s(course, modelOpts);
+export function inviteCodeGenerator() {
+  return referralCodeGenerator.custom("lowercase", 6, 6, "temitope");
+}
+
+export const CourseSchema = m2s(CourseModel, modelOpts);

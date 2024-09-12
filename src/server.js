@@ -29,6 +29,19 @@ app.use(
     },
   })
 );
+
+/* Handling von Fehlern  */
+app.use(function (err, req, res, next) {
+  res.status(err.status || 500);
+
+  if (typeof err.message === "string") {
+    res.send(err.message);
+  } else {
+    res.json(err.message);
+  }
+});
+
+/* Laden des OpenApi Geräts */
 await initialize({
   app,
   apiDoc: apiDoc,
@@ -40,15 +53,7 @@ await initialize({
   paths: "src/api/paths",
 });
 
-app.use(function (err, req, res, next) {
-  res.status(err.status || 500);
 
-  if (typeof err.message === "string") {
-    res.send(err.message);
-  } else {
-    res.json(err.message);
-  }
-});
 app.listen(3000);
 
 console.log("Backend Running.");
