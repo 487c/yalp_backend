@@ -10,15 +10,18 @@ export function verifyToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
-  if (token == null) return res.sendStatus(401);
+  if (token == null)
+    throw {
+      status: 401,
+      message: "User authentification via token.",
+    };
 
-  jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-    console.log(err);
+  new Promise(function (resolve, reject) {
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+      if (err) reject(err);
 
-    if (err) return res.sendStatus(403);
-
-    req.user = user;
-
-    next();
+      req.user = user;
+      resolve(true);
+    });
   });
 }

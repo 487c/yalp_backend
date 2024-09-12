@@ -4,7 +4,7 @@ export default {
   parameters: [],
   // method handlers may just be the method handler...
   //   POST: POST,
-  GET: [verifyToken, GET],
+  GET: GET,
   // PUT: [verifyToken, PUT],
   // POST: [verifyToken, POST],
 };
@@ -12,7 +12,6 @@ export default {
 async function GET(req, res, next) {
   try {
     const username = req.user.username;
-    
   } catch (e) {
     res.status(500).json(e.toString());
   }
@@ -27,6 +26,12 @@ GET.apiDoc = {
   responses: {
     200: {
       description: "OK",
+    },
+    401: {
+      description: "Missing Token",
+    },
+    403: {
+      description: "Token invalid.",
     },
   },
 };

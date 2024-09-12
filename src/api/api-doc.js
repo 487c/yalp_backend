@@ -23,8 +23,7 @@ export default {
       },
     },
     schemas: {
-      Error: {
-        additionalProperties: true,
+      MissingToken: {
       },
       UserSchema,
       ScriptSchema,
