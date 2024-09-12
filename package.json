@@ -5,7 +5,8 @@
   "main": "./src/server.js",
   "scripts": {
     "test": "jest --passWithNoTests",
-    "start": "nodemon -e yml,js,json ./src/server.js"
+    "start:api": "nodemon -e yml,js,json ./src/server.js",
+    "start:databases": "docker compose up -d mongodb mongo-express"
   },
   "keywords": [],
   "author": "",
