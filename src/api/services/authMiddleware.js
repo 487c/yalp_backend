@@ -1,15 +1,24 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
-function verifyToken(req, res, next) {
-  const token = req.header("Authorization");
-  if (!token) return res.status(401).json({ error: "Access denied" });
-  try {
-    const decoded = jwt.verify(token, "your-secret-key");
-    req.userId = decoded.userId;
-    next();
-  } catch (error) {
-    res.status(401).json({ error: "Invalid token" });
-  }
+export function generateAccessToken(username) {
+  return jwt.sign({ username: username }, process.env.TOKEN_SECRET, {
+    expiresIn: Number(process.env.TOKEN_DURATION_SECONDS),
+  });
 }
 
-module.exports = verifyToken;
+export function verifyToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+    console.log(err);
+
+    if (err) return res.sendStatus(403);
+
+    req.user = user;
+
+    next();
+  });
+}

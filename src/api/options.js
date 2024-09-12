@@ -1,3 +1,4 @@
 export const modelOpts = {
-//   omitFields: ["_id"],
+  omitFields: ["_id"],
+  props:['pattern']
 };
