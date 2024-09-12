@@ -32,6 +32,16 @@ export default {
       CardSchema,
     },
   },
+  tags: [
+    {
+      description: "Registering, Authentification etc.",
+      name: "User",
+    },
+    {
+      description: "CRUD for Courses",
+      name: "Course",
+    },
+  ],
   paths: {},
 };
 
@@ -52,14 +62,4 @@ export default {
 //     CardSchema,
 //   },
 //   paths: {},
-//   tags: [
-//     {
-//       description: "Registering, Authentification etc.",
-//       name: "User",
-//     },
-//     {
-//       description: "Fetching, Creating, Deleting, Courses",
-//       name: "Courses",
-//     },
-//   ],
 // };

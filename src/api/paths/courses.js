@@ -5,8 +5,8 @@ export default {
   // method handlers may just be the method handler...
   //   POST: POST,
   GET: [verifyToken, GET],
-  PUT: [verifyToken, PUT],
-  POST: [verifyToken, POST],
+  // PUT: [verifyToken, PUT],
+  // POST: [verifyToken, POST],
 };
 
 async function GET(req, res, next) {
