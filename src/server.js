@@ -4,6 +4,7 @@ import { initialize } from "express-openapi";
 import v1WorldsService from "./api/services/worldsService.js";
 import apiDoc from "./api/api-doc.js";
 import swaggerUi from "swagger-ui-express";
+import cors from "cors";
 import "dotenv/config";
 
 console.log(
@@ -17,7 +18,8 @@ const dbConnectResult = await mongoose.connect(
 console.log("Database connected.");
 
 const app = express();
-app.use(express.json())
+app.use(express.json());
+app.use(cors());
 app.use(
   "/api-documentation",
   swaggerUi.serve,
