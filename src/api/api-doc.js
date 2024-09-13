@@ -37,6 +37,16 @@ export default {
       CardSchema,
     },
     responses: {
+      InvalidRequest: {
+        description: "The Request was invalid.",
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/Error",
+            },
+          },
+        },
+      },
       NotFound: {
         description: "The specified Ressource was not found.",
         content: {

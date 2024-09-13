@@ -8,15 +8,16 @@ export default {
 async function PUT(req, res, next) {
   const courseName = req.body.name;
   if (await CourseModel.findOne({ name: courseName })) {
-    throw { status: 405, message: "Course with name already existing." };
+    throw { status: 400, message: "Course with name already existing." };
   }
   const newCourse = await CourseModel.create({
     name: courseName,
     userIds: [req.userId],
     code: inviteCodeGenerator(),
+    creator: req.userId,
   });
 
-  res.status(200).json(reduceObject(newCourse.toObject(), [name, code]));
+  res.status(200).json(reduceObject(newCourse.toObject(), ["name", "code"]));
 }
 
 PUT.apiDoc = {
@@ -31,9 +32,6 @@ PUT.apiDoc = {
           type: "object",
           properties: {
             name: {
-              type: String,
-            },
-            code: {
               type: String,
             },
           },
@@ -59,6 +57,9 @@ PUT.apiDoc = {
           },
         },
       },
+    },
+    400: {
+      $ref: "#/components/responses/InvalidRequest",
     },
     401: {
       $ref: "#/components/responses/MissingToken",

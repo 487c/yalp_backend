@@ -4,10 +4,10 @@
  * @param {String[]} keys to keep
  */
 export function reduceObject(obj, keys) {
-  return Object.keys().reduce((acc, key) => {
+  return Object.keys(obj).reduce((acc, key) => {
     if (keys.includes(key)) {
       acc[key] = obj[key];
     }
     return acc;
-  });
+  }, {});
 }

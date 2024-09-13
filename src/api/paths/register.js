@@ -9,7 +9,7 @@ export default function () {
     try {
       const login = req.body.login;
       if (!/^\w{10,}$/g.test(login)) {
-        res.status(420).json(new Error("Der Name ist zu kurz.").toString());
+        throw{status:400, message:"The login needs to be longer than 10 characters."}
         return;
       } else {
         UserModel.create(req.body);

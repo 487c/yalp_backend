@@ -53,8 +53,10 @@ await initialize({
     }
   },
   pathSecurity: [
-    [/^\/courses$/, [{ bearerAuth: [] }]],
+    [/^\/myCourses$/, [{ bearerAuth: [] }]],
     [/^\/course$/, [{ bearerAuth: [] }]],
+    [/^\/joinCourse$/, [{ bearerAuth: [] }]],
+    [/^\/leaveCourse$/, [{ bearerAuth: [] }]],
   ],
   paths: "src/api/paths",
 });
