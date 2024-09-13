@@ -1,4 +1,5 @@
 import { CourseModel } from "../models/course.js";
+import { UserModel } from "../models/user.js";
 
 export default {
   POST: POST,
@@ -6,13 +7,30 @@ export default {
 
 async function POST(req, res, next) {
   const course = await CourseModel.findOne({ code: req.body.code });
-  if (course.userIds.includes(req.userId))
+
+  if (course.owner !== req.userId)
     throw {
       status: 400,
-      message: "You are already member of the course.",
+      message: "You are not owner of the course. Bugger off.",
     };
 
-  course.userIds.push(req.userId);
+  const candidate = await UserModel.findOne({
+    displayName: req.body.userDisplayName,
+  });
+
+  if (!candidate)
+    throw {
+      status: 400,
+      message: "The given name does not correspond to an user.",
+    };
+
+  if (course.owner === req.userId)
+    throw {
+      status: 400,
+      message: "You are already owner of the course.",
+    };
+
+  course.owner = candidate._id;
   await course.save();
   res.status(200).json({ result: "OK" });
 }
@@ -31,8 +49,11 @@ POST.apiDoc = {
             code: {
               type: String,
             },
+            displayName: {
+              type: String,
+            },
           },
-          required: ["code"],
+          required: ["code", "userDisplayName"],
         },
       },
     },

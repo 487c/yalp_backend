@@ -24,9 +24,9 @@ export const CourseModel = mongoose.model("Course", {
     description: "Invite Code für andere User",
     required: true,
   },
-  creator: {
+  owner: {
     type: String,
-    description: "Creator of the Course",
+    description: "Owner of the Course",
     required: true,
   },
 });

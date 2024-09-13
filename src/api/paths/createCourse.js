@@ -14,7 +14,7 @@ async function PUT(req, res, next) {
     name: courseName,
     userIds: [req.userId],
     code: inviteCodeGenerator(),
-    creator: req.userId,
+    owner: req.userId,
   });
 
   res.status(200).json(reduceObject(newCourse.toObject(), ["name", "code"]));

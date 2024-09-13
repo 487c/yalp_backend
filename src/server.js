@@ -22,7 +22,6 @@ app.use(
   "/api-documentation",
   swaggerUi.serve,
   swaggerUi.setup(null, {
-    explorer: true,
     swaggerOptions: {
       url: `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/api-docs`,
       //Automatisches Eintragen des Token in die Authorisierung, wenn man den login erfolgreich aufruft
