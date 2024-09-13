@@ -21,7 +21,7 @@ app.use(
   swaggerUi.setup(null, {
     explorer: true,
     swaggerOptions: {
-      url: "http://localhost:3000/api-docs",
+      url: `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/api-docs`,
       //Automatisches Eintragen des Token in die Authorisierung, wenn man den login erfolgreich aufruft
       responseInterceptor: function (res) {
         if (/login$/.test(res.url) && res.status === 200)
