@@ -35,7 +35,7 @@ PUT.apiDoc = {
               type: String,
             },
           },
-          required: ["name", "fileName", "base64Content", "documentDate"],
+          required: ["displayName", "fileName", "base64Content", "documentDate"],
         },
       },
     },
