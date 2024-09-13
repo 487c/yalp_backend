@@ -22,7 +22,7 @@ PUT.apiDoc = {
         schema: {
           type: "object",
           properties: {
-            name: {
+            displayName: {
               type: String,
             },
             fileName: {

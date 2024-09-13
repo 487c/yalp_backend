@@ -59,6 +59,7 @@ await initialize({
     [/^\/transferCourseOwnership$/, [{ bearerAuth: [] }]],
     [/^\/deleteCourse$/, [{ bearerAuth: [] }]],
     [/^\/createCourse$/, [{ bearerAuth: [] }]],
+    [/^\/createScript$/, [{ bearerAuth: [] }]],
   ],
   paths: "src/api/paths",
 });
