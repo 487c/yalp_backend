@@ -6,7 +6,7 @@ import { UserSchema } from "./models/user.js";
 export default {
   openapi: "3.0.0",
   info: {
-    title: "Backend für Yet another learning platform",
+    title: "REST für das Backend von  'Yet another learning platform'",
     version: "1.0.0",
   },
   servers: [

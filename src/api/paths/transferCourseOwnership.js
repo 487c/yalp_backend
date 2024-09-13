@@ -36,7 +36,7 @@ async function POST(req, res, next) {
 }
 
 POST.apiDoc = {
-  summary: "Transfers course Ownership",
+  summary: "Transfers course ownership",
   description: "Sets the *Owner* of the Course to another person.",
   operationId: "joinCourse",
   tags: ["Course"],

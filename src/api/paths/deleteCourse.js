@@ -26,7 +26,7 @@ async function DELETE(req, res, next) {
 }
 
 DELETE.apiDoc = {
-  summary: "Delte the course",
+  summary: "Delete the course",
   description: "Deletes the course, if the user is owner and ",
   operationId: "deleteCourse",
   tags: ["Course"],

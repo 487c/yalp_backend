@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
 import { modelOpts } from "../options.js";
 
-export const script = mongoose.model("Script", {
+export const ScriptModel = mongoose.model("Script", {
   name: {
     type: String,
     description: "Anzeigename des Dokumentes in der Applikation",
@@ -20,4 +20,4 @@ export const script = mongoose.model("Script", {
   }
 });
 
-export const ScriptSchema = m2s(script, modelOpts);
+export const ScriptSchema = m2s(ScriptModel, modelOpts);

@@ -15,7 +15,7 @@ async function GET(req, res, next) {
 }
 
 GET.apiDoc = {
-  summary: "Courses for currentUser",
+  summary: "Courses for logged in User",
   description: "Gets all courses for a given user.",
   operationId: "getCourses",
   tags: ["Course"],
