@@ -7,7 +7,7 @@ export default {
   openapi: "3.0.0",
   info: {
     title: "REST für das Backend von  'Yet another learning platform'",
-    version: "1.0.0",
+    version: "0.0.1",
   },
   servers: [
     {
