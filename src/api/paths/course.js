@@ -1,4 +1,5 @@
 import { CourseModel, inviteCodeGenerator } from "../models/course.js";
+import { reduceObject } from "../services/utils.js";
 
 export default {
   PUT: PUT,
@@ -14,10 +15,8 @@ async function PUT(req, res, next) {
     userIds: [req.userId],
     code: inviteCodeGenerator(),
   });
-  const obj = newCourse.toObject();
-  delete obj.userIds;
 
-  res.status(200).json(obj);
+  res.status(200).json(reduceObject(newCourse.toObject(), [name, code]));
 }
 
 PUT.apiDoc = {
@@ -32,6 +31,9 @@ PUT.apiDoc = {
           type: "object",
           properties: {
             name: {
+              type: String,
+            },
+            code: {
               type: String,
             },
           },
