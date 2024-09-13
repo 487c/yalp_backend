@@ -13,16 +13,16 @@ export function verifyToken(req, res, next) {
   if (token == null)
     throw {
       status: 401,
-      message: "User authentification via token.",
+      message: "Token for request needed.",
     };
 
   return new Promise(function (resolve, reject) {
     jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
       if (err)
-        throw {
+        reject({
           status: 403,
-          message: "User Token invalid",
-        };
+          message: "Token invalid",
+        });
 
       req.userId = user.id;
       resolve(true);

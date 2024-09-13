@@ -7,11 +7,6 @@ import cors from "cors";
 import { verifyToken } from "./api/services/authMiddleware.js";
 import "dotenv/config";
 
-console.log(
-  "Connecting to Database: " +
-    `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_USER_PW}@${process.env.MONGO_ADDRESS}:${process.env.MONGO_PORT}/${process.env.MONGO_DB_NAME}?directConnection=true`
-);
-
 const dbConnectResult = await mongoose.connect(
   `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_USER_PW}@${process.env.MONGO_ADDRESS}:${process.env.MONGO_PORT}/${process.env.MONGO_DB_NAME}?directConnection=true`
 );
@@ -24,22 +19,17 @@ app.use(
   "/api-documentation",
   swaggerUi.serve,
   swaggerUi.setup(null, {
+    explorer: true,
     swaggerOptions: {
       url: "http://localhost:3000/api-docs",
+      //Automatisches Eintragen des Token in die Authorisierung, wenn man den login erfolgreich aufruft
+      responseInterceptor: function (res) {
+        if (/login$/.test(res.url) && res.status === 200)
+          ui.preauthorizeApiKey("bearerAuth", res.obj.token);
+      },
     },
   })
 );
-
-/* Handling von Fehlern  */
-app.use(function (err, req, res, next) {
-  res.status(err.status || 500);
-
-  if (typeof err.message === "string") {
-    res.send(err.message);
-  } else {
-    res.json(err.message);
-  }
-});
 
 /* Laden des OpenApi Geräts */
 await initialize({
@@ -49,11 +39,23 @@ await initialize({
   securityHandlers: {
     bearerAuth: verifyToken,
   },
-  pathSecurity: [[/^\/courses/, [{ bearerAuth: [] }]]],
+  errorMiddleware: function (err, req, res, next) {
+    console.error(err);
+    res.status(err.status || 500);
+
+    if (typeof err === "string") {
+      res.send(err);
+    } else {
+      res.json(err);
+    }
+  },
+  pathSecurity: [
+    [/^\/courses$/, [{ bearerAuth: [] }]],
+    [/^\/course$/, [{ bearerAuth: [] }]],
+  ],
   paths: "src/api/paths",
 });
 
-
-app.listen(3000);
+app.listen(process.env.BACKEND_PORT);
 
 console.log("Backend Running.");

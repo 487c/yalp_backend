@@ -23,12 +23,50 @@ export default {
       },
     },
     schemas: {
-      MissingToken: {
+      Error: {
+        type: "object",
+        properties: {
+          code: { type: String },
+          message: { type: String },
+        },
+        required: ["code", "message"],
       },
       UserSchema,
       ScriptSchema,
       CourseSchema,
       CardSchema,
+    },
+    responses: {
+      NotFound: {
+        description: "The specified Ressource was not found.",
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/Error",
+            },
+          },
+        },
+      },
+      MissingToken: {
+        description: "Token needed to authorize the request.",
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/Error",
+            },
+          },
+        },
+      },
+      InvalidToken: {
+        description: "Token is invalid.",
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/Error",
+            },
+          },
+        },
+      },
     },
   },
   tags: [
@@ -43,22 +81,3 @@ export default {
   ],
   paths: {},
 };
-
-// export default {
-//   swagger: "2.0",
-//   basePath: "/",
-//   info: {
-//     title: "Backend für Yet another learning platform",
-//     version: "1.0.0",
-//   },
-//   definitions: {
-//     Error: {
-//       additionalProperties: true,
-//     },
-//     UserSchema,
-//     ScriptSchema,
-//     CourseSchema,
-//     CardSchema,
-//   },
-//   paths: {},
-// };

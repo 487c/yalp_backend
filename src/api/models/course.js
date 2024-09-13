@@ -27,7 +27,7 @@ export const CourseModel = mongoose.model("Course", {
 });
 
 export function inviteCodeGenerator() {
-  return referralCodeGenerator.custom("lowercase", 6, 6, "temitope");
+  return referralCodeGenerator.alphaNumeric("lowercase", 6, 6);
 }
 
 export const CourseSchema = m2s(CourseModel, modelOpts);
