@@ -1,6 +1,6 @@
 services:
   yalp_backend:
-    image: ghcr.io/waffelmeister/yalp_backend:main
+    image: ghcr.io/waffelmeister/yalp_backend:latest
     container_name: yalp_backend
     env_file:
       - .env
