@@ -56,6 +56,9 @@ await initialize({
     [/^\/course$/, [{ bearerAuth: [] }]],
     [/^\/joinCourse$/, [{ bearerAuth: [] }]],
     [/^\/leaveCourse$/, [{ bearerAuth: [] }]],
+    [/^\/transferCourseOwnership$/, [{ bearerAuth: [] }]],
+    [/^\/deleteCourse$/, [{ bearerAuth: [] }]],
+    [/^\/createCourse$/, [{ bearerAuth: [] }]],
   ],
   paths: "src/api/paths",
 });

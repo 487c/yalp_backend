@@ -36,8 +36,8 @@ async function POST(req, res, next) {
 }
 
 POST.apiDoc = {
-  summary: "Join a course",
-  description: "Joins the course via code.",
+  summary: "Transfers course Ownership",
+  description: "Sets the *Owner* of the Course to another person.",
   operationId: "joinCourse",
   tags: ["Course"],
   requestBody: {
@@ -49,7 +49,7 @@ POST.apiDoc = {
             code: {
               type: String,
             },
-            displayName: {
+            userDisplayName: {
               type: String,
             },
           },
