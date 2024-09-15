@@ -1,5 +1,5 @@
-import { UserModel } from "../models/user.js";
-import { generateAccessToken } from "../services/authMiddleware.js";
+import { UserModel } from "../../models/user.js";
+import { generateAccessToken } from "../../services/authMiddleware.js";
 
 export default {
   parameters: [],

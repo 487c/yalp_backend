@@ -1,4 +1,4 @@
-import { UserModel } from "../models/user.js";
+import { UserModel } from "../../models/user.js";
 
 export default function () {
   const operations = {
