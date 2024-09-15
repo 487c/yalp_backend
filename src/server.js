@@ -52,14 +52,7 @@ await initialize({
     }
   },
   pathSecurity: [
-    [/^\/myCourses$/, [{ bearerAuth: [] }]],
-    [/^\/course$/, [{ bearerAuth: [] }]],
-    [/^\/joinCourse$/, [{ bearerAuth: [] }]],
-    [/^\/leaveCourse$/, [{ bearerAuth: [] }]],
-    [/^\/transferCourseOwnership$/, [{ bearerAuth: [] }]],
-    [/^\/deleteCourse$/, [{ bearerAuth: [] }]],
-    [/^\/createCourse$/, [{ bearerAuth: [] }]],
-    [/^\/createScript$/, [{ bearerAuth: [] }]],
+    // [/^\/course/, [{ bearerAuth: [] }]],
   ],
   paths: "src/api/paths",
 });

@@ -1,11 +1,11 @@
-import { CourseModel, inviteCodeGenerator } from "../models/course.js";
-import { reduceObject } from "../services/utils.js";
+import { CourseModel, inviteCodeGenerator } from "../../models/course.js";
+import { reduceObject } from "../../services/utils.js";
 
 export default {
-  PUT: PUT,
+  POST: POST,
 };
 
-async function PUT(req, res, next) {
+async function POST(req, res, next) {
   const courseName = req.body.name;
   if (await CourseModel.findOne({ name: courseName })) {
     throw { status: 400, message: "Course with name already existing." };
@@ -20,7 +20,7 @@ async function PUT(req, res, next) {
   res.status(200).json(reduceObject(newCourse.toObject(), ["name", "code"]));
 }
 
-PUT.apiDoc = {
+POST.apiDoc = {
   summary: "Create new course",
   description: "Writes a new Course to the database",
   operationId: "createCourse",
