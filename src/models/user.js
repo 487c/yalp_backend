@@ -3,7 +3,7 @@ import m2s from "mongoose-to-swagger";
 import { modelOpts } from "../options.js";
 
 export const UserModel = mongoose.model("User", {
-  displayName: {
+  name: {
     type: String,
     description: "Name that is shown in the Client and to other users.",
     required: true,

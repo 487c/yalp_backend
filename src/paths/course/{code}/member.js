@@ -1,6 +1,4 @@
-import { CourseModel, inviteCodeGenerator } from "../../models/course.js";
-import { UserModel } from "../../models/user.js";
-import { reduceObject } from "../../services/utils.js";
+import { CourseModel } from "../../../models/course.js";
 
 const parameters = [
   {
@@ -15,30 +13,27 @@ const parameters = [
 ];
 
 export default {
-  UPDATE: UPDATE,
-  GET: GET,
-  parameters: parameters,
+  POST: POST,
+  DELETE: DELETE,
+  parameters,
 };
 
-async function UPDATE(req, res, next) {
-  const courseName = req.body.name;
-  if (await CourseModel.findOne({ name: courseName })) {
-    throw { status: 400, message: "Course with name already existing." };
-  }
-  const newCourse = await CourseModel.create({
-    name: courseName,
-    userIds: [req.userId],
-    code: inviteCodeGenerator(),
-    owner: req.userId,
-  });
+async function POST(req, res, next) {
+  const course = await CourseModel.findOne({ code: req.params.code });
+  if (course.userIds.includes(req.userId))
+    throw {
+      status: 400,
+      message: "You are already member of the course.",
+    };
 
-  res.status(200).json(reduceObject(newCourse.toObject(), ["name", "code"]));
+  course.userIds.push(req.userId);
+  await course.save();
+  res.status(200).json({ result: "OK" });
 }
-
-UPDATE.apiDoc = {
-  summary: "Updates a course",
-  description: "Rewrites the properties of a course",
-  operationId: "updateCourse",
+POST.apiDoc = {
+  summary: "Join a course",
+  description: "Joins the course via code.",
+  operationId: "joinCourse",
   tags: ["Course"],
   requestBody: {
     content: {
@@ -46,10 +41,11 @@ UPDATE.apiDoc = {
         schema: {
           type: "object",
           properties: {
-            name: {
+            code: {
               type: String,
             },
           },
+          required: ["code"],
         },
       },
     },
@@ -62,11 +58,9 @@ UPDATE.apiDoc = {
           schema: {
             type: "object",
             properties: {
-              name: {
+              result: {
                 type: String,
-              },
-              code: {
-                type: String,
+                default: "OK",
               },
             },
           },
@@ -85,35 +79,36 @@ UPDATE.apiDoc = {
   },
 };
 
-async function GET(req, res, next) {
+async function DELETE(req, res, next) {
   const course = await CourseModel.findOne({ code: req.params.code });
-  if (!course)
+  if (!course.userIds.includes(req.userId))
     throw {
       status: 400,
-      message: "The course does not exist.",
+      message: "You are not in the course.",
     };
-  if (course && !course.members.includes(req.userId)) {
+
+  if (course.owner === req.userId)
     throw {
       status: 400,
-      message: "You are not part of the course.",
+      message: "You are the owner of the course. You cant leave it (yet)",
     };
-  }
 
-  const [members, owner] = await Promise.all([
-    UserModel.find().where("_id").in(course.userIds).exec(),
-    UserModel.findOne({ _id: course.owner }),
-  ]);
+  if (course.userIds.length < 1)
+    throw {
+      status: 500,
+      message:
+        "Internal error, there should be more useres than one in the course (You and the owner).",
+    };
 
-  const redCourse = reduceObject(course.toObject(), [""]);
-  redCourse.members = members;
-  redCourse.owner = owner;
-  res.status(200).json();
+  course.userIds.splice(course.userIds.indexOf(req.userId), 1);
+  await course.save();
+  res.status(200).json({ result: "OK" });
 }
 
-GET.apiDoc = {
-  summary: "GET the course",
-  description: "Reads the courseproperties. Allowed if the user is part of the course. ",
-  operationId: "getCourse",
+DELETE.apiDoc = {
+  summary: "Leaves a course",
+  description: "Leaves a course, if you are not owner of the course.",
+  operationId: "leaveCourse",
   tags: ["Course"],
   responses: {
     200: {

@@ -2,16 +2,16 @@ import { ScriptModel } from "../models/script.js";
 import { reduceObject } from "../services/utils.js";
 
 export default {
-  PUT: PUT,
+  POST: POST,
 };
 
-async function PUT(req, res, next) {
+async function POST(req, res, next) {
   const documentDefinition = req.body;
   throw { status: 400, message: "Path not yet implemented" };
 }
 
-PUT.apiDoc = {
-  summary: "Create a new Script",
+POST.apiDoc = {
+  summary: "Create Script",
   description:
     "Uploade a new script, stores it, transfers it to markdown and classifies it.",
   operationId: "createScript",

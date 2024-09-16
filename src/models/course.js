@@ -32,7 +32,7 @@ export const CourseModel = mongoose.model("Course", {
 });
 
 export function inviteCodeGenerator() {
-  return referralCodeGenerator.alphaNumeric("lowercase", 6, 6);
+  return referralCodeGenerator.alphaNumeric("lowercase", 3, 3);
 }
 
 export const CourseSchema = m2s(CourseModel, modelOpts);

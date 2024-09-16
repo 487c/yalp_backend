@@ -1,12 +1,12 @@
-import { CourseModel } from "../models/course.js";
-import { UserModel } from "../models/user.js";
+import { CourseModel } from "../../../models/course.js";
+import { UserModel } from "../../../models/user.js";
 
 export default {
-  POST: POST,
+  PATCH: PATCH,
 };
 
-async function POST(req, res, next) {
-  const course = await CourseModel.findOne({ code: req.body.code });
+async function PATCH(req, res, next) {
+  const course = await CourseModel.findOne({ code: req.params.code });
 
   if (course.owner !== req.userId)
     throw {
@@ -35,7 +35,7 @@ async function POST(req, res, next) {
   res.status(200).json({ result: "OK" });
 }
 
-POST.apiDoc = {
+PATCH.apiDoc = {
   summary: "Transfers course ownership",
   description: "Sets the *Owner* of the Course to another person.",
   operationId: "joinCourse",
