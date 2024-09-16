@@ -1,4 +1,8 @@
-import { CourseModel, inviteCodeGenerator } from "../models/course.js";
+import {
+  CourseModel,
+  createCourse,
+  inviteCodeGenerator,
+} from "../models/course.js";
 import { reduceObject } from "../services/utils.js";
 
 export default {
@@ -10,14 +14,10 @@ async function POST(req, res, next) {
   if (await CourseModel.findOne({ name: courseName })) {
     throw { status: 400, message: "Course with name already existing." };
   }
-  const newCourse = await CourseModel.create({
-    name: courseName,
-    userIds: [req.userId],
-    code: inviteCodeGenerator(),
-    owner: req.userId,
-  });
 
-  res.status(200).json(reduceObject(newCourse.toObject(), ["name", "code"]));
+  const newCourse = await createCourse({ name: courseName, owner: req.userId });
+
+  res.status(200).json(reduceObject(newCourse, ["name", "code"]));
 }
 
 POST.apiDoc = {

@@ -31,6 +31,21 @@ export const CourseModel = mongoose.model("Course", {
   },
 });
 
+export async function createCourse({ name, owner }) {
+  if (await CourseModel.findOne({ name })) {
+    throw { status: 400, message: "Course with name already existing." };
+  }
+  const newCourse = await CourseModel.create({
+    name,
+    members: [owner],
+    scripts: [],
+    code: inviteCodeGenerator(),
+    owner: owner,
+  });
+
+  return await newCourse.toObject();
+}
+
 export function inviteCodeGenerator() {
   return referralCodeGenerator.alphaNumeric("lowercase", 3, 3);
 }

@@ -52,7 +52,7 @@ export default async function () {
         }
       },
       pathSecurity: [
-        // [/^\/course/, [{ bearerAuth: [] }]],
+        [/^\/course/, [{ bearerAuth: [] }]],
       ],
       paths: "src/paths",
     }),

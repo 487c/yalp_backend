@@ -10,10 +10,14 @@ export default {
 async function POST(req, res) {
   try {
     const login = req.body.login;
+    if (!login) {
+      res.status(404).json({ status: 404, message: "Login not given." });
+      return;
+    }
     const user = await UserModel.findOne({ login: login });
 
     if (!user) {
-      res.status(404).json("User not found.");
+      res.status(404).json({ status: 404, message: "User not found." });
       return;
     }
 
@@ -42,7 +46,7 @@ POST.apiDoc = {
           properties: {
             login: {
               type: String,
-              default: 'testimonials'
+              default: "testimonials",
             },
           },
         },

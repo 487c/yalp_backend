@@ -1,4 +1,4 @@
-import { CourseModel } from "../models/course.js";
+import { CourseModel, createCourse } from "../models/course.js";
 import { UserModel } from "../models/user.js";
 import { inviteCodeGenerator } from "../models/course.js";
 export default async function loadDemoData() {
@@ -57,11 +57,11 @@ async function loadCourses() {
     courses.map(async function (course) {
       var random = Math.floor(Math.random() * count);
       const user = await UserModel.findOne().skip(random);
-      course.owner = user._id;
-    //   course.code = inviteCodeGenerator();
-      return course;
+      return createCourse({
+        name: course.name,
+        owner: user._id,
+      });
     })
   );
-  await CourseModel.insertMany(createdCourses);
   console.log("Demo courses loaded");
 }
