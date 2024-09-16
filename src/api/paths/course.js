@@ -1,5 +1,5 @@
-import { CourseModel, inviteCodeGenerator } from "../../models/course.js";
-import { reduceObject } from "../../services/utils.js";
+import { CourseModel, inviteCodeGenerator } from "../models/course.js";
+import { reduceObject } from "../services/utils.js";
 
 export default {
   POST: POST,

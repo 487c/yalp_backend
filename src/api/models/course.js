@@ -9,7 +9,7 @@ export const CourseModel = mongoose.model("Course", {
     description: "Anzeigename des Kurses.",
     required: true,
   },
-  userIds: {
+  members: {
     type: [String],
     description: "Ids der User",
     required: true,

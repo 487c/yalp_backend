@@ -15,12 +15,12 @@ const parameters = [
 ];
 
 export default {
-  POST: POST,
+  UPDATE: UPDATE,
   GET: GET,
   parameters: parameters,
 };
 
-async function POST(req, res, next) {
+async function UPDATE(req, res, next) {
   const courseName = req.body.name;
   if (await CourseModel.findOne({ name: courseName })) {
     throw { status: 400, message: "Course with name already existing." };
@@ -35,10 +35,10 @@ async function POST(req, res, next) {
   res.status(200).json(reduceObject(newCourse.toObject(), ["name", "code"]));
 }
 
-POST.apiDoc = {
-  summary: "Create new course",
-  description: "Writes a new Course to the database",
-  operationId: "createCourse",
+UPDATE.apiDoc = {
+  summary: "Updates a course",
+  description: "Rewrites the properties of a course",
+  operationId: "updateCourse",
   tags: ["Course"],
   requestBody: {
     content: {
@@ -92,26 +92,28 @@ async function GET(req, res, next) {
       status: 400,
       message: "The course does not exist.",
     };
-  if (course && !course.userIds.includes(req.userId)) {
+  if (course && !course.members.includes(req.userId)) {
     throw {
       status: 400,
       message: "You are not part of the course.",
     };
   }
 
-  const members = await UserModel.find({
-    _id: {
-      $in: [course.userIds],
-    },
-  });
+  const [members, owner] = await Promise.all([
+    UserModel.find().where("_id").in(course.userIds).exec(),
+    UserModel.findOne({ _id: course.owner }),
+  ]);
 
-  res.status(200).json(reduceObject(course.toObject(), [""]));
+  const redCourse = reduceObject(course.toObject(), [""]);
+  redCourse.members = members;
+  redCourse.owner = owner;
+  res.status(200).json();
 }
 
 GET.apiDoc = {
   summary: "GET the course",
-  description: "GETs the course, if the user is owner and ",
-  operationId: "GETCourse",
+  description: "Reads the courseproperties. Allowed if the user is part of the course. ",
+  operationId: "getCourse",
   tags: ["Course"],
   responses: {
     200: {
