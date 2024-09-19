@@ -1,4 +1,4 @@
-import { CourseModel } from "../models/course.js";
+import Course from "../models/course.js";
 
 export default {
   GET: GET,
@@ -6,9 +6,9 @@ export default {
 
 async function GET(req, res, next) {
   try {
-    const courses = await CourseModel.find({ members: req.userId});
+    const courses = await Course.getReducedCourses({ members: req.userId });
 
-    res.status(200).json(courses.map((f) => ({ name: f.name, code: f.code })));
+    res.status(200).json(courses);
   } catch (e) {
     res.status(500).json(e.toString());
   }
@@ -51,6 +51,9 @@ GET.apiDoc = {
     },
     403: {
       $ref: "#/components/responses/InvalidToken",
+    },
+    default: {
+      $ref: "#/components/responses/InvalidRequest",
     },
   },
 };

@@ -1,4 +1,4 @@
-import { CourseModel, inviteCodeGenerator } from "../../models/course.js";
+import Course from "../../models/course.js";
 import { UserModel } from "../../models/user.js";
 import { reduceObject } from "../../services/utils.js";
 
@@ -9,6 +9,7 @@ const parameters = [
     schema: {
       type: "string",
     },
+    example: "MATHISGREAT101",
     required: true,
     description: "Referral code of the course",
   },
@@ -22,12 +23,13 @@ export default {
 };
 
 async function PATCH(req, res, next) {
-  const course = await CourseModel.findOne({ code: req.params.code });
+  const course = await Course.updateCourse({
+    ...req.body,
+    code: req.params.code,
+    owner: req.userId,
+  });
 
-  const { name } = req.body;
-  if (name) course.name = name;
-
-  res.status(200).json({ result: "OK" });
+  res.status(200).json(course);
 }
 
 PATCH.apiDoc = {
@@ -43,6 +45,7 @@ PATCH.apiDoc = {
           properties: {
             name: {
               type: String,
+              example: "Math for beginners",
             },
           },
         },
@@ -77,36 +80,27 @@ PATCH.apiDoc = {
     403: {
       $ref: "#/components/responses/InvalidToken",
     },
+    default: {
+      $ref: "#/components/responses/InvalidRequest",
+    },
   },
 };
 
 async function GET(req, res, next) {
-  const course = await CourseModel.findOne(
-    {
-      code: req.params.code,
-    },
-    { _id: 0 }
-  ).lean();
-  if (!course)
+  try {
+    const course = await Course.getCourseForUser(req.params.code, req.userId);
+    if (!course)
+      throw {
+        status: 400,
+        message: "Course not found / you are not a member of this course",
+      };
+    res.status(200).json(course);
+  } catch (e) {
     throw {
       status: 400,
-      message: "The course does not exist.",
-    };
-  if (course && !course.members.includes(req.userId)) {
-    throw {
-      status: 400,
-      message: "You are not part of the course.",
+      message: e,
     };
   }
-
-  const [members, owner] = await Promise.all([
-    UserModel.find().where("_id").in(course.members).lean(),
-    UserModel.findOne({ _id: course.owner }).lean(),
-  ]);
-
-  course.members = members;
-  course.owner = owner;
-  res.status(200).json(course);
 }
 
 GET.apiDoc = {
@@ -145,35 +139,7 @@ GET.apiDoc = {
 };
 
 async function DELETE(req, res, next) {
-  const course = await CourseModel.findOne({ code: req.params.code });
-  if (!course)
-    throw {
-      status: 400,
-      message: "The course does not exist.",
-    };
-  if (course && !course.owner !== req.userId) {
-    throw {
-      status: 400,
-      message: "You are not the course owner",
-    };
-  }
-
-  if (course.member.length > 1 && course.members) {
-    throw {
-      status: 400,
-      message: "You are not the course owner",
-    };
-  }
-
-  const [members, owner] = await Promise.all([
-    UserModel.find().where("_id").in(course.userIds).exec(),
-    UserModel.findOne({ _id: course.owner }),
-  ]);
-
-  const redCourse = reduceObject(course.toObject(), [""]);
-  redCourse.members = members;
-  redCourse.owner = owner;
-  res.status(200).json();
+  const course = await Course.deleteCourse({ code: req.params.code });
 }
 
 DELETE.apiDoc = {

@@ -1,5 +1,5 @@
 import { CardSchema } from "./models/card.js";
-import { CourseSchema } from "./models/course.js";
+import Course from "./models/course.js";
 import { ScriptSchema } from "./models/script.js";
 import { UserSchema } from "./models/user.js";
 
@@ -33,7 +33,7 @@ export default {
       },
       UserSchema,
       ScriptSchema,
-      CourseSchema,
+      ReducedCourse: Course.getReducedSchema(),
       CardSchema,
     },
     responses: {
@@ -49,33 +49,12 @@ export default {
       },
       NotFound: {
         description: "The specified Ressource was not found.",
-        content: {
-          "application/json": {
-            schema: {
-              $ref: "#/components/schemas/Error",
-            },
-          },
-        },
       },
       MissingToken: {
         description: "Token needed to authorize the request.",
-        content: {
-          "application/json": {
-            schema: {
-              $ref: "#/components/schemas/Error",
-            },
-          },
-        },
       },
       InvalidToken: {
         description: "Token is invalid.",
-        content: {
-          "application/json": {
-            schema: {
-              $ref: "#/components/schemas/Error",
-            },
-          },
-        },
       },
     },
   },

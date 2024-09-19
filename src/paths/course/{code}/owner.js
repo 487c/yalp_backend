@@ -1,4 +1,4 @@
-import { CourseModel } from "../../../models/course.js";
+import Course from "../../../models/course.js";
 import { UserModel } from "../../../models/user.js";
 
 export default {
@@ -6,7 +6,7 @@ export default {
 };
 
 async function PATCH(req, res, next) {
-  const course = await CourseModel.findOne({ code: req.params.code });
+  const course = await Course.getCourse({ code: req.params.code });
 
   if (course.owner !== req.userId)
     throw {

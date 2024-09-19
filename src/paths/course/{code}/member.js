@@ -1,4 +1,4 @@
-import { CourseModel } from "../../../models/course.js";
+import Course from "../../../models/course.js";
 
 const parameters = [
   {
@@ -19,14 +19,14 @@ export default {
 };
 
 async function POST(req, res, next) {
-  const course = await CourseModel.findOne({ code: req.params.code });
-  if (course.userIds.includes(req.userId))
+  const course = await Course.getCourse({ code: req.params.code });
+  if (course.members.includes(req.userId))
     throw {
       status: 400,
       message: "You are already member of the course.",
     };
 
-  course.userIds.push(req.userId);
+  course.members.push(req.userId);
   await course.save();
   res.status(200).json({ result: "OK" });
 }

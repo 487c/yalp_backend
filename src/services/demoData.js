@@ -1,6 +1,5 @@
-import { CourseModel, createCourse } from "../models/course.js";
+import Course from "../models/course.js";
 import { UserModel } from "../models/user.js";
-import { inviteCodeGenerator } from "../models/course.js";
 export default async function loadDemoData() {
   await loadUsers();
   return await Promise.all([loadCourses()]);
@@ -28,32 +27,35 @@ async function loadUsers() {
 
 async function loadCourses() {
   console.log("Loading course data");
-  await CourseModel.deleteMany({});
+  await Course.model.deleteMany({});
 
   const users = await UserModel.find();
 
   const courses = [
     {
       name: "Math",
-      code: "MATH101",
+      code: "MATHISGREAT101",
     },
     {
       name: "English",
-      code: "ENGL101",
+      code: "ENGLISHISGREAT101",
     },
     {
       name: "Science",
-      code: "SCIE101",
+      code: "SCIENCEISGREATE101",
     },
   ];
 
-  const createdCourses = await Promise.all(
+  await Promise.all(
     courses.map(async function (course, index) {
-      return createCourse({
+      return Course.create({
         name: course.name,
+        code: course.code,
         owner: users[index]._id,
+        members: [users[index]._id, users.at(index - 1)._id],
       });
     })
   );
+
   console.log("Demo courses loaded");
 }
