@@ -1,5 +1,5 @@
 import Course from "../../../models/course.js";
-import { UserModel } from "../../../models/user.js";
+import User from "../../../models/user.js";
 
 export default {
   PATCH: PATCH,

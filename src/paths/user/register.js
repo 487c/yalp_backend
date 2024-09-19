@@ -1,4 +1,4 @@
-import { UserModel } from "../../models/user.js";
+import User from "../../models/user.js";
 
 export default function () {
   const operations = {
@@ -6,28 +6,8 @@ export default function () {
   };
 
   async function POST(req, res, next) {
-    const login = req.body.login;
-    if (!/^\w{10,}$/g.test(login)) {
-      throw {
-        status: 400,
-        message:
-          "The login needs to be longer than 10 characters. It will also act as your password, so choose wisely.",
-      };
-    }
-
-    if (await UserModel.findOne({ login: res.body.login }))
-      throw {
-        status: 400,
-        message: "That login is already taken... (whatever that implies)",
-      };
-
-    if (await UserModel.findOne({ name: res.body.name }))
-      throw {
-        status: 400,
-        message: "That name is already taken.",
-      };
-    await UserModel.create(req.body);
-    res.status(200).json("OK");
+    const user = await User.register({ name: req.body.name, login: req.body.login });
+    res.status(200).json(user);
   }
 
   POST.apiDoc = {
@@ -41,7 +21,15 @@ export default function () {
       content: {
         "application/json": {
           schema: {
-            $ref: "#/components/schemas/UserSchema",
+            $ref: "#/components/schemas/ReducedUserSchema",
+          },
+          examples: {
+            PeterPan: {
+              value: {
+                name: "Peter Pan",
+                login: "peterpanisSoooStronk",
+              },
+            },
           },
         },
       },
@@ -52,6 +40,9 @@ export default function () {
       },
       400: {
         $ref: "#/components/responses/InvalidRequest",
+      },
+      default: {
+        $ref: "#/components/responses/Error",
       },
     },
   };

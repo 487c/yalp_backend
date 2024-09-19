@@ -1,7 +1,5 @@
-import { CardSchema } from "./models/card.js";
 import Course from "./models/course.js";
-import { ScriptSchema } from "./models/script.js";
-import { UserSchema } from "./models/user.js";
+import User from "./models/user.js";
 
 export default {
   openapi: "3.0.0",
@@ -31,10 +29,8 @@ export default {
         },
         required: ["code", "message"],
       },
-      UserSchema,
-      ScriptSchema,
-      ReducedCourse: Course.getReducedSchema(),
-      CardSchema,
+      ReducedUserSchema: User.getReducedSchema(),
+      ReducedCourseSchema: Course.getReducedSchema(),
     },
     responses: {
       Error: {

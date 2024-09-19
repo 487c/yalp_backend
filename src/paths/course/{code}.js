@@ -1,6 +1,4 @@
 import Course from "../../models/course.js";
-import { UserModel } from "../../models/user.js";
-import { reduceObject } from "../../services/utils.js";
 
 const parameters = [
   {

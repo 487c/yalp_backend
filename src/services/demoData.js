@@ -1,5 +1,5 @@
 import Course from "../models/course.js";
-import { UserModel } from "../models/user.js";
+import User from "../models/user.js";
 export default async function loadDemoData() {
   await loadUsers();
   return await Promise.all([loadCourses()]);
@@ -7,8 +7,8 @@ export default async function loadDemoData() {
 
 async function loadUsers() {
   console.log("Loading user data");
-  await UserModel.deleteMany({});
-  await UserModel.insertMany([
+  await User.model.deleteMany({});
+  await User.model.insertMany([
     {
       name: "John Doe",
       login: "john",
@@ -29,7 +29,7 @@ async function loadCourses() {
   console.log("Loading course data");
   await Course.model.deleteMany({});
 
-  const users = await UserModel.find();
+  const users = await User.model.find();
 
   const courses = [
     {
