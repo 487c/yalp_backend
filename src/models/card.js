@@ -14,7 +14,8 @@ export const Card = mongoose.model("Card", {
     required: true,
   },
   author: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     description: "Id des Authors einer Karte",
     required: true,
   },

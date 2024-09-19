@@ -1,5 +1,4 @@
-import { UserModel } from "../models/user.js";
-import { generateAccessToken } from "../services/authMiddleware.js";
+import User from "../../models/user.js";
 
 export default {
   parameters: [],
@@ -10,18 +9,11 @@ export default {
 async function POST(req, res) {
   try {
     const login = req.body.login;
-    const user = await UserModel.findOne({ login: login });
+    if (!login) throw "Missing login";
 
-    if (!user) {
-      res.status(404).json("User not found.");
-      return;
-    }
+    const loginResult = await User.login(login);
 
-    res.status(200).json({
-      token: generateAccessToken(user._id),
-      expiresInSeconds: process.env.TOKEN_DURATION_SECONDS,
-      timestamp: new Date().valueOf(),
-    });
+    res.status(200).json(loginResult);
   } catch (e) {
     res.status(503).json(e.toString());
   }
@@ -42,7 +34,7 @@ POST.apiDoc = {
           properties: {
             login: {
               type: String,
-              default: 'testimonials'
+              default: "john",
             },
           },
         },

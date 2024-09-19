@@ -1,7 +1,5 @@
-import { CardSchema } from "./models/card.js";
-import { CourseSchema } from "./models/course.js";
-import { ScriptSchema } from "./models/script.js";
-import { UserSchema } from "./models/user.js";
+import Course from "./models/course.js";
+import User from "./models/user.js";
 
 export default {
   openapi: "3.0.0",
@@ -31,14 +29,12 @@ export default {
         },
         required: ["code", "message"],
       },
-      UserSchema,
-      ScriptSchema,
-      CourseSchema,
-      CardSchema,
+      ReducedUserSchema: User.getReducedSchema(),
+      ReducedCourseSchema: Course.getReducedSchema(),
     },
     responses: {
-      InvalidRequest: {
-        description: "The Request was invalid.",
+      Error: {
+        description: "Error Response",
         content: {
           "application/json": {
             schema: {
@@ -46,36 +42,18 @@ export default {
             },
           },
         },
+      },
+      InvalidRequest: {
+        description: "The Request was invalid. Check Paramaters and Body.",
       },
       NotFound: {
         description: "The specified Ressource was not found.",
-        content: {
-          "application/json": {
-            schema: {
-              $ref: "#/components/schemas/Error",
-            },
-          },
-        },
       },
       MissingToken: {
         description: "Token needed to authorize the request.",
-        content: {
-          "application/json": {
-            schema: {
-              $ref: "#/components/schemas/Error",
-            },
-          },
-        },
       },
       InvalidToken: {
         description: "Token is invalid.",
-        content: {
-          "application/json": {
-            schema: {
-              $ref: "#/components/schemas/Error",
-            },
-          },
-        },
       },
     },
   },
