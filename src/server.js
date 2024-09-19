@@ -22,6 +22,21 @@ app.use(
         if (/login$/.test(res.url) && res.status === 200)
           ui.preauthorizeApiKey("bearerAuth", res.obj.token);
       },
+      onComplete: function () {
+        fetch("http://localhost:3001/user/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            login: "john",
+          }),
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            ui.preauthorizeApiKey("bearerAuth", res.token);
+          });
+      },
     },
   })
 );
@@ -51,9 +66,7 @@ export default async function () {
           res.json(err);
         }
       },
-      pathSecurity: [
-        [/^\/course/, [{ bearerAuth: [] }]],
-      ],
+      pathSecurity: [[/^\/course/, [{ bearerAuth: [] }]]],
       paths: "src/paths",
     }),
   ]);

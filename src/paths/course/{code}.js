@@ -81,7 +81,12 @@ PATCH.apiDoc = {
 };
 
 async function GET(req, res, next) {
-  const course = await CourseModel.findOne({ code: req.params.code });
+  const course = await CourseModel.findOne(
+    {
+      code: req.params.code,
+    },
+    { _id: 0 }
+  ).lean();
   if (!course)
     throw {
       status: 400,
@@ -95,14 +100,13 @@ async function GET(req, res, next) {
   }
 
   const [members, owner] = await Promise.all([
-    UserModel.find().where("_id").in(course.userIds).exec(),
-    UserModel.findOne({ _id: course.owner }),
+    UserModel.find().where("_id").in(course.members).lean(),
+    UserModel.findOne({ _id: course.owner }).lean(),
   ]);
 
-  const redCourse = reduceObject(course.toObject(), [""]);
-  redCourse.members = members;
-  redCourse.owner = owner;
-  res.status(200).json();
+  course.members = members;
+  course.owner = owner;
+  res.status(200).json(course);
 }
 
 GET.apiDoc = {

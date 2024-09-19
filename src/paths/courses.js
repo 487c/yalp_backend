@@ -6,7 +6,7 @@ export default {
 
 async function GET(req, res, next) {
   try {
-    const courses = await CourseModel.find({ userIds: req.userId });
+    const courses = await CourseModel.find({ members: req.userId});
 
     res.status(200).json(courses.map((f) => ({ name: f.name, code: f.code })));
   } catch (e) {

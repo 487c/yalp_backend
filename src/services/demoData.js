@@ -30,36 +30,28 @@ async function loadCourses() {
   console.log("Loading course data");
   await CourseModel.deleteMany({});
 
-  const count = await UserModel.countDocuments();
-  // Get a random entry
-  var random = Math.floor(Math.random() * count);
-  await UserModel.findOne().skip(random);
+  const users = await UserModel.find();
 
   const courses = [
     {
       name: "Math",
       code: "MATH101",
-      description: "This is a math course",
     },
     {
       name: "English",
       code: "ENGL101",
-      description: "This is an english course",
     },
     {
       name: "Science",
       code: "SCIE101",
-      description: "This is a science course",
     },
   ];
 
   const createdCourses = await Promise.all(
-    courses.map(async function (course) {
-      var random = Math.floor(Math.random() * count);
-      const user = await UserModel.findOne().skip(random);
+    courses.map(async function (course, index) {
       return createCourse({
         name: course.name,
-        owner: user._id,
+        owner: users[index]._id,
       });
     })
   );

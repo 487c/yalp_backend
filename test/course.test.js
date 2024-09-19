@@ -5,6 +5,7 @@ import loading from "../src/server.js";
 
 let app;
 let token;
+let exampleCourse;
 
 before(async function () {
   app = await loading();
@@ -19,7 +20,7 @@ before(async function () {
 
 it("should return all courses", function (done) {
   request(app)
-  .get("/courses")
+    .get("/courses")
     .set("Authorization", `Bearer ${token}`)
     .set("Accept", "application/json")
     .set("Content-Type", "application/json")
@@ -44,5 +45,18 @@ it("should add a courses", function (done) {
     .end(function (err, res) {
       expect(res.body).to.have.property("name", "Philosophy");
       done(err);
+    });
+});
+
+it("should remove a course", async function (done) {
+  request(app)
+    .delete("/course/" + response.body.code)
+    .set("Authorization", `Bearer ${token}`)
+    .set("Accept", "application/json")
+    .set("Content-Type", "application/json")
+    .send({})
+    .then(function (res) {
+      expect(res.statusCode).to.equal(200);
+      done();
     });
 });

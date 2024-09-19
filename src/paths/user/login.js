@@ -46,7 +46,7 @@ POST.apiDoc = {
           properties: {
             login: {
               type: String,
-              default: "testimonials",
+              default: "john",
             },
           },
         },

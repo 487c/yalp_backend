@@ -10,12 +10,12 @@ export const CourseModel = mongoose.model("Course", {
     required: true,
   },
   members: {
-    type: [String],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     description: "Ids der User",
     required: true,
   },
   scripts: {
-    type: [String],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Script" }],
     description: "Ids von Skripten zu einer Kurs.",
     required: true,
   },
@@ -25,7 +25,8 @@ export const CourseModel = mongoose.model("Course", {
     required: true,
   },
   owner: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     description: "Owner of the Course",
     required: true,
   },
