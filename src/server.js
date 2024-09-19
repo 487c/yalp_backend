@@ -23,7 +23,7 @@ app.use(
           ui.preauthorizeApiKey("bearerAuth", res.obj.token);
       },
       onComplete: function () {
-        fetch("http://localhost:3001/user/login", {
+        fetch(`http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/user/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
