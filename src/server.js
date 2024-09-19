@@ -8,6 +8,7 @@ import { verifyToken } from "./services/authMiddleware.js";
 import "dotenv/config";
 import loadDemoData from "./services/demoData.js";
 
+const loginUrl = `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/user/login`;
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -23,15 +24,7 @@ app.use(
           ui.preauthorizeApiKey("bearerAuth", res.obj.token);
       },
       onComplete: function () {
-        fetch(`http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/user/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            login: "john",
-          }),
-        })
+        fetch(loginUrl)
           .then((res) => res.json())
           .then((res) => {
             ui.preauthorizeApiKey("bearerAuth", res.token);
