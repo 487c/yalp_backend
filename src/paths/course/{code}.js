@@ -16,20 +16,22 @@ const parameters = [
 ];
 
 export default {
-  PATCH: PATCH,
   GET: GET,
+  PATCH: PATCH,
   DELETE: DELETE,
   parameters: parameters,
 };
 
 async function PATCH(req, res, next) {
-  const course = await Course.updateCourse({
-    ...req.body,
-    code: req.params.code,
-    owner: req.userId,
-  });
+  try {
+    const course = await Course.update(req.params.code, req.userId, {
+      ...req.body,
+    });
 
-  res.status(200).json(course);
+    res.status(200).json(course);
+  } catch (e) {
+    throw { status: 400, message: e.toString() };
+  }
 }
 
 PATCH.apiDoc = {
@@ -81,7 +83,7 @@ PATCH.apiDoc = {
       $ref: "#/components/responses/InvalidToken",
     },
     default: {
-      $ref: "#/components/responses/InvalidRequest",
+      $ref: "#/components/responses/Error",
     },
   },
 };
@@ -89,17 +91,9 @@ PATCH.apiDoc = {
 async function GET(req, res, next) {
   try {
     const course = await Course.getCourseForUser(req.params.code, req.userId);
-    if (!course)
-      throw {
-        status: 400,
-        message: "Course not found / you are not a member of this course",
-      };
     res.status(200).json(course);
   } catch (e) {
-    throw {
-      status: 400,
-      message: e,
-    };
+    throw { status: 400, message: e.toString() };
   }
 }
 
@@ -135,11 +129,20 @@ GET.apiDoc = {
     403: {
       $ref: "#/components/responses/InvalidToken",
     },
+    default: {
+      $ref: "#/components/responses/Error",
+    },
   },
 };
 
 async function DELETE(req, res, next) {
-  const course = await Course.deleteCourse({ code: req.params.code });
+  try {
+    await Course.delete(req.params.code, req.userId);
+
+    res.status(200).json({ result: "OK" });
+  } catch (e) {
+    throw { status: 400, message: e.toString() };
+  }
 }
 
 DELETE.apiDoc = {
@@ -172,6 +175,9 @@ DELETE.apiDoc = {
     },
     403: {
       $ref: "#/components/responses/InvalidToken",
+    },
+    default: {
+      $ref: "#/components/responses/Error",
     },
   },
 };

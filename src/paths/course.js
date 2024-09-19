@@ -6,16 +6,21 @@ export default {
 
 async function POST(req, res, next) {
   const courseName = req.body.name;
-  if (Course.testForName(courseName)) {
-    throw { status: 400, message: "Course with name already existing." };
+  try {
+    if (!courseName)
+      throw {
+        status: 400,
+        message: "Missing course name",
+      };
+    const newCourse = await Course.create({
+      name: courseName,
+      owner: req.userId,
+    });
+
+    res.status(200).json(newCourse);
+  } catch (e) {
+    throw { status: 400, message: e.toString() };
   }
-
-  const newCourse = await Course.createCourse({
-    name: courseName,
-    owner: req.userId,
-  });
-
-  res.status(200).json(newCourse);
 }
 
 POST.apiDoc = {
@@ -56,14 +61,14 @@ POST.apiDoc = {
         },
       },
     },
-    400: {
-      $ref: "#/components/responses/InvalidRequest",
-    },
     401: {
       $ref: "#/components/responses/MissingToken",
     },
     403: {
       $ref: "#/components/responses/InvalidToken",
+    },
+    default: {
+      $ref: "#/components/responses/InvalidRequest",
     },
   },
 };

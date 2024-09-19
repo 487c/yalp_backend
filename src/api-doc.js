@@ -37,8 +37,8 @@ export default {
       CardSchema,
     },
     responses: {
-      InvalidRequest: {
-        description: "The Request was invalid.",
+      Error: {
+        description: "Error Response",
         content: {
           "application/json": {
             schema: {
@@ -46,6 +46,9 @@ export default {
             },
           },
         },
+      },
+      InvalidRequest: {
+        description: "The Request was invalid. Check Paramaters and Body.",
       },
       NotFound: {
         description: "The specified Ressource was not found.",

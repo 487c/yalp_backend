@@ -40,9 +40,6 @@ export default {
   }),
 
   async create({ name, owner, code, members }) {
-    if (await this.model.findOne({ name })) {
-      throw { status: 400, message: "Course with name already existing." };
-    }
     const newCourse = await this.model.create({
       name,
       members: members || [owner],
@@ -51,11 +48,12 @@ export default {
       owner: owner,
     });
 
-    return await newCourse.toObject();
+    const obj = await newCourse.toObject();
+    return { name: obj.name, code: obj.code };
   },
 
   async getCourseForUser(code, userId) {
-    return await this.model
+    const course = await this.model
       .find(
         {
           code,
@@ -69,27 +67,30 @@ export default {
       })
       .populate("owner", "name -_id")
       .lean();
+    if (!course)
+      throw "Could not find course/you are not a member of this course";
   },
 
-  async updateCourse({ code, owner, name }) {
+  async update(code, owner, { name }) {
     const course = await this.model
       .findOneAndUpdate({ code, owner }, { name }, { new: true })
       .select("name code -_id")
       .lean();
+    if (!course) throw "Could not find course/you are not owner of the course";
+    return course;
+  },
+
+  async delete(code, owner) {
+    const course = await this.model.findOne({ code, owner });
+    if (!course) {
+      throw "Could not find course / you are not owner of the course";
+    }
+    debugger;
+    return await course.deleteOne();
   },
 
   async getReducedCourses(query) {
     return await this.model.find(query, { name: 1, code: 1, _id: 0 }).lean();
-  },
-
-  async testForName(name) {
-    return await this.model
-      .findOne({ name })
-      .then((course) => course !== null)
-      .catch((err) => {
-        console.error(err);
-        return false;
-      });
   },
 
   getReducedSchema() {
