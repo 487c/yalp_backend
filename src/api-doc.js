@@ -30,7 +30,7 @@ export default {
         required: ["code", "message"],
       },
       ReducedUserSchema: User.getReducedSchema(),
-      ReducedCourseSchema: Course.getReducedSchema(),
+      // ReducedCourseSchema: Course.getReducedSchema(),
     },
     responses: {
       Error: {
