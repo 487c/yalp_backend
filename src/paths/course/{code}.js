@@ -21,6 +21,52 @@ export default {
   DELETE: DELETE,
   parameters: parameters,
 };
+async function GET(req, res, next) {
+  try {
+    const course = await Course.getCourseForUser(req.params.code, req.userId);
+    res.status(200).json(course);
+  } catch (e) {
+    throw { status: 400, message: e.toString() };
+  }
+}
+
+GET.apiDoc = {
+  summary: "Read course properties",
+  description:
+    "Reads the course properties. Allowed if the user is part of the course. ",
+  operationId: "getCourse",
+  tags: ["Course"],
+  responses: {
+    200: {
+      description: "OK",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              result: {
+                type: String,
+                default: "OK",
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      $ref: "#/components/responses/InvalidRequest",
+    },
+    401: {
+      $ref: "#/components/responses/MissingToken",
+    },
+    403: {
+      $ref: "#/components/responses/InvalidToken",
+    },
+    default: {
+      $ref: "#/components/responses/Error",
+    },
+  },
+};
 
 async function PATCH(req, res, next) {
   try {
@@ -67,53 +113,6 @@ PATCH.apiDoc = {
               },
               code: {
                 type: String,
-              },
-            },
-          },
-        },
-      },
-    },
-    400: {
-      $ref: "#/components/responses/InvalidRequest",
-    },
-    401: {
-      $ref: "#/components/responses/MissingToken",
-    },
-    403: {
-      $ref: "#/components/responses/InvalidToken",
-    },
-    default: {
-      $ref: "#/components/responses/Error",
-    },
-  },
-};
-
-async function GET(req, res, next) {
-  try {
-    const course = await Course.getCourseForUser(req.params.code, req.userId);
-    res.status(200).json(course);
-  } catch (e) {
-    throw { status: 400, message: e.toString() };
-  }
-}
-
-GET.apiDoc = {
-  summary: "Read course properties",
-  description:
-    "Reads the course properties. Allowed if the user is part of the course. ",
-  operationId: "getCourse",
-  tags: ["Course"],
-  responses: {
-    200: {
-      description: "OK",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              result: {
-                type: String,
-                default: "OK",
               },
             },
           },
