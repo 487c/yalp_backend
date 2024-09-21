@@ -6,6 +6,8 @@ services:
       - .env
     environment:
       MONGO_ADDRESS: mongodb
+    volumes:
+      - ./data/yalp:/usr/src/app/loggin
     ports:
       - 3001:3001
     depends_on:
