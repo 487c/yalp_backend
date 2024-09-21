@@ -68,8 +68,7 @@ jobs:
       - name: Push change into demo page
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: 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
+          token: ${{ secrets.GIT_TOKEN }}
           repository: svolume/yalp
           event-type: deploy_demo
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
