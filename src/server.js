@@ -15,10 +15,10 @@ const logger = winston.createLogger({
   defaultMeta: { service: "incoming_request", date: new Date() },
   transports: [
     new winston.transports.File({
-      filename: "yalp_error.log",
+      filename: "./logging/yalp_error.log",
       level: "error",
     }),
-    new winston.transports.File({ filename: "yalp.log" }),
+    new winston.transports.File({ filename: "./logging/yalp.log" }),
     new winston.transports.Console(),
   ],
 });
