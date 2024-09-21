@@ -66,14 +66,10 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Push change into demo page
-        uses: octokit/request-action@v2.x
-        id: deploy_demo
+        uses: peter-evans/repository-dispatch@v3
         with:
-          route: POST /repos/{owner}/{repo}/dispatches
-          owner: svolume
-          repo: yalp
-          head_sha: ${{ github.sha }}
-          inputs: |
-            event_type: "deploy_demo"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: svolume/yalp
+          event-type: deploy_demo
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
