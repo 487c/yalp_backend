@@ -10,6 +10,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  REQUEST_BODY: '{"event_type":"deploy_demo"}'
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
@@ -64,12 +65,14 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: Webhook
-        run: | 
-          curl -L \
-          -X POST \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/svolume/yalp/dispatches \
-          -d '{"event_type":"deploy_demo","client_payload":{"unit":false,"integration":true}}'
+      - uses: octokit/request-action@v2.x
+        id: deploy_demo
+        with:
+          route: POST /repos/{owner}/{repo}/dispatches
+          owner: svolume
+          repo: yalp
+          name: "Test check run"
+          head_sha: ${{ github.sha }}
+          body: ${{ toJSON(env.REQUEST_BODY) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
