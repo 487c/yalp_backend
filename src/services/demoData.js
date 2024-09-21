@@ -44,17 +44,44 @@ async function loadCourses() {
       name: "Science",
       code: "SCIENCEISGREATE101",
     },
+    {
+      name: "Deutsch",
+      code: "DEUTSCHISGREAT101",
+    },
+    {
+      name: "FRENCH",
+      code: "FRENCHISGREAT101",
+    },
+    {
+      name: "Information Technology",
+      code: "ITISGREATE101",
+    },
   ];
 
   await Promise.all(
-    courses.map(async function (course, index) {
-      return Course.create({
-        name: course.name,
-        code: course.code,
-        owner: users[index]._id,
-        members: [users[index]._id, users.at(index - 1)._id],
-      });
-    })
+    courses
+      .map(async function (course, index) {
+        const creator = users[index % users.length];
+        const member = users.at((index % users.length) - 1);
+        return Course.create({
+          name: course.name,
+          code: course.code,
+          owner: creator._id,
+          members: [creator._id, member._id],
+        });
+      })
+      .concat([
+        Course.create({
+          name: "Sport",
+          code: "SPORTSISGREAT101",
+          owner: users[0]._id,
+        }),
+        Course.create({
+          name: "Music",
+          code: "MUSICISGREAT101",
+          owner: users[1]._id,
+        }),
+      ])
   );
 
   console.log("Demo courses loaded");

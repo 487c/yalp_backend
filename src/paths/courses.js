@@ -6,7 +6,7 @@ export default {
 
 async function GET(req, res, next) {
   try {
-    const courses = await Course.getReducedCourses({ members: req.userId });
+    const courses = await Course.getReducedCoursesForUser(req.userId);
 
     res.status(200).json(courses);
   } catch (e) {

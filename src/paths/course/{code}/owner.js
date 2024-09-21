@@ -1,37 +1,11 @@
 import Course from "../../../models/course.js";
-import User from "../../../models/user.js";
 
 export default {
   PATCH: PATCH,
 };
 
 async function PATCH(req, res, next) {
-  const course = await Course.getCourse({ code: req.params.code });
-
-  if (course.owner !== req.userId)
-    throw {
-      status: 400,
-      message: "You are not owner of the course. Bugger off.",
-    };
-
-  const candidate = await UserModel.findOne({
-    displayName: req.body.userDisplayName,
-  });
-
-  if (!candidate)
-    throw {
-      status: 400,
-      message: "The given name does not correspond to an user.",
-    };
-
-  if (course.owner === req.userId)
-    throw {
-      status: 400,
-      message: "You are already owner of the course.",
-    };
-
-  course.owner = candidate._id;
-  await course.save();
+  Course.changeOwner(req.params.code, req.userId, req.body.user);
   res.status(200).json({ result: "OK" });
 }
 
@@ -46,14 +20,11 @@ PATCH.apiDoc = {
         schema: {
           type: "object",
           properties: {
-            code: {
-              type: String,
-            },
-            userDisplayName: {
+            user: {
               type: String,
             },
           },
-          required: ["code", "userDisplayName"],
+          required: ["user"],
         },
       },
     },
@@ -83,6 +54,9 @@ PATCH.apiDoc = {
     },
     403: {
       $ref: "#/components/responses/InvalidToken",
+    },
+    default: {
+      $ref: "#/components/responses/Error",
     },
   },
 };
