@@ -11,7 +11,7 @@ import winston from "winston";
 
 const logger = winston.createLogger({
   level: "info",
-  forat: winston.format.json(),
+  format: winston.format.json(),
   defaultMeta: { service: "incoming_request", date: new Date() },
   transports: [
     new winston.transports.File({
