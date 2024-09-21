@@ -7,11 +7,39 @@ import cors from "cors";
 import { verifyToken } from "./services/authMiddleware.js";
 import "dotenv/config";
 import loadDemoData from "./services/demoData.js";
+import winston from "winston";
+
+const logger = winston.createLogger({
+  level: "info",
+  forat: winston.format.json(),
+  defaultMeta: { service: "incoming_request", date: new Date() },
+  transports: [
+    new winston.transports.File({
+      filename: "yalp_error.log",
+      level: "error",
+    }),
+    new winston.transports.File({ filename: "yalp.log" }),
+    new winston.transports.Console(),
+  ],
+});
 
 const loginUrl = `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/user/login`;
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(function (req, res, next) {
+  let send = res.send;
+  res.send = (c) => {
+    logger.info(
+      `${req.originalUrl}: ${req.method} params: ${JSON.stringify(
+        req.params
+      )} body: ${JSON.stringify(req.body || {})} response: ${c} `
+    );
+    res.send = send;
+    return res.send(c);
+  };
+  next();
+});
 app.use(
   "/api-documentation",
   swaggerUi.serve,
@@ -52,7 +80,7 @@ export default async function () {
       errorMiddleware: function (err, req, res, next) {
         console.error(err);
         res.status(err.status || 500);
-
+        logger.error(`${req.originalUrl}: ${err.status || 500} ${err.message}`);
         if (typeof err === "string") {
           res.send(err);
         } else {
