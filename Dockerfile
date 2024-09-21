@@ -14,6 +14,7 @@ FROM node:${NODE_VERSION}-alpine
 ENV NODE_ENV production
 
 RUN mkdir -p /usr/src/app/logging
+RUN chown node /usr/src/app/logging
 WORKDIR /usr/src/app
 
 # Download dependencies as a separate step to take advantage of Docker's caching.

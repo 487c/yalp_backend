@@ -1,5 +1,7 @@
 services:
   yalp_backend:
+    build:
+      context: .
     image: ghcr.io/waffelmeister/yalp_backend:latest
     container_name: yalp_backend
     env_file:
@@ -7,7 +9,7 @@ services:
     environment:
       MONGO_ADDRESS: mongodb
     volumes:
-      - ./data/yalp:/usr/src/app/loggin
+      - ./data/yalp/logs:/usr/src/app/loggin
     ports:
       - 3001:3001
     depends_on:
