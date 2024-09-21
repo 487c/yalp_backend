@@ -69,4 +69,4 @@ jobs:
         with:
           data: "{\"event_type\":\"deploy_demo\"}"
           webhook_url: ${{ secrets.YALP_WEBHOOK_URL }}
-          options: "-H \"Accept: application/vnd.github.everest-preview+json\" -H \"Authorization: token ${{ secrets.GITHUB_TOKEN }}\""
+          options: "-H \"Accept: application/vnd.github+json\" -H \"Authorization: token ${{ secrets.GITHUB_TOKEN }}\" -H \"User-Agent: waffelmeister\""
