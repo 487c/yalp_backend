@@ -32,7 +32,7 @@ export default {
       undefined: true,
     },
     owner: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       description: "Owner of the Course",
       required: true,
@@ -54,7 +54,7 @@ export default {
 
   async getCourseForUser(code, userId) {
     const course = await this.model
-      .find(
+      .findOne(
         {
           code,
           members: userId,
@@ -69,6 +69,7 @@ export default {
       .lean();
     if (!course)
       throw "Could not find course/you are not a member of this course";
+    return course;
   },
 
   async update(code, owner, { name }) {
@@ -82,15 +83,66 @@ export default {
 
   async delete(code, owner) {
     const course = await this.model.findOne({ code, owner });
+
     if (!course) {
       throw "Could not find course / you are not owner of the course";
     }
-    debugger;
+
+    if (course.members.length > 1 || !course.members[0].equals(owner)) {
+      throw "You are not the sole member of the course";
+    }
     return await course.deleteOne();
   },
 
-  async getReducedCourses(query) {
-    return await this.model.find(query, { name: 1, code: 1, _id: 0 }).lean();
+  async getReducedCoursesForUser(userId) {
+    return await this.model
+      .find({ members: userId }, { name: 1, code: 1, _id: 0 })
+      .lean();
+  },
+
+  async addMember(code, userId) {
+    const course = await this.model.findOne({ code });
+
+    if (!course) throw "Could not find course";
+    if (course.members.includes(userId))
+      throw "You are already member of the course";
+
+    course.members.push(userId);
+    const newCourse = await course.save();
+    return this.getCourseForUser(code, userId);
+  },
+
+  async deleteMember(code, userId) {
+    const course = await this.model.findOne({ code });
+    if (!course.members.includes(userId)) throw "You are not in the course.";
+
+    if (course.owner === userId)
+      throw "You are the owner of the course. You cant leave it (yet)";
+
+    if (course.members.length < 1)
+      throw "Internal error, there should be more useres than one in the course (You and the owner).";
+
+    course.members.splice(course.members.indexOf(userId), 1);
+    await course.save();
+  },
+
+  async changeOwner(code, userId, newOwner) {
+    const course = await Course.getCourse({ code: code });
+
+    if (!course.owner.equals(userId))
+      throw "You are not owner of the course. Bugger off.";
+
+    const candidate = await User.findUserByName({
+      name: newOwner,
+    });
+
+    if (!candidate) throw "The given name does not correspond to an user.";
+
+    if (course.owner.equals(candidate._id))
+      throw "You are already owner of the course.";
+
+    course.owner = candidate._id;
+    return await course.save();
   },
 
   getReducedSchema() {

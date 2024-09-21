@@ -7,6 +7,7 @@ const parameters = [
     schema: {
       type: "string",
     },
+    example: "",
     required: true,
     description: "Referral code of the course",
   },
@@ -19,37 +20,15 @@ export default {
 };
 
 async function POST(req, res, next) {
-  const course = await Course.getCourse({ code: req.params.code });
-  if (course.members.includes(req.userId))
-    throw {
-      status: 400,
-      message: "You are already member of the course.",
-    };
+  const course = await Course.addMember(req.params.code, req.userId);
 
-  course.members.push(req.userId);
-  await course.save();
-  res.status(200).json({ result: "OK" });
+  res.status(200).json(course);
 }
 POST.apiDoc = {
   summary: "Join a course",
   description: "Joins the course via code.",
   operationId: "joinCourse",
   tags: ["Course"],
-  requestBody: {
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            code: {
-              type: String,
-            },
-          },
-          required: ["code"],
-        },
-      },
-    },
-  },
   responses: {
     200: {
       description: "OK",
@@ -80,28 +59,7 @@ POST.apiDoc = {
 };
 
 async function DELETE(req, res, next) {
-  const course = await CourseModel.findOne({ code: req.params.code });
-  if (!course.userIds.includes(req.userId))
-    throw {
-      status: 400,
-      message: "You are not in the course.",
-    };
-
-  if (course.owner === req.userId)
-    throw {
-      status: 400,
-      message: "You are the owner of the course. You cant leave it (yet)",
-    };
-
-  if (course.userIds.length < 1)
-    throw {
-      status: 500,
-      message:
-        "Internal error, there should be more useres than one in the course (You and the owner).",
-    };
-
-  course.userIds.splice(course.userIds.indexOf(req.userId), 1);
-  await course.save();
+  const course = await Course.deleteMember(req.params.code, req.userId);
   res.status(200).json({ result: "OK" });
 }
 
@@ -135,6 +93,9 @@ DELETE.apiDoc = {
     },
     403: {
       $ref: "#/components/responses/InvalidToken",
+    },
+    default: {
+      $ref: "#/components/responses/Error",
     },
   },
 };
