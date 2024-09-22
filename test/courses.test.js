@@ -5,7 +5,6 @@ import loading from "../src/server.js";
 
 let app;
 let token;
-let exampleCourse;
 
 before(async function () {
   app = await loading();

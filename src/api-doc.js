@@ -9,7 +9,7 @@ export default {
   },
   servers: [
     {
-      url: "/",
+      url: "/api",
     },
   ],
   components: {

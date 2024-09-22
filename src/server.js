@@ -23,7 +23,7 @@ const logger = winston.createLogger({
   ],
 });
 
-const loginUrl = `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/user/login`;
+// const loginUrl = `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/user/login`;
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -41,23 +41,23 @@ app.use(function (req, res, next) {
   next();
 });
 app.use(
-  "/api-documentation",
+  "/api/api-documentation",
   swaggerUi.serve,
   swaggerUi.setup(null, {
     swaggerOptions: {
-      url: `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/api-docs`,
+      url: `${process.env.BACKEND_URL}/api-docs`,
       //Automatisches Eintragen des Token in die Authorisierung, wenn man den login erfolgreich aufruft
       responseInterceptor: function (res) {
         if (/login$/.test(res.url) && res.status === 200)
           ui.preauthorizeApiKey("bearerAuth", res.obj.token);
       },
-      onComplete: function () {
-        fetch(loginUrl)
-          .then((res) => res.json())
-          .then((res) => {
-            ui.preauthorizeApiKey("bearerAuth", res.token);
-          });
-      },
+      // onComplete: function () {
+      //   fetch(loginUrl)
+      //     .then((res) => res.json())
+      //     .then((res) => {
+      //       ui.preauthorizeApiKey("bearerAuth", res.token);
+      //     });
+      // },
     },
   })
 );
