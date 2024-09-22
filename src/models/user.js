@@ -33,6 +33,7 @@ export default {
   },
 
   async login(login) {
+    if(!login) throw "Missing login"
     const user = await this.model.findOne({
       login,
     });

@@ -23,7 +23,6 @@ const logger = winston.createLogger({
   ],
 });
 
-// const loginUrl = `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/user/login`;
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -40,6 +39,7 @@ app.use(function (req, res, next) {
   };
   next();
 });
+// const loginUrl = `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/user/login`;
 app.use(
   "/api/api-documentation",
   swaggerUi.serve,

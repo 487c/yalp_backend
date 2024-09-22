@@ -4,8 +4,8 @@
   "description": "Backendsoftware für das softare tool.",
   "main": "./src/yalp.js",
   "scripts": {
-    "test": "mocha --passWithNoTests",
-    "test:watch": "mocha --watch --watch-files test/*.js src/**/*.js",
+    "test": "mocha --require test/hooks.js",
+    "test:watch": "nodemon -e yml,js,json --exec mocha -require test/hooks.js",
     "start:api": "nodemon -e yml,js,json ./src/yalp.js",
     "start:databases": "docker compose up -d mongodb mongo-express"
   },
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "chai": "^5.1.1",
+    "mocha": "^10.7.3",
     "supertest": "^7.0.0"
   }
 }

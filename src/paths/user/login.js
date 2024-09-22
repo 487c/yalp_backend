@@ -9,13 +9,12 @@ export default {
 async function POST(req, res) {
   try {
     const login = req.body.login;
-    if (!login) throw "Missing login";
 
     const loginResult = await User.login(login);
 
     res.status(200).json(loginResult);
   } catch (e) {
-    res.status(503).json(e.toString());
+    throw { status: 400, message: e.toString() };
   }
 }
 
@@ -34,7 +33,7 @@ POST.apiDoc = {
           properties: {
             login: {
               type: String,
-              default: "john",
+              example: "john",
             },
           },
         },
@@ -63,12 +62,11 @@ POST.apiDoc = {
         },
       },
     },
-
-    // default: {
-    //   description: "Unexpected error",
-    //   schema: {
-    //     $ref: "#/definitions/Error",
-    //   },
-    // },
+    400: {
+      $ref: "#/components/responses/InvalidRequest",
+    },
+    default: {
+      $ref: "#/components/responses/Error",
+    },
   },
 };
