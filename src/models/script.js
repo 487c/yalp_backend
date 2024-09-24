@@ -21,6 +21,11 @@ export default {
       description: "Beschreibung des Skripts in der Applikation",
       required: true,
     },
+    course: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+      description: "Kurs zu dem das Skript gehört",
+    },
     cards: {
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Card" }],
       description: "Kartenids zu einem Skript",
@@ -31,6 +36,7 @@ export default {
       default: Date.now,
       required: true,
     },
+
     file: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -49,6 +55,8 @@ export default {
       .populate("scripts");
 
     if (!course) throw "Course not found";
+    if (course.scripts.find((script) => script.name === name))
+      throw "Script name already taken";
 
     const newScript = await this.model.create({
       owner: userId,
@@ -84,7 +92,7 @@ export default {
   getReducedSchema() {
     return m2s(this.model, {
       props: ["name", "fileName"],
-      omitFields: ["_id", "cards", "markdown", "file", "uuid"],
+      omitFields: ["_id", "cards", "markdown", "file", "uuid", "course"],
     });
   },
 };

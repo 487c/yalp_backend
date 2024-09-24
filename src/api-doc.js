@@ -65,8 +65,12 @@ export default {
       name: "User",
     },
     {
-      description: "CRUD for Courses",
+      description: "Operation for Courses",
       name: "Course",
+    },
+    {
+      description: "Operations for Scripts",
+      name: "Script",
     },
   ],
   paths: {},

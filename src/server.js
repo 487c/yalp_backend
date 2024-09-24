@@ -90,7 +90,10 @@ export default async function () {
           res.json(err);
         }
       },
-      pathSecurity: [[/^\/course/, [{ bearerAuth: [] }]]],
+      pathSecurity: [
+        [/^\/course/, [{ bearerAuth: [] }]],
+        [/^\/script/, [{ bearerAuth: [] }]],
+      ],
       paths: "src/paths",
     }),
   ]);

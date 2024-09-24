@@ -12,12 +12,13 @@ export default {
     md5: {},
     file: {
       type: Buffer,
-      description: "Base64 kodiertes PDF",
+      description: "File Content",
       // required: true,
     },
     dateUpload: {
       type: Date,
       description: "Hochladedatum des Skriptes",
+      default: Date.now,
       required: true,
     },
     dateModified: {

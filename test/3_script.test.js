@@ -2,6 +2,7 @@ import request from "supertest";
 import { expect } from "chai";
 import "dotenv/config";
 import { app, token } from "./hooks.js";
+import { openAsBlob } from "fs";
 
 describe("Script", function () {
   it("success: create a script", function (done) {
@@ -10,7 +11,10 @@ describe("Script", function () {
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .set("Authorization", `Bearer ${token}`)
-      .send({ name: "Timetravel", description: "The long island icetea of science fiction." })
+      .send({
+        name: "Timetravel",
+        description: "The long island icetea of science fiction.",
+      })
       .expect(200)
       .end(function (err, res) {
         expect(res.body).to.have.keys(["uuid"]);
@@ -18,19 +22,42 @@ describe("Script", function () {
       });
   });
 
-  // it("fail: create a script, taken name", function (done) {
+  it("fail: create a script, taken name", function (done) {
+    request(app)
+      .post(`/api/course/MATHISGREAT101/script`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ name: "Algebra", description: "Algebra is the best" })
+      .expect(400)
+      .end(function (err, res) {
+        expect(res.statusCode).to.be.eql(400);
+        done(err);
+      });
+  });
+
+  // it("success: insert course file", async function (done) {
+  //   const file = await openAsBlob("./example_file.pdf");
+  //   const formData = new FormData();
+  //   formData.append("file", file);
+  //   formData.append("name", "Algebra_Script_1.pdf");
+  //   formData.append("dateModified", new Date.now());
+
   //   request(app)
-  //     .post(`/api/course/MATHISGREAT101/script`)
+  //     .post(
+  //       `/api/course/MATHISGREAT101/script/f317ee1a-00fc-4682-a79c-58c1cf1859ae/file`
+  //     )
   //     .set("Accept", "application/json")
-  //     .set("Content-Type", "application/json")
+  //     .set("Content-Type", "multipart/form-data")
   //     .set("Authorization", `Bearer ${token}`)
-  //     .send({ name: "Algebra", description: "Algebra is the best" })
-  //     .expect(400)
+  //     .send(formData)
+  //     .expect(200)
   //     .end(function (err, res) {
   //       expect(res.statusCode).to.be.eql(400);
   //       done(err);
   //     });
   // });
+
   // it("fail: upload script -> pdf is too big", function (done) {
   //   request(app)
   //     .post("/api/user/login")

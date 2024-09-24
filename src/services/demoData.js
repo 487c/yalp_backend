@@ -133,6 +133,7 @@ async function loadScripts() {
       description: script.description,
       owner: user._id,
       uuid: script.uuid,
+      cards: [],
     }))
   );
 

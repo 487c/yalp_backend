@@ -1,4 +1,4 @@
-import Course from "../../../../models/course.js";
+import Course from "../../../models/course.js";
 
 const parameters = [
   {
@@ -15,10 +15,10 @@ const parameters = [
 
 export default {
   GET: GET,
-  PATCH: PATCH,
-  DELETE: DELETE,
+  POST: POST,
   parameters: parameters,
 };
+
 async function GET(req, res, next) {
   try {
     const course = await Course.getCourseForUser(req.params.code, req.userId);
@@ -29,11 +29,11 @@ async function GET(req, res, next) {
 }
 
 GET.apiDoc = {
-  summary: "Read course properties",
+  summary: "Read the script file",
   description:
-    "Reads the course properties. Allowed if the user is part of the course. ",
-  operationId: "getCourse",
-  tags: ["Course"],
+    "Reads current file for the script.",
+  operationId: "getScriptFile",
+  tags: ["Script"],
   responses: {
     200: {
       description: "OK",
@@ -66,7 +66,7 @@ GET.apiDoc = {
   },
 };
 
-async function PATCH(req, res, next) {
+async function POST(req, res, next) {
   try {
     const course = await Course.update(req.params.code, req.userId, {
       ...req.body,
@@ -78,19 +78,19 @@ async function PATCH(req, res, next) {
   }
 }
 
-PATCH.apiDoc = {
-  summary: "Updates course properties",
-  description: "Rewrites the properties of a course",
-  operationId: "updateCourse",
-  tags: ["Course"],
+POST.apiDoc = {
+  summary: "Upload into Script",
+  description: "Uploads a file to the script. The max size of the file is 16 MB.",
+  operationId: "uploadFile",
+  tags: ["Script"],
   requestBody: {
     content: {
-      "application/json": {
+      "multipart/formdata": {
         schema: {
           type: "object",
           properties: {
-            name: {
-              type: String,
+            file: {
+              type: Blob,
               example: "Math for beginners",
             },
           },
@@ -111,53 +111,6 @@ PATCH.apiDoc = {
               },
               code: {
                 type: String,
-              },
-            },
-          },
-        },
-      },
-    },
-    400: {
-      $ref: "#/components/responses/InvalidRequest",
-    },
-    401: {
-      $ref: "#/components/responses/MissingToken",
-    },
-    403: {
-      $ref: "#/components/responses/InvalidToken",
-    },
-    default: {
-      $ref: "#/components/responses/Error",
-    },
-  },
-};
-
-async function DELETE(req, res, next) {
-  try {
-    await Course.delete(req.params.code, req.userId);
-
-    res.status(200).json({ result: "OK" });
-  } catch (e) {
-    throw { status: 400, message: e.toString() };
-  }
-}
-
-DELETE.apiDoc = {
-  summary: "Deletes the course",
-  description: "Deletes a course if it is empty and you are course owner.",
-  operationId: "deleteCourse",
-  tags: ["Course"],
-  responses: {
-    200: {
-      description: "OK",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              result: {
-                type: String,
-                default: "OK",
               },
             },
           },

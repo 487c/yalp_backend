@@ -28,11 +28,14 @@ POST.apiDoc = {
         schema: {
           type: "object",
           properties: {
-            uuid: {
+            name: {
+              type: String,
+            },
+            description: {
               type: String,
             },
           },
-          required: ["uuid"],
+          required: ["name"],
         },
       },
     },
@@ -45,10 +48,11 @@ POST.apiDoc = {
           schema: {
             type: "object",
             properties: {
-              result: {
+              uuid: {
                 type: String,
               },
             },
+            required: ["uuid"],
           },
         },
       },
