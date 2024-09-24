@@ -5,7 +5,7 @@
   "main": "./src/yalp.js",
   "scripts": {
     "test": "mocha --require test/hooks.js",
-    "test:watch": "nodemon -e yml,js,json --exec mocha -require test/hooks.js",
+    "test:watch": "nodemon -e yml,js,json --exec mocha --reporter=min -require test/hooks.js",
     "start:api": "nodemon -e yml,js,json ./src/yalp.js",
     "start:databases": "docker compose up -d mongodb mongo-express"
   },

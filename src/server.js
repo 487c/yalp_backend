@@ -19,7 +19,7 @@ const logger = winston.createLogger({
       level: "error",
     }),
     new winston.transports.File({ filename: "./logging/yalp.log" }),
-    new winston.transports.Console(),
+    new winston.transports.Console({ level: "error" }),
   ],
 });
 
@@ -78,9 +78,12 @@ export default async function () {
         bearerAuth: verifyToken,
       },
       errorMiddleware: function (err, req, res, next) {
-        console.error(err);
         res.status(err.status || 500);
-        logger.error(`${req.originalUrl}: ${err.status || 500} ${err.message}`);
+        logger.error(
+          `${req.originalUrl} / body: ${JSON.stringify(req.body)}: ${
+            err.status || 500
+          } ${err.message}`
+        );
         if (typeof err === "string") {
           res.send(err);
         } else {

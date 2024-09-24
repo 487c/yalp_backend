@@ -14,6 +14,14 @@ export default {
       description: "String that is the password to the application.",
       required: true,
     },
+    settings: {
+      type: Object,
+      description: "Settings for the user",
+    },
+    lastOpenedCourse: {
+      type: String,
+      description: "Code of the last opened course",
+    },
   }),
 
   register: async function ({ name, login }) {
@@ -33,7 +41,7 @@ export default {
   },
 
   async login(login) {
-    if(!login) throw "Missing login"
+    if (!login) throw "Missing login";
     const user = await this.model.findOne({
       login,
     });

@@ -4,7 +4,7 @@
 
 Backendsoftware für YALP.
 
-Die Schnittstelle wurde mit OpenApi implementiert und über [Swagger](http://localhost:3001/api-documentation/) kann die Api getestet werden.
+Die Schnittstelle wurde mit OpenApi implementiert und über [Swagger](http://localhost:3001/api/api-documentation/) kann die Api getestet werden.
 
 Über den Port 8081 kann auf MongoDb Express (Administrationstool der Datenbank) zugegriffen werden.
 

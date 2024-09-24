@@ -1,13 +1,19 @@
-import { ScriptModel } from "../models/script.js";
-import { reduceObject } from "../services/utils.js";
+import Script from "../../../models/script.js";
 
 export default {
   POST: POST,
 };
 
 async function POST(req, res, next) {
-  const documentDefinition = req.body;
-  throw { status: 400, message: "Path not yet implemented" };
+  try {
+    const course = await Script.createScript(req.params.code, req.userId, {
+      name: req.body.name,
+      description: req.body,
+    });
+    res.status(200).json(course);
+  } catch (e) {
+    throw { status: 400, message: e.toString() };
+  }
 }
 
 POST.apiDoc = {
@@ -22,20 +28,11 @@ POST.apiDoc = {
         schema: {
           type: "object",
           properties: {
-            displayName: {
-              type: String,
-            },
-            fileName: {
-              type: String,
-            },
-            base64Content: {
-              type: String,
-            },
-            documentDate: {
+            uuid: {
               type: String,
             },
           },
-          required: ["displayName", "fileName", "base64Content", "documentDate"],
+          required: ["uuid"],
         },
       },
     },
