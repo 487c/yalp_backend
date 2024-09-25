@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
 import { generateAccessToken } from "../services/authMiddleware.js";
 
+/**
+ * TODO: Validierung für Usereigenschaften hinzufügen
+ * Länge und Eigenschaften des Loginnamens? Vielleicht brauchen wir da auch sonderzeichen oder ähnliches
+ * Weil wir der Login ja auch das Psswort ist...
+ */
 export default {
   model: mongoose.model("User", {
     name: {
