@@ -20,20 +20,6 @@ export default {
   parameters: parameters,
 };
 
-//TODO: where do we go?
-// Lets do something nice here
-
-/**
- * TODO: talk about expected result values
- * where to go from here
- */
-
-
-/**
- * TODO: talk not about expected result values
- *  where to go from here
- */
-
 /**
  * @param {*} req 
  * @param {*} res 
