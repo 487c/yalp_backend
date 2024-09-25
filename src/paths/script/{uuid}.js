@@ -20,7 +20,7 @@ export default {
   parameters: parameters,
 };
 
-//TODO: add the expected result values
+//TODO: where do we go?
 // Lets do something nice here
 
 /**
@@ -30,12 +30,11 @@ export default {
 
 
 /**
- * TODO: talk about expected result values
+ * TODO: talk not about expected result values
  *  where to go from here
  */
 
 /**
- * TODO: talk about expected result values
  * @param {*} req 
  * @param {*} res 
  * @param {*} next 
