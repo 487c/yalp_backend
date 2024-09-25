@@ -127,19 +127,20 @@ async function loadScripts() {
     },
   ];
 
+  const courses = await Course.model.find({
+    code: { $in: Array.from(new Set(scripts.map((s) => s.code)).values()) },
+  });
+
   const created = await Script.model.insertMany(
     scripts.map((script) => ({
       name: script.name,
       description: script.description,
       owner: user._id,
       uuid: script.uuid,
+      course: courses.find((c) => c.code === script.code)._id,
       cards: [],
     }))
   );
-
-  const courses = await Course.model.find({
-    code: { $in: Array.from(new Set(scripts.map((s) => s.code)).values()) },
-  });
 
   created.forEach((script, i) => {
     const course = courses.find((c) => c.code === scripts[i].code);

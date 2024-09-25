@@ -1,6 +1,7 @@
 import Course from "./models/course.js";
 import User from "./models/user.js";
 import Script from "./models/script.js";
+import Card from "./models/card.js";
 
 export default {
   openapi: "3.0.0",
@@ -33,6 +34,7 @@ export default {
       ReducedUserSchema: User.getReducedSchema(),
       // ReducedCourseSchema: Course.getReducedSchema(),
       ReducedScriptSchema: Script.getReducedSchema(),
+      ReducedCardSchema: Card.getReducedSchema(),
     },
     responses: {
       Error: {

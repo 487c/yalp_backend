@@ -36,7 +36,6 @@ export default {
       default: Date.now,
       required: true,
     },
-
     file: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -74,6 +73,23 @@ export default {
     const script = await this.model.findById(uuid);
     script.file = file;
     await script.save();
+  },
+
+  async getScriptForUser(uuid, userId) {
+    const script = await this.model
+      .findOne({ uuid }, { _id: 0, __v: 0, file: 0 })
+      .populate("course", { members: 1 })
+      .populate("cards", { _id: 0, __v: 0 })
+      .lean();
+
+    if (!script) throw "Script not found";
+
+    if (!script.course.members.find((m) => m.equals(userId)))
+      throw "Not a member of the course";
+
+    delete script.course;
+
+    return script;
   },
 
   async getScriptMeta({ uuid }) {

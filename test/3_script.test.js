@@ -36,6 +36,47 @@ describe("Script", function () {
       });
   });
 
+  it("success: get script for user", function (done) {
+    request(app)
+      .get(`/api/script/1e274ba0-b772-4edd-8c04-b5291af2e8bb`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send()
+      .expect(200)
+      .end(function (err, res) {
+        expect(res.body).to.have.keys([
+          "name",
+          "description",
+          "dateCreated",
+          "cards",
+          "uuid",
+        ]);
+        done(err);
+      });
+  });
+
+
+  it("success: delete script", function (done) {
+    request(app)
+      .get(`/api/script/1e274ba0-b772-4edd-8c04-b5291af2e8bb`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send()
+      .expect(200)
+      .end(function (err, res) {
+        expect(res.body).to.have.keys([
+          "name",
+          "description",
+          "dateCreated",
+          "cards",
+          "uuid",
+        ]);
+        done(err);
+      });
+  });
+
   // it("success: insert course file", async function (done) {
   //   const file = await openAsBlob("./example_file.pdf");
   //   const formData = new FormData();

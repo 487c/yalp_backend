@@ -1,4 +1,4 @@
-import Course from "../../models/course.js";
+import Script from "../../models/script.js";
 
 const parameters = [
   {
@@ -20,14 +20,9 @@ export default {
   parameters: parameters,
 };
 
-/**
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- */
 async function GET(req, res, next) {
   try {
-    const course = await Course.getCourseForUser(req.params.code, req.userId);
+    const course = await Script.getScriptForUser(req.params.uuid, req.userId);
     res.status(200).json(course);
   } catch (e) {
     throw { status: 400, message: e.toString() };
@@ -48,9 +43,34 @@ GET.apiDoc = {
           schema: {
             type: "object",
             properties: {
-              result: {
+              name: {
                 type: String,
-                default: "OK",
+              },
+              dateCreated: {
+                type: String,
+              },
+              description: {
+                type: String,
+              },
+              cards: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    uuid: {
+                      type: String,
+                    },
+                    front: {
+                      type: String,
+                    },
+                    back: {
+                      type: String,
+                    },
+                    author: {
+                      type: String,
+                    },
+                  },
+                },
               },
             },
           },
