@@ -19,6 +19,13 @@ export default {
   DELETE: DELETE,
   parameters: parameters,
 };
+
+/**
+ * @todo: talk about expected result values
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 async function GET(req, res, next) {
   try {
     const course = await Course.getCourseForUser(req.params.code, req.userId);
