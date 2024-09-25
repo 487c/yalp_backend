@@ -1,21 +1,33 @@
-name: "Run TODO to Issue"
-on: [ "push" ]
+name: Create issues from TODOs
+
+on:
+  workflow_dispatch:
+    inputs:
+      importAll:
+        default: false
+        required: false
+        type: boolean
+        description: Enable, if you want to import all TODOs. Runs on checked out branch! Only use if you're sure what you are doing.
+  push:
+    branches: # do not set multiple branches, todos might be added and then get referenced by themselves in case of a merge
+      - main
+      - master
+
+permissions:
+  issues: write
+  repository-projects: read
+  contents: read
+
 jobs:
-  build:
-    runs-on: "ubuntu-latest"
+  todos:
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: "actions/checkout@v4"
-      - name: "TODO to Issue"
-        uses: "alstr/todo-to-issue-action@v5"
+      - uses: actions/checkout@v3
+
+      - name: Run Issue Bot
+        uses: juulsn/todo-issue@main
         with:
-          INSERT_ISSUE_URLS: "true"
-          CLOSE_ISSUES: "true"
-      - name: Set Git user
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      - name: Commit and Push Changes
-        run: |
-          git add .
-          git commit -m "Automatically added GitHub issue links to TODOs"
-          git push origin main
+          excludePattern: '^(node_modules/)'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
