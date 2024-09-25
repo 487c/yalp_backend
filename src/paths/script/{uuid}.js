@@ -21,7 +21,7 @@ export default {
 };
 
 /**
- * @todo: talk about expected result values
+ * TODO: talk about expected result values
  * @param {*} req 
  * @param {*} res 
  * @param {*} next 
