@@ -19,6 +19,12 @@ export default {
   parameters: parameters,
 };
 
+/**
+ * TODO: Implement the function for getting the branch
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 async function GET(req, res, next) {
   try {
     const course = await Course.getCourseForUser(req.params.code, req.userId);
