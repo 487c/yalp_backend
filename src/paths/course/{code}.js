@@ -36,15 +36,42 @@ GET.apiDoc = {
   tags: ["Course"],
   responses: {
     200: {
-      description: "OK",
+      description: "Course properties",
       content: {
         "application/json": {
           schema: {
             type: "object",
             properties: {
-              result: {
+              name: {
                 type: String,
-                default: "OK",
+              },
+              members: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    name: {
+                      type: String,
+                    },
+                  },
+                },
+              },
+              scripts: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+              },
+              code: {
+                type: String,
+              },
+              owner: {
+                type: "object",
+                properties: {
+                  name: {
+                    type: String,
+                  },
+                },
               },
             },
           },
