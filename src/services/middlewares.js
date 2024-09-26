@@ -35,6 +35,8 @@ export function verifyToken(req, res, next) {
 
 export function handleError(err, req, res, next) {
   res.status(err.status || 500);
+  err.code = err.code || 0;
+  err.message = err._message || err.message || "Unknown error";
   logger.error(
     `${new Date().toUTCString()} - ${req.originalUrl} + ${
       typeof req.body === "object" ? JSON.stringify(req.body) : req.body || ""

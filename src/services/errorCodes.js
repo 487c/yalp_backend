@@ -1,6 +1,7 @@
 // TODO(@svolume): Code pro Pfad für die swagger_ui?
 //  Ich denke du wirst die Fehlermeldungen ja gesammelt behandeln.
-const codes = { 
+const codes = {
+  0: "Unknown Error",
   1000: "The login is already taken.",
   1001: "Name is already taken.",
   1002: "Login is missing.",
@@ -20,8 +21,6 @@ const codes = {
   3004: "Not a member of the course",
   3005: "The Script is missing a file (not yet fully created)",
 };
-
-
 
 /**
  * Returns a message based on the error code
