@@ -40,7 +40,6 @@ app.use(function (req, res, next) {
   };
   next();
 });
-// const loginUrl = `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/user/login`;
 app.use(
   "/api/api-documentation",
   swaggerUi.serve,
@@ -52,13 +51,6 @@ app.use(
         if (/login$/.test(res.url) && res.status === 200)
           ui.preauthorizeApiKey("bearerAuth", res.obj.token);
       },
-      // onComplete: function () {
-      //   fetch(loginUrl)
-      //     .then((res) => res.json())
-      //     .then((res) => {
-      //       ui.preauthorizeApiKey("bearerAuth", res.token);
-      //     });
-      // },
     },
   })
 );

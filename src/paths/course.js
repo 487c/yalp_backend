@@ -19,7 +19,7 @@ async function POST(req, res, next) {
 
     res.status(200).json(newCourse);
   } catch (e) {
-    throw { status: 400, message: e.toString() };
+    throw { status: 400, ...e };
   }
 }
 

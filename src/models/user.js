@@ -31,10 +31,16 @@ export default {
 
   register: async function ({ name, login }) {
     if (await this.model.findOne({ login: login }))
-      throw "That login is already taken... (whatever that implies)";
+      throw {
+        code: 1000,
+        message: "That login is already taken... (whatever that implies)",
+      };
 
     if (await this.model.findOne({ name: name }))
-      throw "That name is already taken.";
+      throw {
+        code: 1001,
+        message: "That name is already taken.",
+      };
 
     const newUser = await this.model.create({
       name,
@@ -46,12 +52,16 @@ export default {
   },
 
   async login(login) {
-    if (!login) throw "Missing login";
+    if (!login)
+      throw {
+        code: 1002,
+        message: "Missing login",
+      };
     const user = await this.model.findOne({
       login,
     });
 
-    if (!user) throw "User not found";
+    if (!user) throw { code: 1003, message: "User not found" };
 
     return {
       token: generateAccessToken(user._id),

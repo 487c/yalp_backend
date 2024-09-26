@@ -40,13 +40,18 @@ export default {
   }),
 
   async create({ name, owner, code, members }) {
-    const newCourse = await this.model.create({
-      name,
-      members: members || [owner],
-      scripts: [],
-      code: code || generateInviteCode(),
-      owner: owner,
-    });
+    let newCourse;
+    try {
+      newCourse = await this.model.create({
+        name,
+        members: members || [owner],
+        scripts: [],
+        code: code || generateInviteCode(),
+        owner: owner,
+      });
+    } catch (e) {
+      throw { code: 2000, message: e };
+    }
 
     const obj = await newCourse.toObject();
     return { name: obj.name, code: obj.code };
@@ -68,16 +73,28 @@ export default {
       .populate("owner", "name -_id")
       .lean();
     if (!course)
-      throw "Could not find course/you are not a member of this course";
+      throw {
+        code: 2001,
+        message: "Could not find course/you are not a member of this course",
+      };
     return course;
   },
 
   async update(code, owner, { name }) {
-    const course = await this.model
-      .findOneAndUpdate({ code, owner }, { name }, { new: true })
-      .select("name code -_id")
-      .lean();
-    if (!course) throw "Could not find course/you are not owner of the course";
+    let course;
+    try {
+      course = await this.model
+        .findOneAndUpdate({ code, owner }, { name }, { new: true })
+        .select("name code -_id")
+        .lean();
+      if (!course)
+        throw "Could not find course/you are not owner of the course";
+    } catch (e) {
+      throw {
+        code: 2002,
+        message: e,
+      };
+    }
     return course;
   },
 
@@ -85,11 +102,17 @@ export default {
     const course = await this.model.findOne({ code, owner });
 
     if (!course) {
-      throw "Could not find course / you are not owner of the course";
+      throw {
+        code: 2002,
+        message: "Could not find course / you are not owner of the course",
+      };
     }
 
     if (course.members.length > 1 || !course.members[0].equals(owner)) {
-      throw "You are not the sole member of the course";
+      throw {
+        code: 2003,
+        message: "You are not the sole member of the course",
+      };
     }
     return await course.deleteOne();
   },
@@ -103,24 +126,42 @@ export default {
   async addMember(code, userId) {
     const course = await this.model.findOne({ code });
 
-    if (!course) throw "Could not find course";
+    if (!course)
+      throw {
+        code: 2001,
+        message: "Could not find course/you are not a member of this course",
+      };
+
     if (course.members.includes(userId))
-      throw "You are already member of the course";
+      throw {
+        code: 2004,
+        message: "You are already member of the course",
+      };
 
     course.members.push(userId);
-    const newCourse = await course.save();
+    await course.save();
     return this.getCourseForUser(code, userId);
   },
 
   async deleteMember(code, userId) {
     const course = await this.model.findOne({ code });
-    if (!course.members.includes(userId)) throw "You are not in the course.";
+    if (!course.members.includes(userId))
+      throw {
+        code: 2001,
+        message: "Could not find course or user is not a member of the course",
+      };
 
     if (course.owner === userId)
-      throw "You are the owner of the course. You cant leave it (yet)";
+      throw {
+        code: 2005,
+        message: "You are not owner of course (delete Course)",
+      };
 
     if (course.members.length < 1)
-      throw "Internal error, there should be more useres than one in the course (You and the owner).";
+      throw {
+        code: 2006,
+        message: "You is something wrong, the course has no members",
+      };
 
     course.members.splice(course.members.indexOf(userId), 1);
     await course.save();
@@ -130,16 +171,23 @@ export default {
     const course = await Course.getCourse({ code: code });
 
     if (!course.owner.equals(userId))
-      throw "You are not owner of the course. Bugger off.";
+      throw {
+        code: 2006,
+        message: "You are not owner of the course. Bugger off",
+      };
 
     const candidate = await User.findUserByName({
       name: newOwner,
     });
 
-    if (!candidate) throw "The given name does not correspond to an user.";
+    if (!candidate)
+      throw {
+        code: 2007,
+        message: "The given name does not correspond to an user.",
+      };
 
     if (course.owner.equals(candidate._id))
-      throw "You are already owner of the course.";
+      throw { code: 2008, message: "You are already owner of the course." };
 
     course.owner = candidate._id;
     return await course.save();

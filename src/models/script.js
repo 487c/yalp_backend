@@ -1,8 +1,9 @@
-import mongoose from "mongoose";
+import mongoose, { Error } from "mongoose";
 import m2s from "mongoose-to-swagger";
 import { randomUUID } from "crypto";
 import Course from "./course.js";
 import File from "./file.js";
+import ErrorCode from "../services/errorCodes.js";
 
 export default {
   model: mongoose.model("Script", {
@@ -52,18 +53,23 @@ export default {
       })
       .populate("scripts");
 
-    if (!course) throw "Course not found";
+    if (!course) throw ErrorCode(3001);
     if (course.scripts.find((script) => script.name === name))
-      throw "Script name already taken";
+      throw ErrorCode(3002);
 
-    const newScript = await this.model.create({
-      owner: userId,
-      name,
-      description:
-        typeof description === "string"
-          ? description
-          : JSON.stringify(description),
-    });
+    let newScript;
+    try {
+      newScript = await this.model.create({
+        owner: userId,
+        name,
+        description:
+          typeof description === "string"
+            ? description
+            : JSON.stringify(description),
+      });
+    } catch (e) {
+      throw ErrorCode(3003);
+    }
     course.scripts.push(newScript._id);
     return { uuid: newScript.uuid };
   },
@@ -73,8 +79,9 @@ export default {
       .findOne({ uuid }, { file: 1, course: 1 })
       .populate("course", { members: 1 });
 
-    if (!script) throw "Script not found";
-    if (!this.userIn(script, userId)) throw "Not a member of the course";
+    if (!script) throw ErrorCode(3001);
+    if (!this.userIn(script, userId))
+      throw { code: 3004, message: "Not a member of the course" };
 
     const fileId = await File.create(file, name, modifiedDate);
     script.file = fileId;
@@ -98,20 +105,16 @@ export default {
       .populate("cards", { _id: 0, __v: 0 })
       .lean();
 
-    if (!script.file) throw "The Script is missing a file.";
+    if (!script.file) throw ErrorCode(3005);
 
-    if (!script) throw "Script not found";
+    if (!script) throw ErrorCode(3001);
 
     if (!script.course.members.find((m) => m.equals(userId)))
-      throw "Not a member of the course";
+      throw ErrorCode(3004);
 
     delete script.course;
 
     return script;
-  },
-
-  async getScriptMeta({ uuid }) {
-    const script = await this.model.find(uuid);
   },
 
   async getScriptFile({ uuid }) {

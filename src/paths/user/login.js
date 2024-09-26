@@ -14,7 +14,7 @@ async function POST(req, res) {
 
     res.status(200).json(loginResult);
   } catch (e) {
-    throw { status: 400, message: e.toString() };
+    throw { status: 400, ...e };
   }
 }
 

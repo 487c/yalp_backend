@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
+import md5 from "md5";
 import { randomUUID } from "crypto";
 
 export default {
@@ -12,6 +13,17 @@ export default {
     orginalName: {
       type: String,
       description: "Dateiname der Dokumentes",
+      required: true,
+    },
+    uuid: {
+      type: String,
+      description: "Dateiname der Dokumentes",
+      required: true,
+      default: randomUUID,
+    },
+    mimeType: {
+      type: String,
+      description: "Mime Type der Datei",
       required: true,
     },
     file: {
@@ -38,9 +50,12 @@ export default {
   }),
 
   async create(file, name, dateModified) {
+    if (file.size > 16000000) throw "The file is to big, max size is 16MB";
     const newScript = await this.model.create({
       file: file.buffer,
       name,
+      md5: md5(file.buffer),
+      mimeType: file.mimetype,
       orginalName: file.originalname,
       dateModified: new Date(dateModified).valueOf(),
     });

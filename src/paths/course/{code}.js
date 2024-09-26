@@ -24,7 +24,7 @@ async function GET(req, res, next) {
     const course = await Course.getCourseForUser(req.params.code, req.userId);
     res.status(200).json(course);
   } catch (e) {
-    throw { status: 400, message: e.toString() };
+    throw { status: 400, ...e };
   }
 }
 
@@ -74,7 +74,7 @@ async function PATCH(req, res, next) {
 
     res.status(200).json(course);
   } catch (e) {
-    throw { status: 400, message: e.toString() };
+    throw { status: 400, ...e };
   }
 }
 
@@ -138,7 +138,7 @@ async function DELETE(req, res, next) {
 
     res.status(200).json({ result: "OK" });
   } catch (e) {
-    throw { status: 400, message: e.toString() };
+    throw { status: 400, ...e };
   }
 }
 
