@@ -26,10 +26,11 @@ export default {
       Error: {
         type: "object",
         properties: {
+          status: { type: String },
           code: { type: String },
           message: { type: String },
         },
-        required: ["code", "message"],
+        required: ["status", "message"],
       },
       ReducedUserSchema: User.getReducedSchema(),
       // ReducedCourseSchema: Course.getReducedSchema(),

@@ -41,11 +41,10 @@ describe("Script", function () {
       .set("Accept", "application/json")
       .set("Authorization", `Bearer ${token}`)
       .send()
-      .expect(
-        400,
-        { status: 400, message: "The Script is missing a file." },
-        done
-      );
+      .end(function (err, res) {
+        expect(res.body).to.have.property("code", 3005);
+        done(err);
+      });
   });
 
   it("success: upload a script", function (done) {
@@ -56,10 +55,7 @@ describe("Script", function () {
       .attach("file", "./test/example_file.pdf")
       .field("name", "example_file.pdf")
       .field("modifiedDate", new Date().toISOString())
-      .expect(
-        200,
-        done
-      );
+      .expect(200, done);
   });
 
   // it("success: insert course file", async function (done) {

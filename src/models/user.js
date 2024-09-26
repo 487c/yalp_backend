@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
-import { generateAccessToken } from "../services/authMiddleware.js";
+import { generateAccessToken } from "../services/middlewares.js";
 
 /**
  * TODO: Validierung für Usereigenschaften hinzufügen
