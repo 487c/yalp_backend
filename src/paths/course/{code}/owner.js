@@ -12,7 +12,7 @@ async function PATCH(req, res, next) {
 PATCH.apiDoc = {
   summary: "Transfers course ownership",
   description: "Sets the *Owner* of the Course to another person.",
-  operationId: "joinCourse",
+  operationId: "changeOwner",
   tags: ["Course"],
   requestBody: {
     content: {

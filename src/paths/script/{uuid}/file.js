@@ -16,7 +16,7 @@ const parameters = [
 
 export default {
   GET: GET,
-  POST: [POST],
+  POST: POST,
   parameters: parameters,
 };
 

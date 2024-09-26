@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
 import { randomUUID } from "crypto";
 import Course from "./course.js";
+import File from "./file.js";
 
 export default {
   model: mongoose.model("Script", {
@@ -36,13 +37,11 @@ export default {
       default: Date.now,
       required: true,
     },
-    file: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "File",
-        description: "The files in the script",
-      },
-    ],
+    file: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "File",
+      description: "The files in the script",
+    },
   }),
 
   async createScript(courseCode, userId, { name, description = "" }) {
@@ -69,18 +68,37 @@ export default {
     return { uuid: newScript.uuid };
   },
 
-  async setScriptFile({ uuid, file }) {
-    const script = await this.model.findById(uuid);
-    script.file = file;
-    await script.save();
+  async setScriptFile(uuid, userId, { file, name, modifiedDate }) {
+    const script = await this.model
+      .findOne({ uuid }, { file: 1, course: 1 })
+      .populate("course", { members: 1 });
+
+    if (!script) throw "Script not found";
+    if (!this.userIn(script, userId)) throw "Not a member of the course";
+
+    const fileId = await File.create(file, name, modifiedDate);
+    script.file = fileId;
+    return await script.save();
+  },
+
+  /**
+   *
+   * @param {mongoose.Schema} script
+   * @param {String} userId
+   * @returns
+   */
+  userIn(script, userId) {
+    return script.course.members.some((m) => m.equals(userId));
   },
 
   async getScriptForUser(uuid, userId) {
     const script = await this.model
-      .findOne({ uuid, file: undefined }, { _id: 0, __v: 0, file: 0 })
+      .findOne({ uuid, file: undefined }, { _id: 0, __v: 0 })
       .populate("course", { members: 1 })
       .populate("cards", { _id: 0, __v: 0 })
       .lean();
+
+    if (!script.file) throw "The Script is missing a file.";
 
     if (!script) throw "Script not found";
 

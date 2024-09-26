@@ -6,15 +6,20 @@ export default {
   model: mongoose.model("File", {
     name: {
       type: String,
-      description: "Dateiname der Pdf",
+      description: "Anzeigenamename der Datei",
       required: true,
     },
-    md5: {},
+    orginalName: {
+      type: String,
+      description: "Dateiname der Dokumentes",
+      required: true,
+    },
     file: {
       type: Buffer,
       description: "File Content",
-      // required: true,
+      required: true,
     },
+    md5: {},
     dateUpload: {
       type: Date,
       description: "Hochladedatum des Skriptes",
@@ -32,12 +37,12 @@ export default {
     },
   }),
 
-  async createScript({ name, fileName, dateModified }) {
+  async create(file, name, dateModified) {
     const newScript = await this.model.create({
+      file: file.buffer,
       name,
-      fileName,
-      dateModified,
-      dateUpload: new Date(),
+      orginalName: file.originalname,
+      dateModified: new Date(dateModified).valueOf(),
     });
     return newScript._id;
   },

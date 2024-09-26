@@ -2,7 +2,6 @@ import request from "supertest";
 import { expect } from "chai";
 import "dotenv/config";
 import { app, token } from "./hooks.js";
-import { openAsBlob } from "fs";
 
 describe("Script", function () {
   it("success: prepare a script", function (done) {
@@ -40,43 +39,30 @@ describe("Script", function () {
     request(app)
       .get(`/api/script/1e274ba0-b772-4edd-8c04-b5291af2e8bb`)
       .set("Accept", "application/json")
-      .set("Content-Type", "application/json")
       .set("Authorization", `Bearer ${token}`)
       .send()
-      .expect(400)
-      .end(function (err, res) {
-        expect(res.statusCode).to.be.eql(400);
-        done(err);
-      });
+      .expect(
+        400,
+        { status: 400, message: "The Script is missing a file." },
+        done
+      );
   });
 
   it("success: upload a script", function (done) {
     request(app)
-      .get(`/api/script/1e274ba0-b772-4edd-8c04-b5291af2e8bb`)
+      .post(`/api/script/1e274ba0-b772-4edd-8c04-b5291af2e8bb/file`)
       .set("Accept", "application/json")
-      .set("Content-Type", "application/json")
       .set("Authorization", `Bearer ${token}`)
-      .send()
-      .expect(200)
-      .end(function (err, res) {
-        expect(res.body).to.have.keys([
-          "name",
-          "description",
-          "dateCreated",
-          "cards",
-          "uuid",
-        ]);
-        done(err);
-      });
+      .attach("file", "./test/example_file.pdf")
+      .field("name", "example_file.pdf")
+      .field("modifiedDate", new Date().toISOString())
+      .expect(
+        200,
+        done
+      );
   });
 
   // it("success: insert course file", async function (done) {
-  //   const file = await openAsBlob("./example_file.pdf");
-  //   const formData = new FormData();
-  //   formData.append("file", file);
-  //   formData.append("name", "Algebra_Script_1.pdf");
-  //   formData.append("dateModified", new Date.now());
-
   //   request(app)
   //     .post(
   //       `/api/course/MATHISGREAT101/script/f317ee1a-00fc-4682-a79c-58c1cf1859ae/file`
