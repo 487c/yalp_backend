@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
-import winston from "winston";
 import multer from "multer";
 import swaggerUi from "swagger-ui-express";
+import logger from "./logger.js";
+
 export function generateAccessToken(id) {
   return jwt.sign({ id: id }, process.env.TOKEN_SECRET, {
     expiresIn: Number(process.env.TOKEN_DURATION_SECONDS),
@@ -32,19 +33,6 @@ export function verifyToken(req, res, next) {
   });
 }
 
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.simple(),
-  transports: [
-    new winston.transports.File({
-      filename: "./logging/yalp_error.log",
-      level: "error",
-    }),
-    new winston.transports.File({ filename: "./logging/yalp.log" }),
-    new winston.transports.Console({ level: "error" }),
-  ],
-});
-
 export function handleError(err, req, res, next) {
   res.status(err.status || 500);
   logger.error(
@@ -63,11 +51,19 @@ export function handleError(err, req, res, next) {
 
 export function logInfo(req, res, next) {
   let send = res.send;
+  let status = res.status;
+
+  let tmpStatus;
+  res.status = (s) => {
+    tmpStatus = s;
+    res.status = status;
+    return res.status(s);
+  };
   res.send = (c) => {
     logger.info(
-      `${req.originalUrl}: ${req.method} params: ${JSON.stringify(
-        req.params
-      )} body: ${JSON.stringify(req.body || {})} response: ${c} `
+      `${new Date().toUTCString()} - ${req.originalUrl} + ${
+        typeof req.body === "object" ? JSON.stringify(req.body) : req.body || ""
+      } = status: ${tmpStatus}, response: ${c}`
     );
     res.send = send;
     return res.send(c);
