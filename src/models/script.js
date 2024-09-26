@@ -77,7 +77,7 @@ export default {
 
   async getScriptForUser(uuid, userId) {
     const script = await this.model
-      .findOne({ uuid }, { _id: 0, __v: 0, file: 0 })
+      .findOne({ uuid, file: undefined }, { _id: 0, __v: 0, file: 0 })
       .populate("course", { members: 1 })
       .populate("cards", { _id: 0, __v: 0 })
       .lean();

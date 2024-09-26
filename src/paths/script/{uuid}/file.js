@@ -1,4 +1,5 @@
-import Course from "../../../models/course.js";
+import Script from "../../../models/script.js";
+import fs from "fs";
 
 const parameters = [
   {
@@ -15,15 +16,15 @@ const parameters = [
 
 export default {
   GET: GET,
-  POST: POST,
+  POST: [POST],
   parameters: parameters,
 };
 
 /**
- * TODO: Implement the function for getting the branch
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ * TODO: Implement the function for getting the file
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
 async function GET(req, res, next) {
   try {
@@ -36,8 +37,7 @@ async function GET(req, res, next) {
 
 GET.apiDoc = {
   summary: "Read the script file",
-  description:
-    "Reads current file for the script.",
+  description: "Reads current file for the script.",
   operationId: "getScriptFile",
   tags: ["Script"],
   responses: {
@@ -74,8 +74,10 @@ GET.apiDoc = {
 
 async function POST(req, res, next) {
   try {
-    const course = await Course.update(req.params.code, req.userId, {
-      ...req.body,
+    const course = await Script.setScriptFile(req.params.uuid, req.userId, {
+      file: req.files[0],
+      name: req.body.name,
+      modifiedDate: req.body.modifiedDate,
     });
 
     res.status(200).json(course);
@@ -85,19 +87,27 @@ async function POST(req, res, next) {
 }
 
 POST.apiDoc = {
-  summary: "Upload into Script",
-  description: "Uploads a file to the script. The max size of the file is 16 MB.",
+  summary: "Upload a file into the script",
+  description:
+    "Uploads a file to the script. The max size of the file is 16 MB.",
   operationId: "uploadFile",
   tags: ["Script"],
   requestBody: {
     content: {
-      "multipart/formdata": {
+      "multipart/form-data": {
         schema: {
           type: "object",
           properties: {
             file: {
-              type: Blob,
-              example: "Math for beginners",
+              type: "string",
+              format: "binary",
+            },
+            name: {
+              type: String,
+            },
+            modifiedDate: {
+              type: String,
+              example: new Date().valueOf(),
             },
           },
         },

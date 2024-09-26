@@ -5,7 +5,7 @@ import { app, token } from "./hooks.js";
 import { openAsBlob } from "fs";
 
 describe("Script", function () {
-  it("success: create a script", function (done) {
+  it("success: prepare a script", function (done) {
     request(app)
       .post(`/api/course/MATHISGREAT101/script`)
       .set("Accept", "application/json")
@@ -36,28 +36,21 @@ describe("Script", function () {
       });
   });
 
-  it("success: get script for user", function (done) {
+  it("fail: get script for user(missing file)", function (done) {
     request(app)
       .get(`/api/script/1e274ba0-b772-4edd-8c04-b5291af2e8bb`)
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .set("Authorization", `Bearer ${token}`)
       .send()
-      .expect(200)
+      .expect(400)
       .end(function (err, res) {
-        expect(res.body).to.have.keys([
-          "name",
-          "description",
-          "dateCreated",
-          "cards",
-          "uuid",
-        ]);
+        expect(res.statusCode).to.be.eql(400);
         done(err);
       });
   });
 
-
-  it("success: delete script", function (done) {
+  it("success: upload a script", function (done) {
     request(app)
       .get(`/api/script/1e274ba0-b772-4edd-8c04-b5291af2e8bb`)
       .set("Accept", "application/json")

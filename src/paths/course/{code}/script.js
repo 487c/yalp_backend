@@ -17,9 +17,10 @@ async function POST(req, res, next) {
 }
 
 POST.apiDoc = {
-  summary: "Create Script",
-  description:
-    "Uploade a new script, stores it, transfers it to markdown and classifies it.",
+  summary: "Create Script (Metadata)",
+  description: `The call creates new script **metadata**, it returns an uuid for uploading the script file.
+    Use the function /script/{uuid}/file to upload the script file. 
+    Only scripts with a file will be handed out the the client.`,
   operationId: "createScript",
   tags: ["Script"],
   requestBody: {

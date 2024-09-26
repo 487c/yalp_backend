@@ -8,6 +8,7 @@ import { verifyToken } from "./services/authMiddleware.js";
 import "dotenv/config";
 import loadDemoData from "./services/demoData.js";
 import winston from "winston";
+import multer from "multer";
 
 const logger = winston.createLogger({
   level: "info",
@@ -89,6 +90,17 @@ export default async function () {
         } else {
           res.json(err);
         }
+      },
+      consumesMiddleware: {
+        "multipart/form-data": function (req, res, next) {
+          multer().any()(req, res, function (err) {
+            if (err) return next(err);
+            req.files.forEach(function (f) {
+              req.body[f.fieldname] = ""; // Set to empty string to satisfy OpenAPI spec validation
+            });
+            return next();
+          });
+        },
       },
       pathSecurity: [
         [/^\/course/, [{ bearerAuth: [] }]],
