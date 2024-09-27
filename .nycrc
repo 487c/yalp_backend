@@ -1,0 +1,6 @@
+{
+  "all": true,
+  "exclude": ["test", "mongo", "yalp"],
+  "output": "reports",
+  "reporter": [ "text"]
+}
