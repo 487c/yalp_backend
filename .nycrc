@@ -1,6 +1,6 @@
 {
   "all": true,
-  "exclude": ["test", "mongo", "yalp"],
+  "exclude": ["test", "mongo", "./src/yalp.js"],
   "output": "reports",
-  "reporter": [ "text"]
+  "reporter": ["text"]
 }

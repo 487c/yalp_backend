@@ -7,15 +7,11 @@ export default {
 };
 
 async function POST(req, res) {
-  try {
-    const login = req.body.login;
+  const login = req.body.login;
 
-    const loginResult = await User.login(login);
+  const loginResult = await User.login(login);
 
-    res.status(200).json(loginResult);
-  } catch (e) {
-    throw { status: 400, ...e };
-  }
+  res.status(200).json(loginResult);
 }
 
 POST.apiDoc = {

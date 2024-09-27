@@ -2,6 +2,8 @@
 //  Ich denke du wirst die Fehlermeldungen ja gesammelt behandeln.
 const codes = {
   0: "Unknown Error",
+  100: "Token missing",
+  200: "Token invalid",
   1000: "The login is already taken.",
   1001: "Name is already taken.",
   1002: "Login is missing.",
@@ -9,7 +11,7 @@ const codes = {
   2000: "Course could not be created.",
   2001: "Could not find course or user is not a member of the course",
   2002: "Could not find course / you are not the owner of the course",
-  2003: "You are not the sole member of the course (delete course)",
+  2003: "You are not the sole member of the course",
   2004: "You are already member of the course",
   2005: "You are not owner of course (delete Course/change Owner)",
   2006: "You is something wrong, the course has no members",
@@ -22,15 +24,21 @@ const codes = {
   3005: "The Script is missing a file (not yet fully created)",
 };
 
+const status = {
+  0: 500,
+  100: 401,
+  200: 403,
+};
+
 /**
  * Returns a message based on the error code
  * @param {Number} code of the error code
- * @param {String} error of the error code
+ * @param {String} [error] of the error code
  */
-export default function (code, error) {
+export default function (code = 0, error) {
   return {
-    code: code,
-    message:
-      (codes[code] || "Unknown Error") + ((error && " : " + error) || ""),
+    code,
+    status: status[code] || 400,
+    message: codes[code] + ((error && " : " + error) || ""),
   };
 }

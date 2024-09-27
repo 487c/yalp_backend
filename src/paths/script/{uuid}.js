@@ -21,12 +21,8 @@ export default {
 };
 
 async function GET(req, res, next) {
-  try {
-    const course = await Script.getScriptForUser(req.params.uuid, req.userId);
-    res.status(200).json(course);
-  } catch (e) {
-    throw { status: 400, ...e };
-  }
+  const course = await Script.getScriptForUser(req.params.uuid, req.userId);
+  res.status(200).json(course);
 }
 
 GET.apiDoc = {
@@ -93,15 +89,11 @@ GET.apiDoc = {
 };
 
 async function PATCH(req, res, next) {
-  try {
-    const course = await Course.update(req.params.code, req.userId, {
-      ...req.body,
-    });
+  const course = await Course.update(req.params.code, req.userId, {
+    ...req.body,
+  });
 
-    res.status(200).json(course);
-  } catch (e) {
-    throw { status: 400, ...e };
-  }
+  res.status(200).json(course);
 }
 
 PATCH.apiDoc = {
@@ -159,13 +151,8 @@ PATCH.apiDoc = {
 };
 
 async function DELETE(req, res, next) {
-  try {
-    await Course.delete(req.params.code, req.userId);
-
-    res.status(200).json({ result: "OK" });
-  } catch (e) {
-    throw { status: 400, ...e };
-  }
+  await Course.delete(req.params.code, req.userId);
+  res.status(200).json({ result: "OK" });
 }
 
 DELETE.apiDoc = {

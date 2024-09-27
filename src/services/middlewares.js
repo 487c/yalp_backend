@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import multer from "multer";
 import swaggerUi from "swagger-ui-express";
 import logger from "./logger.js";
+import ErrorCodes from "./errorCodes.js";
 
 export function generateAccessToken(id) {
   return jwt.sign({ id: id }, process.env.TOKEN_SECRET, {
@@ -11,21 +12,12 @@ export function generateAccessToken(id) {
 
 export function verifyToken(req, res, next) {
   const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (token == null)
-    throw {
-      status: 401,
-      message: "Token for request needed.",
-    };
+  const token = (authHeader && authHeader.split(" ")[1]) || null;
 
   return new Promise(function (resolve, reject) {
+    if (token == null) reject(ErrorCodes(100));
     jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-      if (err)
-        reject({
-          status: 403,
-          message: "Token invalid",
-        });
+      if (err) reject(ErrorCodes(200, err));
 
       req.userId = user.id;
       resolve(true);
@@ -44,11 +36,9 @@ export function handleError(err, req, res, next) {
       err.message
     }`
   );
-  if (typeof err === "string") {
-    res.send(err);
-  } else {
-    res.json(err);
-  }
+
+  res.json(err);
+  next();
 }
 
 export function logInfo(req, res, next) {
@@ -100,7 +90,9 @@ export const swaggerUiParams = [
     swaggerOptions: {
       url: `${process.env.BACKEND_URL}/api-docs`,
       //Automatisches Eintragen des Token in die Authorisierung, wenn man den login erfolgreich aufruft
+
       responseInterceptor: function (res) {
+        /* c8 ignore next 2*/
         if (/login$/.test(res.url) && res.status === 200)
           ui.preauthorizeApiKey("bearerAuth", res.obj.token);
       },

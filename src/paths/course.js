@@ -6,21 +6,17 @@ export default {
 
 async function POST(req, res, next) {
   const courseName = req.body.name;
-  try {
-    if (!courseName)
-      throw {
-        status: 400,
-        message: "Missing course name",
-      };
-    const newCourse = await Course.create({
-      name: courseName,
-      owner: req.userId,
-    });
+  if (!courseName)
+    throw {
+      status: 400,
+      message: "Missing course name",
+    };
+  const newCourse = await Course.create({
+    name: courseName,
+    owner: req.userId,
+  });
 
-    res.status(200).json(newCourse);
-  } catch (e) {
-    throw { status: 400, ...e };
-  }
+  res.status(200).json(newCourse);
 }
 
 POST.apiDoc = {

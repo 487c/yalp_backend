@@ -26,12 +26,9 @@ export default {
  * @param {*} next
  */
 async function GET(req, res, next) {
-  try {
     const course = await Course.getCourseForUser(req.params.code, req.userId);
     res.status(200).json(course);
-  } catch (e) {
-    throw { status: 400, ...e };
-  }
+
 }
 
 GET.apiDoc = {
@@ -72,7 +69,6 @@ GET.apiDoc = {
 };
 
 async function POST(req, res, next) {
-  try {
     const course = await Script.setScriptFile(req.params.uuid, req.userId, {
       file: req.files[0],
       name: req.body.name,
@@ -80,9 +76,7 @@ async function POST(req, res, next) {
     });
 
     res.status(200).json(course);
-  } catch (e) {
-    throw { status: 400, ...e };
-  }
+
 }
 
 POST.apiDoc = {

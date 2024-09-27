@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
 import referralCodeGenerator from "referral-code-generator";
+import ErrorCodes from "../services/errorCodes.js";
 
 function generateInviteCode() {
   return referralCodeGenerator.alphaNumeric("lowercase", 3, 3);
 }
 
+// TODO: Testabdeckung verbessern
 export default {
   model: mongoose.model("Course", {
     name: {
@@ -101,18 +103,10 @@ export default {
   async delete(code, owner) {
     const course = await this.model.findOne({ code, owner });
 
-    if (!course) {
-      throw {
-        code: 2002,
-        message: "Could not find course / you are not owner of the course",
-      };
-    }
+    if (!course) throw ErrorCodes(2002);
 
     if (course.members.length > 1 || !course.members[0].equals(owner)) {
-      throw {
-        code: 2003,
-        message: "You are not the sole member of the course",
-      };
+      throw ErrorCodes(2003);
     }
     return await course.deleteOne();
   },
