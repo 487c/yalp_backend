@@ -1,0 +1,20 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: current
+      - run: npm ci
+      - run: npm run build:eslint
+      - run: npm run build:coverage

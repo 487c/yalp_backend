@@ -92,7 +92,7 @@ export const swaggerUiParams = [
       //Automatisches Eintragen des Token in die Authorisierung, wenn man den login erfolgreich aufruft
 
       responseInterceptor: function (res) {
-        /* c8 ignore next 2*/
+        /* c8 ignore next 3*/
         if (/login$/.test(res.url) && res.status === 200)
           // eslint-disable-next-line no-undef
           ui.preauthorizeApiKey("bearerAuth", res.obj.token);

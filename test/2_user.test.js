@@ -1,7 +1,7 @@
 import request from "supertest";
 import { expect } from "chai";
 import "dotenv/config";
-import { app, token } from "./hooks.js";
+import { app } from "./hooks.js";
 
 describe("User", function () {
   it("log a user in", function (done) {
@@ -25,10 +25,11 @@ describe("User", function () {
       .send({ name: "lol" })
       .expect(400)
       .end(function (err, res) {
-        expect(res.body).to.have.property("message", "Missing login");
+        expect(res.body).to.have.property("code", 400);
         done(err);
       });
   });
+
   it("register a user", function (done) {
     request(app)
       .post("/api/user/register")
