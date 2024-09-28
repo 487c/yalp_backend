@@ -70,6 +70,7 @@ export default {
 
   async getScriptMeta({ uuid }) {
     const script = await this.model.find(uuid);
+    return script;
   },
 
   async getScriptFile({ uuid }) {

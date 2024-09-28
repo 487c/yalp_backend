@@ -4,7 +4,7 @@ export default {
   POST: POST,
 };
 
-async function POST(req, res, next) {
+async function POST(req, res) {
   const courseName = req.body.name;
   if (!courseName)
     throw {

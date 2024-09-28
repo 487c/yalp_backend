@@ -4,7 +4,7 @@ export default {
   GET: GET,
 };
 
-async function GET(req, res, next) {
+async function GET(req, res,) {
   try {
     const courses = await Course.getReducedCoursesForUser(req.userId);
 

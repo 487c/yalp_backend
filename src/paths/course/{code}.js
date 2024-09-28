@@ -19,7 +19,7 @@ export default {
   DELETE: DELETE,
   parameters: parameters,
 };
-async function GET(req, res, next) {
+async function GET(req, res) {
     const course = await Course.getCourseForUser(req.params.code, req.userId);
     res.status(200).json(course);
 
@@ -90,7 +90,7 @@ GET.apiDoc = {
   },
 };
 
-async function PATCH(req, res, next) {
+async function PATCH(req, res) {
     const course = await Course.update(req.params.code, req.userId, {
       ...req.body,
     });
@@ -153,7 +153,7 @@ PATCH.apiDoc = {
   },
 };
 
-async function DELETE(req, res, next) {
+async function DELETE(req, res) {
     await Course.delete(req.params.code, req.userId);
 
     res.status(200).json({ result: "OK" });

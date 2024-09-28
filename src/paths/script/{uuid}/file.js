@@ -21,14 +21,13 @@ export default {
 
 /**
  * TODO: Implement the function for getting the file
- * @param {*} req
- * @param {*} res
+ * @param {*} _req
+ * @param {*} _res
  * @param {*} next
  */
-async function GET(req, res, next) {
-    const course = await Course.getCourseForUser(req.params.code, req.userId);
-    res.status(200).json(course);
-
+async function GET(req, res) {
+  const course = await Script.getScriptForUser(req.params.uuid, req.userId);
+  res.status(200).json(course);
 }
 
 GET.apiDoc = {
@@ -68,15 +67,14 @@ GET.apiDoc = {
   },
 };
 
-async function POST(req, res, next) {
-    const course = await Script.setScriptFile(req.params.uuid, req.userId, {
-      file: req.files[0],
-      name: req.body.name,
-      modifiedDate: req.body.modifiedDate,
-    });
+async function POST(req, res) {
+  const course = await Script.setScriptFile(req.params.uuid, req.userId, {
+    file: req.files[0],
+    name: req.body.name,
+    modifiedDate: req.body.modifiedDate,
+  });
 
-    res.status(200).json(course);
-
+  res.status(200).json(course);
 }
 
 POST.apiDoc = {

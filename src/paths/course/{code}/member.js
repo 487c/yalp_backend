@@ -19,7 +19,7 @@ export default {
   parameters,
 };
 
-async function POST(req, res, next) {
+async function POST(req, res) {
   const course = await Course.addMember(req.params.code, req.userId);
 
   res.status(200).json(course);
@@ -58,8 +58,8 @@ POST.apiDoc = {
   },
 };
 
-async function DELETE(req, res, next) {
-  const course = await Course.deleteMember(req.params.code, req.userId);
+async function DELETE(req, res) {
+  await Course.deleteMember(req.params.code, req.userId);
   res.status(200).json({ result: "OK" });
 }
 

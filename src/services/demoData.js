@@ -1,7 +1,6 @@
 import Course from "../models/course.js";
 import User from "../models/user.js";
 import Script from "../models/script.js";
-import { randomUUID } from "crypto";
 export default async function loadDemoData() {
   await loadUsers();
   await loadCourses();

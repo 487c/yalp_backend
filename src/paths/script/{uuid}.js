@@ -20,7 +20,7 @@ export default {
   parameters: parameters,
 };
 
-async function GET(req, res, next) {
+async function GET(req, res) {
   const course = await Script.getScriptForUser(req.params.uuid, req.userId);
   res.status(200).json(course);
 }
@@ -88,8 +88,8 @@ GET.apiDoc = {
   },
 };
 
-async function PATCH(req, res, next) {
-  const course = await Course.update(req.params.code, req.userId, {
+async function PATCH(req, res) {
+  const course = await Script.update(req.params.code, req.userId, {
     ...req.body,
   });
 
@@ -150,8 +150,8 @@ PATCH.apiDoc = {
   },
 };
 
-async function DELETE(req, res, next) {
-  await Course.delete(req.params.code, req.userId);
+async function DELETE(req, res) {
+  await Script.delete(req.params.code, req.userId);
   res.status(200).json({ result: "OK" });
 }
 

@@ -5,7 +5,7 @@ export default function () {
     POST,
   };
 
-  async function POST(req, res, next) {
+  async function POST(req, res) {
     const user = await User.register({ name: req.body.name, login: req.body.login });
     res.status(200).json(user);
   }

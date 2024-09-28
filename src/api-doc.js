@@ -1,4 +1,3 @@
-import Course from "./models/course.js";
 import User from "./models/user.js";
 import Script from "./models/script.js";
 import Card from "./models/card.js";

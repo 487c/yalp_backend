@@ -1,4 +1,4 @@
-import mongoose, { Error } from "mongoose";
+import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
 import { randomUUID } from "crypto";
 import Course from "./course.js";
@@ -68,7 +68,7 @@ export default {
             : JSON.stringify(description),
       });
     } catch (e) {
-      throw ErrorCode(3003);
+      throw ErrorCode(3003, e);
     }
     course.scripts.push(newScript._id);
     return { uuid: newScript.uuid };

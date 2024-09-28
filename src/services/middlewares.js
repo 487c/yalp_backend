@@ -10,7 +10,7 @@ export function generateAccessToken(id) {
   });
 }
 
-export function verifyToken(req, res, next) {
+export function verifyToken(req) {
   const authHeader = req.headers["authorization"];
   const token = (authHeader && authHeader.split(" ")[1]) || null;
 
@@ -94,6 +94,7 @@ export const swaggerUiParams = [
       responseInterceptor: function (res) {
         /* c8 ignore next 2*/
         if (/login$/.test(res.url) && res.status === 200)
+          // eslint-disable-next-line no-undef
           ui.preauthorizeApiKey("bearerAuth", res.obj.token);
       },
     },

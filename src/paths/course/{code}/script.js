@@ -4,7 +4,7 @@ export default {
   POST: POST,
 };
 
-async function POST(req, res, next) {
+async function POST(req, res) {
     const course = await Script.createScript(req.params.code, req.userId, {
       name: req.body.name,
       description: req.body,
