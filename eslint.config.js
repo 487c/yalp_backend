@@ -3,7 +3,6 @@ import pluginJs from "@eslint/js";
 
 export default [
   {
-    env: { mocha: true },
     languageOptions: { globals: { ...globals.node, ...globals.mocha } },
   },
   pluginJs.configs.recommended,
