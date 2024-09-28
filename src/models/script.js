@@ -105,9 +105,9 @@ export default {
       .populate("cards", { _id: 0, __v: 0 })
       .lean();
 
-    if (!script.file) throw ErrorCode(3005);
-
     if (!script) throw ErrorCode(3001);
+
+    if (!script.file) throw ErrorCode(3005);
 
     if (!script.course.members.find((m) => m.equals(userId)))
       throw ErrorCode(3004);

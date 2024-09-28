@@ -34,6 +34,22 @@ describe("Courses", function () {
       });
   });
 
+  it("fail: missing name create course", function (done) {
+    request(app)
+      .post("/api/course")
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "",
+      })
+      .expect(400)
+      .end(function (err, res) {
+        expect(res.body).to.have.property("code", 2009);
+        done(err);
+      });
+  });
+
   it("fail to delete a course", function (done) {
     request(app)
       .delete("/api/course/MATHISGREAT101")
@@ -42,7 +58,7 @@ describe("Courses", function () {
       .set("Content-Type", "application/json")
       .send({})
       .expect(400)
-      .end(function (err, res) {
+      .end(function (err) {
         done(err);
       });
   });
@@ -55,7 +71,7 @@ describe("Courses", function () {
       .set("Content-Type", "application/json")
       .send({})
       .expect(200)
-      .end(function (err, res) {
+      .end(function (err) {
         done(err);
       });
   });

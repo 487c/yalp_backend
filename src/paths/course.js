@@ -1,4 +1,5 @@
 import Course from "../models/course.js";
+import ErrorCodes from "../services/errorCodes.js";
 
 export default {
   POST: POST,
@@ -6,11 +7,7 @@ export default {
 
 async function POST(req, res) {
   const courseName = req.body.name;
-  if (!courseName)
-    throw {
-      status: 400,
-      message: "Missing course name",
-    };
+  if (!courseName) throw ErrorCodes(2009);
   const newCourse = await Course.create({
     name: courseName,
     owner: req.userId,

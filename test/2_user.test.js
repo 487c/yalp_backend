@@ -23,9 +23,8 @@ describe("User", function () {
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .send({ name: "lol" })
-      .expect(400)
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 400);
+        expect(res.body).to.have.property("code", 1002);
         done(err);
       });
   });

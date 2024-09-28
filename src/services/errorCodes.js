@@ -17,6 +17,7 @@ const codes = {
   2006: "You is something wrong, the course has no members",
   2007: "The given name does not correspond to a user",
   2008: "New owner is current course owner",
+  2009: "Missing course name.",
   3001: "Sript could not be found",
   3002: "Sript name is already taken",
   3003: "Could not create Script ( + Error)",
