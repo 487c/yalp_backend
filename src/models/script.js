@@ -17,6 +17,11 @@ export default {
       type: String,
       description: "Anzeigename des Dokumentes in der Applikation",
       required: true,
+      //TODO: fix validations for real names
+      validate: {
+        validator: (v) => v.length > 3,
+        message: () => `Script name must be at least 3 signs long!`,
+      },
     },
     description: {
       type: String,
@@ -45,7 +50,7 @@ export default {
     },
   }),
 
-  async createScript(courseCode, userId, { name, description = "" }) {
+  async createScript(courseCode, userId, { name, description }) {
     const course = await Course.model
       .findOne({
         code: courseCode,
@@ -62,10 +67,7 @@ export default {
       newScript = await this.model.create({
         owner: userId,
         name,
-        description:
-          typeof description === "string"
-            ? description
-            : JSON.stringify(description),
+        description,
       });
     } catch (e) {
       throw ErrorCode(3003, e);
@@ -99,18 +101,20 @@ export default {
   },
 
   async getScriptForUser(uuid, userId) {
+    if (!uuid) throw ErrorCode(3006);
     const script = await this.model
       .findOne({ uuid, file: undefined }, { _id: 0, __v: 0 })
       .populate("course", { members: 1 })
-      .populate("cards", { _id: 0, __v: 0 })
+      // .populate("cards", { _id: 0, __v: 0 })
+      .populate("file", { _id: 0, __v: 0 })
       .lean();
 
     if (!script) throw ErrorCode(3001);
 
-    if (!script.file) throw ErrorCode(3005);
-
     if (!script.course.members.find((m) => m.equals(userId)))
       throw ErrorCode(3004);
+
+    if (!script.file) throw ErrorCode(3005);
 
     delete script.course;
 
@@ -120,10 +124,6 @@ export default {
   async getScriptFile({ uuid }) {
     const script = await this.model.find(uuid);
     return script.file;
-  },
-
-  async deleteScript({ uuid }) {
-    await this.model.delete(uuid);
   },
 
   getReducedSchema() {

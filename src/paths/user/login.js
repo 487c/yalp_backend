@@ -29,7 +29,7 @@ POST.apiDoc = {
           properties: {
             login: {
               type: String,
-              example: "john",
+              example: "johnwhoRidesDoes",
             },
           },
         },

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
 import referralCodeGenerator from "referral-code-generator";
-import ErrorCodes from "../services/errorCodes.js";
+import ErrorCodes, { CodeError } from "../services/errorCodes.js";
 
 function generateInviteCode() {
   return referralCodeGenerator.alphaNumeric("lowercase", 3, 3);
@@ -13,7 +13,12 @@ export default {
     name: {
       type: String,
       description: "Anzeigename des Kurses.",
-      min: 3,
+      validate: {
+        validator: function (v) {
+          return v.length > 2;
+        },
+        message: (props) => `${props.value} must be at least 3 signs long!`,
+      },
       required: true,
     },
     members: {
@@ -74,7 +79,7 @@ export default {
       })
       .populate("owner", "name -_id")
       .lean();
-    if (!course) throw ErrorCodes(2001());
+    if (!course) throw ErrorCodes(2001);
     return course;
   },
 
@@ -85,9 +90,9 @@ export default {
         .findOneAndUpdate({ code, owner }, { name }, { new: true })
         .select("name code -_id")
         .lean();
-      if (!course)
-        throw "Could not find course/you are not owner of the course";
+      if (!course) throw ErrorCodes(2002);
     } catch (e) {
+      if (e instanceof CodeError) throw e;
       throw ErrorCodes(2002, e);
     }
     return course;
@@ -115,10 +120,10 @@ export default {
 
     if (!course) throw ErrorCodes(2001);
 
-    if (course.members.includes(userId)) throw ErrorCodes(2004);
-
-    course.members.push(userId);
-    await course.save();
+    if (!course.members.includes(userId)) {
+      course.members.push(userId);
+      await course.save();
+    }
     return this.getCourseForUser(code, userId);
   },
 

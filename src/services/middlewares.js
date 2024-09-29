@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import multer from "multer";
 import swaggerUi from "swagger-ui-express";
 import logger from "./logger.js";
-import ErrorCodes from "./errorCodes.js";
+import ErrorCodes, { CodeError } from "./errorCodes.js";
 
 export function generateAccessToken(id) {
   return jwt.sign({ id: id }, process.env.TOKEN_SECRET, {
@@ -26,18 +26,10 @@ export function verifyToken(req) {
 }
 
 export function handleError(err, req, res, next) {
-  res.status(err.status || 500);
-  err.code = err.code || 0;
-  err.message = err._message || err.message || "Unknown error";
-  logger.error(
-    `${new Date().toUTCString()} - ${req.originalUrl} + ${
-      typeof req.body === "object" ? JSON.stringify(req.body) : req.body || ""
-    } = status: ${err.status || 500}, code: ${err.code}, message: ${
-      err.message
-    }`
-  );
+  let error =
+    err instanceof CodeError ? err : ErrorCodes(0, err._message || err.message);
+  res.status(error.status).json(error);
 
-  res.json(err);
   next();
 }
 

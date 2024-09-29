@@ -19,12 +19,6 @@ export default {
   parameters: parameters,
 };
 
-/**
- * TODO: Implement the function for getting the file
- * @param {*} _req
- * @param {*} _res
- * @param {*} next
- */
 async function GET(req, res) {
   const course = await Script.getScriptForUser(req.params.uuid, req.userId);
   res.status(200).json(course);

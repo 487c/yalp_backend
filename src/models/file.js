@@ -16,7 +16,7 @@ export default {
       required: true,
     },
     uuid: {
-      type: String,
+      type: mongoose.Schema.Types.UUID,
       description: "Dateiname der Dokumentes",
       required: true,
       default: randomUUID,

@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import m2s from "mongoose-to-swagger";
 import { randomUUID } from "crypto";
 
 export default {
@@ -27,10 +26,4 @@ export default {
     //   required: true,
     // },
   }),
-  getReducedSchema() {
-    return m2s(this.model, {
-      props: ["front", "back"],
-      omitFields: ["_id", "uuid", "author"],
-    });
-  },
 };

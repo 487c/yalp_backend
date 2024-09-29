@@ -7,10 +7,10 @@ import {
 
 describe("Others", function () {
   it("should error obj without", function (done) {
-    const error = errorCodes(1000);
+    const error = errorCodes(0);
     expect(error).to.be.an("object");
-    expect(error).to.have.property("code", 1000);
-    expect(error).to.have.property("message", "The login is already taken.");
+    expect(error).to.have.property("code", 0);
+    expect(error).to.have.property("message", "Unknown Error");
     done();
   });
 
@@ -20,7 +20,7 @@ describe("Others", function () {
     expect(error).to.have.property("code", 1000);
     expect(error).to.have.property(
       "message",
-      "The login is already taken. : failed"
+      "Missing parameter : failed"
     );
     done();
   });

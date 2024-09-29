@@ -44,6 +44,7 @@ export default async function () {
     }),
   ]);
 
+  /* c8 ignore next 2 */
   if (process.env.DEMO && process.env.DEMO === "true") await loadDemoData();
   return app;
 }
