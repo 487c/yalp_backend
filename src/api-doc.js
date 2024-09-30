@@ -72,6 +72,10 @@ export default {
       description: "Operations for Scripts",
       name: "Script",
     },
+    {
+      description: "Operations for Files",
+      name: "File",
+    },
   ],
   paths: {},
 };

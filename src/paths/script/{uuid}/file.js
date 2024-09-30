@@ -14,7 +14,6 @@ const parameters = [
 ];
 
 export default {
-  GET: GET,
   POST: POST,
   parameters: parameters,
 };
@@ -28,7 +27,7 @@ GET.apiDoc = {
   summary: "Read the script file",
   description: "Reads current file for the script.",
   operationId: "getScriptFile",
-  tags: ["Script"],
+  tags: ["Script", "File"],
   responses: {
     200: {
       description: "OK",

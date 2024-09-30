@@ -82,8 +82,7 @@ export default {
       .populate("course", { members: 1 });
 
     if (!script) throw ErrorCode(3001);
-    if (!this.userIn(script, userId))
-      throw { code: 3004, message: "Not a member of the course" };
+    if (!this.userIn(script, userId)) throw ErrorCode(3004);
 
     const fileId = await File.create(file, name, modifiedDate);
     script.file = fileId;
@@ -103,18 +102,15 @@ export default {
   async getScriptForUser(uuid, userId) {
     if (!uuid) throw ErrorCode(3006);
     const script = await this.model
-      .findOne({ uuid, file: undefined }, { _id: 0, __v: 0 })
+      .findOne({ uuid }, { _id: 0, __v: 0 })
       .populate("course", { members: 1 })
-      // .populate("cards", { _id: 0, __v: 0 })
-      .populate("file", { _id: 0, __v: 0 })
       .lean();
+    // .populate("cards", { _id: 0, __v: 0 })
 
     if (!script) throw ErrorCode(3001);
 
     if (!script.course.members.find((m) => m.equals(userId)))
       throw ErrorCode(3004);
-
-    if (!script.file) throw ErrorCode(3005);
 
     delete script.course;
 

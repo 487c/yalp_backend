@@ -4,7 +4,7 @@ import "dotenv/config";
 import { app, token } from "./hooks.js";
 
 describe("Script", function () {
-  it("success: prepare a script", function (done) {
+  it("succ: prepare a script", function (done) {
     request(app)
       .post(`/api/course/MATHISGREAT101/script`)
       .set("Accept", "application/json")
@@ -49,18 +49,6 @@ describe("Script", function () {
       });
   });
 
-  it("fail: get script for user(missing file)", function (done) {
-    request(app)
-      .get(`/api/script/1e274ba0-b772-4edd-8c04-b5291af2e8bb`)
-      .set("Accept", "application/json")
-      .set("Authorization", `Bearer ${token}`)
-      .send()
-      .end(function (err, res) {
-        expect(res.body).to.have.property("code", 3005);
-        done(err);
-      });
-  });
-
   it("fail: get script, missing uuid", function (done) {
     request(app)
       .get(`/api/script/1e274ba0-b772-4edd-8c04-b5291af2e8bc`)
@@ -75,7 +63,7 @@ describe("Script", function () {
       });
   });
 
-  it("success: upload a script", function (done) {
+  it("succ: upload a script", function (done) {
     request(app)
       .post(`/api/script/1e274ba0-b772-4edd-8c04-b5291af2e8bb/file`)
       .set("Accept", "application/json")
@@ -95,7 +83,7 @@ describe("Script", function () {
       .send({ name: "alg", description: "Algebra is the best" })
       .expect(400)
       .end(function (err, res) {
-        expect(res.body).to.have.property('code', 3003);
+        expect(res.body).to.have.property("code", 3003);
         done(err);
       });
   });
@@ -109,9 +97,8 @@ describe("Script", function () {
       .send()
       .expect(400)
       .end(function (err, res) {
-        expect(res.body).to.have.property('code', 3004);
+        expect(res.body).to.have.property("code", 3004);
         done(err);
       });
   });
-
 });
