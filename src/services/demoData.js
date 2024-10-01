@@ -127,6 +127,10 @@ function makeUUID(str) {
   // new mongoose.Types.UUID(str);
 }
 
+/**
+ * TODO: Insert usefull demo data
+ *  
+ */
 async function loadScripts() {
   await Script.model.deleteMany({});
   const user = await User.model.find({ login: "johnwhoRidesDoes" });

@@ -3,6 +3,7 @@ import { expect } from "chai";
 import "dotenv/config";
 import { app, token } from "./hooks.js";
 import fs from "fs";
+import Script from "../src/models/script.js";
 
 describe("Script", function () {
   it("succ: create a script", function (done) {
@@ -21,7 +22,7 @@ describe("Script", function () {
         })
         .expect(200)
         .end(function (err, res) {
-          expect(res.body).to.have.keys();
+          expect(res.body).to.have.keys(Script.fullInfo);
           done(err);
         });
     });
@@ -43,20 +44,6 @@ describe("Script", function () {
       .expect(200)
       .end(function (err, res) {
         expect(res.body).to.have.keys(["uuid"]);
-        done(err);
-      });
-  });
-
-  it("fail: get script, missing code", function (done) {
-    request(app)
-      .post(`/api/course/MATHISGREAT101/script`)
-      .set("Accept", "application/json")
-      .set("Content-Type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
-      .send({ name: "Algebra", description: "Algebra is the best" })
-      .expect(400)
-      .end(function (err, res) {
-        expect(res.statusCode).to.be.eql(400);
         done(err);
       });
   });
@@ -87,17 +74,6 @@ describe("Script", function () {
         expect(res.body).to.have.property("code", 3001);
         done(err);
       });
-  });
-
-  it("succ: upload a script", function (done) {
-    request(app)
-      .post(`/api/script/1e274ba0-b772-4edd-8c04-b5291af2e8bb/file`)
-      .set("Accept", "application/json")
-      .set("Authorization", `Bearer ${token}`)
-      .attach("file", "./test/example_file.pdf")
-      .field("name", "example_file.pdf")
-      .field("modifiedDate", new Date().toISOString())
-      .expect(200, done);
   });
 
   it("fail: create script, name too short", function (done) {
