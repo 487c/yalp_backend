@@ -4,4 +4,4 @@ node_modules
 backend
 *.log
 .vscode
-coverage
+coverage/tmp/**
