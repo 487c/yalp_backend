@@ -1,18 +1,20 @@
 import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
-import { randomUUID } from "crypto";
 import Course from "./course.js";
-import File from "./file.js";
 import ErrorCode from "../services/errorCodes.js";
+import { shortenSchema } from "../services/utils.js";
 
 export default {
+  reducedInfo: ["name", "description"],
+  fullInfo: [
+    "name",
+    "file",
+    "fileDateModified",
+    "course",
+    "cards",
+    "dateCreated",
+  ],
   model: mongoose.model("Script", {
-    uuid: {
-      type: mongoose.Schema.Types.UUID,
-      description: "UUID des Skriptes",
-      required: true,
-      default: () => randomUUID(),
-    },
     name: {
       type: String,
       description: "Anzeigename des Dokumentes in der Applikation",
@@ -23,6 +25,20 @@ export default {
         message: () => `Script name must be at least 3 signs long!`,
       },
     },
+    file: {
+      type: Buffer,
+      description: "File Content",
+      required: true,
+    },
+    fileDateModified: {
+      type: Date,
+      required: true,
+    },
+    markdown: {
+      type: Buffer,
+      description: "Markdown des Skriptes",
+    },
+    md5: { type: String, required: true },
     description: {
       type: String,
       description: "Beschreibung des Skripts in der Applikation",
@@ -42,11 +58,6 @@ export default {
       description: "Erstellungsdatum des Skriptes",
       default: Date.now,
       required: true,
-    },
-    file: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "File",
-      description: "The files in the script",
     },
   }),
 
@@ -122,10 +133,7 @@ export default {
     return script.file;
   },
 
-  getReducedSchema() {
-    return m2s(this.model, {
-      props: ["name", "fileName"],
-      omitFields: ["_id", "cards", "markdown", "file", "uuid", "course"],
-    });
+  getApiSchema(title, type) {
+    return shortenSchema(m2s(this.model), title, this[type]);
   },
 };

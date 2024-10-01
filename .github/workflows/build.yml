@@ -16,5 +16,6 @@ jobs:
         with:
           node-version: current
       - run: npm ci
+      - run: npm run postinstall
       - run: npm run build:eslint
       - run: npm run build:coverage

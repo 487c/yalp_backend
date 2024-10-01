@@ -22,11 +22,12 @@ export default {
       },
     },
     schemas: {
-      ReducedUserSchema: User.getApiSchema("ReducedUser", "reducedInfo"),
+      ReducedUser: User.getApiSchema("ReducedUser", "reducedInfo"),
       User: User.getApiSchema("User", "fullInfo"),
-      ReducedCourseSchema: Course.getApiSchema("ReducedCourse", "reducedInfo"),
+      ReducedCourse: Course.getApiSchema("ReducedCourse", "reducedInfo"),
       Course: Course.getApiSchema("Course", "fullInfo"),
-      ReducedScriptSchema: Script.getReducedSchema(),
+      ReducedScript: Script.getApiSchema("ReducedScript", "reducedInfo"),
+      Script: Script.getApiSchema("Script", "reducedInfo"),
       Error: {
         type: "object",
         properties: {

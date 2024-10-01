@@ -2,9 +2,35 @@ import request from "supertest";
 import { expect } from "chai";
 import "dotenv/config";
 import { app, token } from "./hooks.js";
+import fs from "fs";
 
 describe("Script", function () {
-  it("succ: prepare a script", function (done) {
+  it("succ: create a script", function (done) {
+    fs.readFile("./example_file.pdf", function (err, data) {
+      request(app)
+        .post(`/api/course/MATHISGREAT101/script`)
+        .set("Accept", "application/json")
+        .set("Content-Type", "application/json")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          name: "Timetravel",
+          description: "The long island icetea of science fiction.",
+          fileName: "example_file.pdf",
+          file: data.toString("base64"),
+          lastModified: fs.statSync("exmple_file.pdf").mtime,
+        })
+        .expect(200)
+        .end(function (err, res) {
+          expect(res.body).to.have.keys();
+          done(err);
+        });
+    });
+  });
+
+  /**
+   * TODO: Implementation test for failing file upload
+   */
+  it("fail: create script, missing file", function (done) {
     request(app)
       .post(`/api/course/MATHISGREAT101/script`)
       .set("Accept", "application/json")
