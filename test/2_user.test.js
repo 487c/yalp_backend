@@ -17,6 +17,18 @@ describe("User", function () {
       });
   });
 
+  it("fail: user register, login too short", function (done) {
+    request(app)
+      .post("/api/user/register")
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .send({ login: "lol", name: "Name ist zu kurz." })
+      .end(function (err, res) {
+        expect(res.body).to.have.property("code", 1001);
+        done(err);
+      });
+  });
+
   it("fail: user login, missing login", function (done) {
     request(app)
       .post("/api/user/login")
@@ -48,7 +60,7 @@ describe("User", function () {
       .set("Content-Type", "application/json")
       .send({
         name: "Peter Pan",
-        login: "name already taken",
+        login: "namealreadytaken",
       })
       .expect(200)
       .end(function (err, res) {
@@ -57,19 +69,4 @@ describe("User", function () {
       });
   });
 
-  it("fail: user register, create", function (done) {
-    request(app)
-      .post("/api/user/register")
-      .set("Accept", "application/json")
-      .set("Content-Type", "application/json")
-      .send({
-        name: "Peter Pan",
-        login: "peter",
-      })
-      .expect(400)
-      .end(function (err, res) {
-        expect(res.body).to.have.property("code", 1001);
-        done(err);
-      });
-  });
 });

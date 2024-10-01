@@ -2,13 +2,15 @@ import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
 import referralCodeGenerator from "referral-code-generator";
 import ErrorCodes, { CodeError } from "../services/errorCodes.js";
+import { shortenSchema } from "../services/utils.js";
 
 function generateInviteCode() {
   return referralCodeGenerator.alphaNumeric("lowercase", 3, 3);
 }
 
-// TODO: Testabdeckung verbessern
 export default {
+  reducedInfo: ["name", "code"],
+  fullInfo: ["name", "members", "scripts", "code", "owner"],
   model: mongoose.model("Course", {
     name: {
       type: String,
@@ -156,10 +158,7 @@ export default {
     return await course.save();
   },
 
-  getReducedSchema() {
-    return m2s(this.model, {
-      props: ["name", "code"],
-      omitMongooseInternals: true,
-    });
+  getApiSchema(title, type) {
+    return shortenSchema(m2s(this.model), title, this[type]);
   },
 };

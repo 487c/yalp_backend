@@ -27,8 +27,9 @@ async function GET(req, res) {
 
 GET.apiDoc = {
   summary: "Read the script metadata",
-  description:
-    "Reads the script properties. Allowed if the user is part of the course. ",
+  description: `Reads the script properties. \n
+    Allowed if the user is part of the course. \n
+    `,
   operationId: "getCourse",
   tags: ["Script"],
   responses: {
@@ -48,6 +49,13 @@ GET.apiDoc = {
               description: {
                 type: String,
               },
+              files: {
+                type: "array",
+                items: {
+                  type: "string",
+                  description: "The uuid of the files",
+                },
+              },
               cards: {
                 type: "array",
                 items: {
@@ -55,15 +63,18 @@ GET.apiDoc = {
                   properties: {
                     uuid: {
                       type: String,
+                      description: "The uuid of the card",
                     },
                     front: {
                       type: String,
+                      description: "The front of the card",
                     },
                     back: {
                       type: String,
                     },
                     author: {
                       type: String,
+                      description: "The uuid of the author.",
                     },
                   },
                 },

@@ -6,7 +6,10 @@ export default function () {
   };
 
   async function POST(req, res) {
-    const user = await User.register({ name: req.body.name, login: req.body.login });
+    const user = await User.register({
+      name: req.body.name,
+      login: req.body.login,
+    });
     res.status(200).json(user);
   }
 
@@ -36,7 +39,7 @@ export default function () {
     },
     responses: {
       200: {
-        description: "OK",
+        $ref: "#/components/responses/VoidResult",
       },
       400: {
         $ref: "#/components/responses/InvalidRequest",

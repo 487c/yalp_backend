@@ -1,5 +1,6 @@
 import User from "./models/user.js";
 import Script from "./models/script.js";
+import Course from "./models/course.js";
 
 export default {
   openapi: "3.0.0",
@@ -21,6 +22,11 @@ export default {
       },
     },
     schemas: {
+      ReducedUserSchema: User.getApiSchema("ReducedUser", "reducedInfo"),
+      User: User.getApiSchema("User", "fullInfo"),
+      ReducedCourseSchema: Course.getApiSchema("ReducedCourse", "reducedInfo"),
+      Course: Course.getApiSchema("Course", "fullInfo"),
+      ReducedScriptSchema: Script.getReducedSchema(),
       Error: {
         type: "object",
         properties: {
@@ -28,13 +34,26 @@ export default {
           code: { type: String },
           message: { type: String },
         },
-        required: ["status", "message"],
+        required: ["status", "message", "code"],
       },
-      ReducedUserSchema: User.getReducedSchema(),
-      // ReducedCourseSchema: Course.getReducedSchema(),
-      ReducedScriptSchema: Script.getReducedSchema(),
+      OkResult: {
+        type: "object",
+        properties: {
+          result: { type: String, default: "OK" },
+        },
+      },
     },
     responses: {
+      VoidResult: {
+        description: "Default success response",
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/OkResult",
+            },
+          },
+        },
+      },
       Error: {
         description: "Error Response",
         content: {

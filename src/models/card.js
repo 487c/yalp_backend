@@ -1,14 +1,7 @@
 import mongoose from "mongoose";
-import { randomUUID } from "crypto";
 
 export default {
   model: mongoose.model("Card", {
-    uuid: {
-      type: mongoose.Schema.Types.UUID,
-      description: "UUID des Skriptes",
-      required: true,
-      default: () => randomUUID(),
-    },
     front: {
       type: String,
       description: "Frage oder Vorderseite einer Lernkarte.",

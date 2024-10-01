@@ -2,13 +2,12 @@ import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
 import ErrorCodes from "../services/errorCodes.js";
 import { generateAccessToken } from "../services/middlewares.js";
+import { shortenSchema } from "../services/utils.js";
 
-/**
- * TODO: Validierung für Usereigenschaften hinzufügen
- * Länge und Eigenschaften des Loginnamens? Vielleicht brauchen wir da auch sonderzeichen oder ähnliches
- * Weil wir der Login ja auch das Psswort ist...
- */
 export default {
+  fullInfo: ["name", "settings", "lastOpenedCourse"],
+  reducedInfo: ["name"],
+
   model: mongoose.model("User", {
     name: {
       type: String,
@@ -23,14 +22,17 @@ export default {
       unique: true,
       validate: {
         validator: function (v) {
-          return v.length > 10;
+          return /^[a-zA-Z0-9]{10,}$/.test(v);
         },
         message: () => `The login must be at least 10 signs long!`,
       },
     },
     settings: {
-      type: Object,
-      description: "Settings for the user",
+      showLastOpenedCourse: {
+        type: Boolean,
+        description: "Show the last opened course on the startpage",
+        default: true,
+      },
     },
     lastOpenedCourse: {
       type: String,
@@ -68,10 +70,7 @@ export default {
     };
   },
 
-  getReducedSchema() {
-    return m2s(this.model, {
-      props: ["name"],
-      omitFields: ["_id"],
-    });
+  getApiSchema(title, type) {
+    return shortenSchema(m2s(this.model), title, this[type]);
   },
 };
