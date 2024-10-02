@@ -5,26 +5,31 @@ import { app, token } from "./hooks.js";
 import fs from "fs";
 import Script from "../src/models/script.js";
 
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 describe("Script", function () {
   it("succ: create a script", function (done) {
-    fs.readFile("./example_file.pdf", function (err, data) {
-      request(app)
-        .post(`/api/course/MATHISGREAT101/script`)
-        .set("Accept", "application/json")
-        .set("Content-Type", "application/json")
-        .set("Authorization", `Bearer ${token}`)
-        .send({
-          name: "Timetravel",
-          description: "The long island icetea of science fiction.",
-          fileName: "example_file.pdf",
-          file: data.toString("base64"),
-          lastModified: fs.statSync("exmple_file.pdf").mtime,
-        })
-        .expect(200)
-        .end(function (err, res) {
-          expect(res.body).to.have.keys(Script.fullInfo);
-          done(err);
-        });
+    fs.readFile(__dirname + "/example_file.pdf", function (err, data) {
+      fs.stat(__dirname + "/example_file.pdf", function (err, stat) {
+        request(app)
+          .post(`/api/course/MATHISGREAT101/script`)
+          .set("Accept", "application/json")
+          .set("Content-Type", "application/json")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            name: "Timetravel",
+            description: "The long island icetea of science fiction.",
+            fileName: "example_file.pdf",
+            file: data.toString("base64"),
+            fileDateModified: stat.mtime,
+          })
+          .end(function (err, res) {
+            expect(res.body).to.have.keys(Script.fullInfo);
+            done(err);
+          });
+      });
     });
   });
 

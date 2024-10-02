@@ -5,12 +5,13 @@ export default {
 };
 
 async function POST(req, res) {
-    const course = await Script.createScript(req.params.code, req.userId, {
-      name: req.body.name,
-      description: req.body.description,
-    });
-    res.status(200).json(course);
-
+  const course = await Script.createScript(req.params.code, req.userId, {
+    name: req.body.name,
+    description: req.body.description,
+    file: req.body.file,
+    fileDateModified: req.body.fileDateModified,
+  });
+  res.status(200).json(course);
 }
 
 POST.apiDoc = {

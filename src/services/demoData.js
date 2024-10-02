@@ -3,9 +3,10 @@ import User from "../models/user.js";
 import Script from "../models/script.js";
 import fs from "fs";
 
+import { createHash } from 'node:crypto'
+
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default async function loadDemoData() {
@@ -129,7 +130,7 @@ function makeUUID(str) {
 
 /**
  * TODO: Insert usefull demo data
- *  
+ *
  */
 async function loadScripts() {
   await Script.model.deleteMany({});
@@ -195,14 +196,18 @@ async function loadScripts() {
   const courses = await Course.model.find({
     code: { $in: Array.from(new Set(scripts.map((s) => s.code)).values()) },
   });
-
+  const fileBuff = fs.readFileSync(__dirname + "/../../test/example_file.pdf");
+  const base64 = fileBuff.toString("base64")
   const created = await Script.model.insertMany(
     scripts.map((script) => ({
       name: script.name,
       description: script.description,
       owner: user._id,
+      file: base64,
       uuid: script.uuid,
+      md5: createHash('md5').update(base64).digest("hex"),
       course: courses.find((c) => c.code === script.code)._id,
+      fileDateModified: fs.statSync(__dirname + "/../../test/example_file.pdf").mtime,
       cards: [],
     }))
   );
@@ -212,19 +217,4 @@ async function loadScripts() {
     course.scripts.push(script._id);
   }),
     await Promise.all(courses.map((course) => course.save()));
-  const fileBuff = fs.readFileSync(__dirname + "/../../test/example_file.pdf");
-  await Script.setScriptFile(
-    makeUUID("f317ee1a-00fc-4682-a79c-58c1cf1859ae"),
-    user[0]._id,
-    {
-      file: {
-        buffer: fileBuff,
-        mimetype: "application/pdf",
-        originalname: "example_file.pdf",
-        size: fileBuff.length,
-      },
-      name: "example_file.pdf",
-      modifiedDate: new Date().toISOString(),
-    }
-  );
 }

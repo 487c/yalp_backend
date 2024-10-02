@@ -3,65 +3,89 @@ import m2s from "mongoose-to-swagger";
 import Course from "./course.js";
 import ErrorCode from "../services/errorCodes.js";
 import { shortenSchema } from "../services/utils.js";
+import { createHash, randomUUID } from "node:crypto";
 
 export default {
   reducedInfo: ["name", "description"],
   fullInfo: [
     "name",
+    "description",
     "file",
     "fileDateModified",
     "course",
     "cards",
     "dateCreated",
   ],
-  model: mongoose.model("Script", {
-    name: {
-      type: String,
-      description: "Anzeigename des Dokumentes in der Applikation",
-      required: true,
-      //TODO: fix validations for real names
-      validate: {
-        validator: (v) => v.length > 3,
-        message: () => `Script name must be at least 3 signs long!`,
+  model: mongoose.model(
+    "Script",
+    mongoose.Schema(
+      {
+        name: {
+          type: String,
+          description: "Anzeigename des Dokumentes in der Applikation",
+          required: true,
+          //TODO: fix validations for real names
+          validate: {
+            validator: (v) => v.length > 3,
+            message: () => `Script name must be at least 3 signs long!`,
+          },
+        },
+        file: {
+          type: Buffer,
+          description: "File Content",
+          required: true,
+          select: false,
+        },
+        fileDateModified: {
+          type: Date,
+          required: true,
+        },
+        markdown: {
+          type: Buffer,
+          description: "Markdown des Skriptes",
+        },
+        md5: { type: String, required: true },
+        description: {
+          type: String,
+          description: "Beschreibung des Skripts in der Applikation",
+          required: true,
+        },
+        course: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Course",
+          description: "Kurs zu dem das Skript gehört",
+        },
+        cards: {
+          type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Card" }],
+          description: "Kartenids zu einem Skript",
+        },
+        dateCreated: {
+          type: Date,
+          description: "Erstellungsdatum des Skriptes",
+          default: Date.now,
+          required: true,
+        },
       },
-    },
-    file: {
-      type: Buffer,
-      description: "File Content",
-      required: true,
-    },
-    fileDateModified: {
-      type: Date,
-      required: true,
-    },
-    markdown: {
-      type: Buffer,
-      description: "Markdown des Skriptes",
-    },
-    md5: { type: String, required: true },
-    description: {
-      type: String,
-      description: "Beschreibung des Skripts in der Applikation",
-      required: true,
-    },
-    course: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
-      description: "Kurs zu dem das Skript gehört",
-    },
-    cards: {
-      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Card" }],
-      description: "Kartenids zu einem Skript",
-    },
-    dateCreated: {
-      type: Date,
-      description: "Erstellungsdatum des Skriptes",
-      default: Date.now,
-      required: true,
-    },
-  }),
+      {
+        toJSON: {
+          virtuals: true,
+          useProjection: true,
+          transform: function (doc, ret) {
+            ret.file = doc.file.toString("base64");
+            delete ret._id;
+            delete ret.__v;
+            ret.course = doc.course.toString();
+          },
+        },
+      }
+    )
+  ),
 
-  async createScript(courseCode, userId, { name, description }) {
+  async createScript(
+    courseCode,
+    userId,
+    { name, description, file, fileDateModified }
+  ) {
     const course = await Course.model
       .findOne({
         code: courseCode,
@@ -76,15 +100,21 @@ export default {
     let newScript;
     try {
       newScript = await this.model.create({
-        owner: userId,
         name,
         description,
+        owner: userId,
+        uuid: randomUUID(),
+        file: Buffer.from(file, "base64"),
+        fileDateModified,
+        course: course._id,
+        md5: createHash("md5").update(file).digest("hex"),
+        cards: [],
       });
     } catch (e) {
       throw ErrorCode(3003, e);
     }
     course.scripts.push(newScript._id);
-    return { uuid: newScript.uuid };
+    return newScript.toJSON();
   },
 
   async setScriptFile(uuid, userId, { file, name, modifiedDate }) {
