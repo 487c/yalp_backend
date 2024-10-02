@@ -45,6 +45,16 @@ export default {
       },
     },
     responses: {
+      ScriptResponse: {
+        description: "Default success response",
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/Script",
+            },
+          },
+        },
+      },
       VoidResult: {
         description: "Default success response",
         content: {

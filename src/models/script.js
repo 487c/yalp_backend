@@ -15,6 +15,8 @@ export default {
     "course",
     "cards",
     "dateCreated",
+    "md5",
+    "id",
   ],
   model: mongoose.model(
     "Script",
@@ -53,7 +55,7 @@ export default {
         course: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Course",
-          description: "Kurs zu dem das Skript gehört",
+          description: "Kurs UUID zu dem das Skript gehört",
         },
         cards: {
           type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Card" }],

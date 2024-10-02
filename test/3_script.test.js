@@ -33,27 +33,30 @@ describe("Script", function () {
     });
   });
 
-  /**
-   * TODO: Implementation test for failing file upload
-   */
-  it("fail: create script, missing file", function (done) {
-    request(app)
-      .post(`/api/course/MATHISGREAT101/script`)
-      .set("Accept", "application/json")
-      .set("Content-Type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "Timetravel",
-        description: "The long island icetea of science fiction.",
-      })
-      .expect(200)
-      .end(function (err, res) {
-        expect(res.body).to.have.keys(["uuid"]);
-        done(err);
+  it("fail: create script -> course not found", function (done) {
+    fs.readFile(__dirname + "/example_file.pdf", function (err, data) {
+      fs.stat(__dirname + "/example_file.pdf", function (err, stat) {
+        request(app)
+          .post(`/api/course/MATHISGREAT102/script`)
+          .set("Accept", "application/json")
+          .set("Content-Type", "application/json")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            name: "Timetravel",
+            description: "The long island icetea of science fiction.",
+            fileName: "example_file.pdf",
+            file: data.toString("base64"),
+            fileDateModified: stat.mtime,
+          })
+          .end(function (err, res) {
+            expect(res.body).to.have.property("code", 3001);
+            done(err);
+          });
       });
+    });
   });
 
-  it("fail: create a script, taken name", function (done) {
+  it("fail: create a script -> name taken", function (done) {
     request(app)
       .post(`/api/course/MATHISGREAT101/script`)
       .set("Accept", "application/json")
@@ -63,6 +66,20 @@ describe("Script", function () {
       .expect(400)
       .end(function (err, res) {
         expect(res.statusCode).to.be.eql(400);
+        done(err);
+      });
+  });
+
+  it("fail: create script -> invalid values", function (done) {
+    request(app)
+      .post(`/api/course/MATHISGREAT101/script`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ name: "alg", description: "Algebra is the best" })
+      .expect(400)
+      .end(function (err, res) {
+        expect(res.body).to.have.property("code", 3003);
         done(err);
       });
   });
@@ -81,19 +98,7 @@ describe("Script", function () {
       });
   });
 
-  it("fail: create script, name too short", function (done) {
-    request(app)
-      .post(`/api/course/MATHISGREAT101/script`)
-      .set("Accept", "application/json")
-      .set("Content-Type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
-      .send({ name: "alg", description: "Algebra is the best" })
-      .expect(400)
-      .end(function (err, res) {
-        expect(res.body).to.have.property("code", 3003);
-        done(err);
-      });
-  });
+
 
   it("fail: get script, not member of course", function (done) {
     request(app)
