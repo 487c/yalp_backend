@@ -4,6 +4,7 @@ import {
   generateAccessToken,
   verifyToken,
 } from "../src/services/middlewares.js";
+import user from "../src/models/user.js";
 
 describe("Others", function () {
   it("should error obj without", function (done) {
@@ -18,10 +19,7 @@ describe("Others", function () {
     const error = errorCodes(1000, "failed");
     expect(error).to.be.an("object");
     expect(error).to.have.property("code", 1000);
-    expect(error).to.have.property(
-      "message",
-      "Missing parameter : failed"
-    );
+    expect(error).to.have.property("message", "Missing parameter : failed");
     done();
   });
 
@@ -56,5 +54,10 @@ describe("Others", function () {
     });
   });
 
-
+  it("should parse mongoose to api schema", function (done) {
+    const api = user.getApiSchema("User", "reducedInfo");
+    expect(api).to.be.an("object");
+    expect(api).to.have.property("title", "User");
+    done();
+  });
 });

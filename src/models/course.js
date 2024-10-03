@@ -38,7 +38,7 @@ export default {
       description: "Invite Code für andere User",
       required: true,
       min: 10,
-      undefined: true,
+      unique: true,
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -85,6 +85,13 @@ export default {
     return course;
   },
 
+  /**
+   * Updates Course informations
+   * @param {String} code Invite code of the course
+   * @param {String} owner id of the owner
+   * @param {String} param2 name of the course
+   * @returns {Object} course schema
+   */
   async update(code, owner, { name }) {
     let course;
     try {
@@ -111,12 +118,23 @@ export default {
     return await course.deleteOne();
   },
 
+  /**
+   * Gets an reduced version of the courses for the user
+   * @param {String} userId of the user that requests the coursess
+   * @returns {Object[]}
+   */
   async getReducedCoursesForUser(userId) {
     return await this.model
       .find({ members: userId }, { name: 1, code: 1, _id: 0 })
       .lean();
   },
 
+  /**
+   * Adds a member to the course and returns the course informations
+   * @param {String} code invite code of the course
+   * @param {String} userId of the user to add
+   * @returns {Object} course
+   */
   async addMember(code, userId) {
     const course = await this.model.findOne({ code });
 
@@ -129,6 +147,11 @@ export default {
     return this.getCourseForUser(code, userId);
   },
 
+  /**
+   * Deletes a member from the course
+   * @param {String} code
+   * @param {String} userId of the user
+   */
   async deleteMember(code, userId) {
     const course = await this.model.findOne({ code });
     if (!course.members.includes(userId)) throw ErrorCodes(2001);
@@ -141,6 +164,13 @@ export default {
     await course.save();
   },
 
+  /**
+   * Changes the ownership of the course
+   * @param {String} code invite code of the course
+   * @param {String} userId of the user
+   * @param {String} newOwner id of the new owner
+   * @returns
+   */
   async changeOwner(code, userId, newOwner) {
     const course = await this.model.getCourse({ code: code });
 

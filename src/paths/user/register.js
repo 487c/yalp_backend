@@ -24,7 +24,7 @@ export default function () {
       content: {
         "application/json": {
           schema: {
-            $ref: "#/components/schemas/ReducedUserSchema",
+            $ref: "#/components/schemas/ReducedUser",
           },
           examples: {
             PeterPan: {

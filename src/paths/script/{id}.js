@@ -2,14 +2,14 @@ import Script from "../../models/script.js";
 
 const parameters = [
   {
-    name: "uuid",
+    name: "id",
     in: "path",
     schema: {
       type: "string",
     },
-    example: "1e274ba0-b772-4edd-8c04-b5291af2e8bb",
+    example: "66fdc364ec1a0050d720b667",
     required: true,
-    description: "The uuid of the script",
+    description: "The id of the script",
   },
 ];
 
@@ -21,8 +21,8 @@ export default {
 };
 
 async function GET(req, res) {
-  const course = await Script.getScriptForUser(req.params.uuid, req.userId);
-  res.status(200).json(course);
+  const course = await Script.get(req.params.id, req.userId);
+  res.status(200).json(course.toJSON());
 }
 
 GET.apiDoc = {
@@ -34,52 +34,11 @@ GET.apiDoc = {
   tags: ["Script"],
   responses: {
     200: {
-      description: "OK",
+      description: "Getting the Script",
       content: {
         "application/json": {
           schema: {
-            type: "object",
-            properties: {
-              name: {
-                type: String,
-              },
-              dateCreated: {
-                type: String,
-              },
-              description: {
-                type: String,
-              },
-              files: {
-                type: "array",
-                items: {
-                  type: "string",
-                  description: "The uuid of the files",
-                },
-              },
-              cards: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    uuid: {
-                      type: String,
-                      description: "The uuid of the card",
-                    },
-                    front: {
-                      type: String,
-                      description: "The front of the card",
-                    },
-                    back: {
-                      type: String,
-                    },
-                    author: {
-                      type: String,
-                      description: "The uuid of the author.",
-                    },
-                  },
-                },
-              },
-            },
+            $ref: "#/components/schemas/Script",
           },
         },
       },
@@ -100,8 +59,11 @@ GET.apiDoc = {
 };
 
 async function PATCH(req, res) {
-  const course = await Script.update(req.params.code, req.userId, {
-    ...req.body,
+  const course = await Script.update(req.params.id, req.userId, {
+    file: req.body.file,
+    modifiedDate: req.body.modifiedDate,
+    name: req.body.name,
+    description: req.body.description,
   });
 
   res.status(200).json(course);
@@ -162,7 +124,7 @@ PATCH.apiDoc = {
 };
 
 async function DELETE(req, res) {
-  await Script.delete(req.params.code, req.userId);
+  await Script.delete(req.params.id, req.userId);
   res.status(200).json({ result: "OK" });
 }
 
@@ -173,20 +135,7 @@ DELETE.apiDoc = {
   tags: ["Script"],
   responses: {
     200: {
-      description: "OK",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              result: {
-                type: String,
-                default: "OK",
-              },
-            },
-          },
-        },
-      },
+     $ref:'#/components/responses/VoidResult'
     },
     400: {
       $ref: "#/components/responses/InvalidRequest",

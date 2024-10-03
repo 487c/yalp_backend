@@ -1,11 +1,14 @@
 import Course from "../models/course.js";
 import User from "../models/user.js";
 import Script from "../models/script.js";
+import Card from "../models/card.js";
 import fs from "fs";
+
+import mongoose from "mongoose";
+import { createHash } from "node:crypto";
 
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default async function loadDemoData() {
@@ -122,11 +125,10 @@ async function loadCourses() {
   console.log("Demo courses loaded");
 }
 
-function makeUUID(str) {
-  return str;
-  // new mongoose.Types.UUID(str);
-}
-
+/**
+ * TODO: Insert usefull demo data
+ *
+ */
 async function loadScripts() {
   await Script.model.deleteMany({});
   const user = await User.model.find({ login: "johnwhoRidesDoes" });
@@ -136,69 +138,62 @@ async function loadScripts() {
       name: "Algebra",
       description: "Algebra is super duper great.",
       code: "MATHISGREAT101",
-      uuid: makeUUID("f317ee1a-00fc-4682-a79c-58c1cf1859ae"),
+      _id: "66fdc364ec1a0050d720b667",
     },
     {
       name: "Mengenlehre",
       description: "Mengenlehre ist nichts für Anfänger",
       code: "MATHISGREAT101",
-      uuid: makeUUID("1e274ba0-b772-4edd-8c04-b5291af2e8bb"),
+      _id: "57fdc364ec1a0050d720b667",
     },
     {
       name: "Trigonometry",
       description: "Lehre über Trigonometrie",
       code: "MATHISGREAT101",
-      uuid: makeUUID("2c01f96d-69c4-4a0f-b8b0-0ee2f539871e"),
+      _id: "87fdc364ec1a0050d720b667",
     },
     {
       name: "Grammatik",
       code: "DEUTSCHISGREAT101",
       description: "Grammatik ist super wichtig",
-      uuid: makeUUID("a4022ea6-a6b0-42f4-b7fe-e0c7a04a7320"),
+      _id: "27fdc364ec1a0050d720b667",
     },
     {
       name: "Rechtschreibung",
       code: "DEUTSCHISGREAT101",
       description: "Rechtschreibung sollte beachtet werden",
-      uuid: makeUUID("c6326f9a-6873-4ea9-92e3-1af68ae36a03"),
+      _id: "17fdc364ec1a0050d720b667",
     },
     {
       name: "Vokabeln",
       code: "DEUTSCHISGREAT101",
       description: "Vokabeln sind super wichtig",
-      uuid: makeUUID("e5d8d7f3-4d1f-4c7d-8e0e-0b0f5b0e5f0f"),
+      _id: "37fdc364ec1a0050d720b667",
     },
     {
       name: "Vocabulary",
       code: "ENGLISHISGREAT101",
       description: "Vocabulary is super important",
-      uuid: makeUUID("f5d8d7f3-4d1f-4c7d-8e0e-0b0f5b0e5f0f"),
-    },
-    {
-      name: "Grammar",
-      code: "ENGLISHISGREAT101",
-      description: "Grammar is super important",
-      uuid: makeUUID("c2687d73-9fc1-43ca-877e-0ca365535107"),
-    },
-    {
-      name: "Reading",
-      code: "ENGLISHISGREAT101",
-      description: "Reading is super important",
-      uuid: makeUUID("b5f38a4b-c8c2-4063-b3fe-436e30410ab2"),
+      _id: "47fdc364ec1a0050d720b667",
     },
   ];
 
   const courses = await Course.model.find({
     code: { $in: Array.from(new Set(scripts.map((s) => s.code)).values()) },
   });
-
+  const fileBuff = fs.readFileSync(__dirname + "/../../test/example_file.pdf");
+  const base64 = fileBuff.toString("base64");
   const created = await Script.model.insertMany(
     scripts.map((script) => ({
+      _id: new mongoose.Types.ObjectId(script._id),
       name: script.name,
       description: script.description,
-      owner: user._id,
-      uuid: script.uuid,
+      owner: user[0].id,
+      file: fileBuff,
+      md5: createHash("md5").update(base64).digest("hex"),
       course: courses.find((c) => c.code === script.code)._id,
+      fileDateModified: fs.statSync(__dirname + "/../../test/example_file.pdf")
+        .mtime,
       cards: [],
     }))
   );
@@ -208,19 +203,8 @@ async function loadScripts() {
     course.scripts.push(script._id);
   }),
     await Promise.all(courses.map((course) => course.save()));
-  const fileBuff = fs.readFileSync(__dirname + "/../../test/example_file.pdf");
-  await Script.setScriptFile(
-    makeUUID("f317ee1a-00fc-4682-a79c-58c1cf1859ae"),
-    user[0]._id,
-    {
-      file: {
-        buffer: fileBuff,
-        mimetype: "application/pdf",
-        originalname: "example_file.pdf",
-        size: fileBuff.length,
-      },
-      name: "example_file.pdf",
-      modifiedDate: new Date().toISOString(),
-    }
-  );
+
+  const cards = [{ front: "What is 1 + 1", back: "2 you dumb ass." }];
+
+  const createdCard = Card.create(scripts[0]._id, user[0]._id, cards[0]);
 }

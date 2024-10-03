@@ -1,15 +1,13 @@
-import Script from "../../../models/script.js";
-
 const parameters = [
   {
-    name: "uuid",
+    name: "id",
     in: "path",
     schema: {
       type: "string",
     },
     example: "1e274ba0-b772-4edd-8c04-b5291af2e8bb",
     required: true,
-    description: "The uuid of the script",
+    description: "The id of the card",
   },
 ];
 
@@ -18,56 +16,14 @@ export default {
   parameters: parameters,
 };
 
-async function GET(req, res) {
-  const course = await Script.getScriptForUser(req.params.uuid, req.userId);
-  res.status(200).json(course);
-}
-
-GET.apiDoc = {
-  summary: "Read the script file",
-  description: "Reads current file for the script.",
-  operationId: "getScriptFile",
-  tags: ["Script", "File"],
-  responses: {
-    200: {
-      description: "OK",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              result: {
-                type: String,
-                default: "OK",
-              },
-            },
-          },
-        },
-      },
-    },
-    400: {
-      $ref: "#/components/responses/InvalidRequest",
-    },
-    401: {
-      $ref: "#/components/responses/MissingToken",
-    },
-    403: {
-      $ref: "#/components/responses/InvalidToken",
-    },
-    default: {
-      $ref: "#/components/responses/Error",
-    },
-  },
-};
-
 async function POST(req, res) {
-  const course = await Script.setScriptFile(req.params.uuid, req.userId, {
-    file: req.files[0],
-    name: req.body.name,
-    modifiedDate: req.body.modifiedDate,
-  });
+  // const course = await Script.setScriptFile(req.params.uuid, req.userId, {
+  //   file: req.files[0],
+  //   name: req.body.name,
+  //   modifiedDate: req.body.modifiedDate,
+  // });
 
-  res.status(200).json(course);
+  res.status(200).json({});
 }
 
 POST.apiDoc = {
