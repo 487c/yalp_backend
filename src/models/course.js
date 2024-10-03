@@ -38,7 +38,7 @@ export default {
       description: "Invite Code für andere User",
       required: true,
       min: 10,
-      undefined: true,
+      unique: true,
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,

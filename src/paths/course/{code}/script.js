@@ -5,7 +5,7 @@ export default {
 };
 
 async function POST(req, res) {
-  const course = await Script.createScript(req.params.code, req.userId, {
+  const course = await Script.create(req.params.code, req.userId, {
     name: req.body.name,
     description: req.body.description,
     file: req.body.file,
@@ -41,17 +41,11 @@ POST.apiDoc = {
   },
   responses: {
     200: {
-      description: "OK",
+      description: "Default success response",
       content: {
         "application/json": {
           schema: {
-            type: "object",
-            properties: {
-              uuid: {
-                type: String,
-              },
-            },
-            required: ["uuid"],
+            $ref: "#/components/schemas/Script",
           },
         },
       },

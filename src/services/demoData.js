@@ -188,7 +188,7 @@ async function loadScripts() {
       name: script.name,
       description: script.description,
       owner: user._id,
-      file: base64,
+      file: fileBuff,
       uuid: script.uuid,
       md5: createHash("md5").update(base64).digest("hex"),
       course: courses.find((c) => c.code === script.code)._id,

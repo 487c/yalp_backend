@@ -56,7 +56,7 @@ describe("Script", function () {
     });
   });
 
-  it("fail: create a script -> name taken", function (done) {
+  it("fail: create script -> name taken", function (done) {
     request(app)
       .post(`/api/course/MATHISGREAT101/script`)
       .set("Accept", "application/json")
@@ -84,9 +84,37 @@ describe("Script", function () {
       });
   });
 
-  it("fail: get script, missing uuid", function (done) {
+  it("succ: get script", function (done) {
+    request(app)
+      .get(`/api/script/66fdc364ec1a0050d720b667`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send()
+      .expect(200)
+      .end(function (err, res) {
+        expect(res.body).to.have.keys(Script.fullInfo);
+        done(err);
+      });
+  });
+
+  it("fail: get script, broken", function (done) {
     request(app)
       .get(`/api/script/1e274ba0-b772-4edd-8c04-b5291af2e8bc`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send()
+      .expect(400)
+      .end(function (err, res) {
+        expect(res.body).to.have.property("code", 3007);
+        done(err);
+      });
+  });
+
+  it("fail: get script, id not existing", function (done) {
+    request(app)
+      .get(`/api/script/66fdc364ec1a0051d720b667`)
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .set("Authorization", `Bearer ${token}`)
@@ -98,11 +126,9 @@ describe("Script", function () {
       });
   });
 
-
-
   it("fail: get script, not member of course", function (done) {
     request(app)
-      .get(`/api/script/a4022ea6-a6b0-42f4-b7fe-e0c7a04a7320`)
+      .get(`/api/script/17fdc364ec1a0050d720b667`)
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .set("Authorization", `Bearer ${token}`)

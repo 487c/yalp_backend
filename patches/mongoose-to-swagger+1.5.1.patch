@@ -1,5 +1,5 @@
 diff --git a/node_modules/mongoose-to-swagger/dist/index.js b/node_modules/mongoose-to-swagger/dist/index.js
-index 52d1ea1..1851dd2 100644
+index 52d1ea1..32abdd6 100644
 --- a/node_modules/mongoose-to-swagger/dist/index.js
 +++ b/node_modules/mongoose-to-swagger/dist/index.js
 @@ -14,7 +14,7 @@ const mapMongooseTypeToSwaggerType = (type) => {
@@ -20,7 +20,17 @@ index 52d1ea1..1851dd2 100644
              return 'string';
          }
          if (type.name === 'Date') {
-@@ -55,6 +55,7 @@ const mapMongooseTypeToSwaggerType = (type) => {
+@@ -36,6 +36,9 @@ const mapMongooseTypeToSwaggerType = (type) => {
+         if (type.name === 'Decimal128') {
+             return 'number';
+         }
++        if (type.name === 'Buffer') {
++            return 'string';
++        }
+         return type.name.toLowerCase();
+     }
+     if (type.type != null) {
+@@ -55,6 +58,7 @@ const mapMongooseTypeToSwaggerType = (type) => {
              case 'String':
              case 'SchemaString':
              case 'SchemaBuffer':

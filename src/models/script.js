@@ -36,7 +36,6 @@ export default {
           type: Buffer,
           description: "File Content",
           required: true,
-          select: false,
         },
         fileDateModified: {
           type: Date,
@@ -70,10 +69,9 @@ export default {
       },
       {
         toJSON: {
-          virtuals: true,
-          useProjection: true,
           transform: function (doc, ret) {
             ret.file = doc.file.toString("base64");
+            ret.id = ret._id;
             delete ret._id;
             delete ret.__v;
             ret.course = doc.course.toString();
@@ -83,7 +81,18 @@ export default {
     )
   ),
 
-  async createScript(
+  /**
+   * Creates a new Script
+   * @param {String} courseCode
+   * @param {String} userId
+   * @param {Object} script
+   * @param {String} script.name
+   * @param {String} script.description
+   * @param {String} script.file in base64
+   * @param {String} script.fileDateModified in base64
+   * @returns
+   */
+  async create(
     courseCode,
     userId,
     { name, description, file, fileDateModified }
@@ -119,7 +128,7 @@ export default {
     return newScript.toJSON();
   },
 
-  async setScriptFile(uuid, userId, { file, name, modifiedDate }) {
+  async update(uuid, userId, { file, name, modifiedDate }) {
     const script = await this.model
       .findOne({ uuid }, { file: 1, course: 1 })
       .populate("course", { members: 1 });
@@ -142,27 +151,28 @@ export default {
     return script.course.members.some((m) => m.equals(userId));
   },
 
-  async getScriptForUser(uuid, userId) {
-    if (!uuid) throw ErrorCode(3006);
-    const script = await this.model
-      .findOne({ uuid }, { _id: 0, __v: 0 })
-      .populate("course", { members: 1 })
-      .lean();
-    // .populate("cards", { _id: 0, __v: 0 })
+  /**
+   * Returns the script with the id and the userId that must be member
+   * @param {String} id of the script
+   * @param {String} userId userId
+   * @returns {Object}
+   */
+  async get(id, userId) {
+    if (!id) throw ErrorCode(3006);
+    let script;
+    try {
+      script = await this.model
+        .findOne({ _id: id }, { __v: 0 })
+        .populate("course", { members: 1 });
+    } catch (e) {
+      throw ErrorCode(3007, e);
+    }
 
     if (!script) throw ErrorCode(3001);
 
-    if (!script.course.members.find((m) => m.equals(userId)))
-      throw ErrorCode(3004);
+    if (!this.userIn(script, userId)) throw ErrorCode(3004);
 
-    delete script.course;
-
-    return script;
-  },
-
-  async getScriptFile({ uuid }) {
-    const script = await this.model.find(uuid);
-    return script.file;
+    return script.toJSON();
   },
 
   getApiSchema(title, type) {

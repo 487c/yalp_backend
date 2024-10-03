@@ -9,7 +9,7 @@ const parameters = [
     },
     example: "66fdc364ec1a0050d720b667",
     required: true,
-    description: "The uuid of the script",
+    description: "The id of the script",
   },
 ];
 
@@ -21,7 +21,7 @@ export default {
 };
 
 async function GET(req, res) {
-  const course = await Script.getScriptForUser(req.params.uuid, req.userId);
+  const course = await Script.get(req.params.id, req.userId);
   res.status(200).json(course);
 }
 
@@ -34,7 +34,14 @@ GET.apiDoc = {
   tags: ["Script"],
   responses: {
     200: {
-      $ref: "#/components/responses/ScriptResponse",
+      description: "Default success response",
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/Script",
+          },
+        },
+      },
     },
     400: {
       $ref: "#/components/responses/InvalidRequest",

@@ -27,7 +27,7 @@ export default {
       ReducedCourse: Course.getApiSchema("ReducedCourse", "reducedInfo"),
       Course: Course.getApiSchema("Course", "fullInfo"),
       ReducedScript: Script.getApiSchema("ReducedScript", "reducedInfo"),
-      Script: Script.getApiSchema("Script", "reducedInfo"),
+      Script: Script.getApiSchema("Script", "fullInfo"),
       Error: {
         type: "object",
         properties: {
@@ -45,16 +45,6 @@ export default {
       },
     },
     responses: {
-      ScriptResponse: {
-        description: "Default success response",
-        content: {
-          "application/json": {
-            schema: {
-              $ref: "#/components/schemas/Script",
-            },
-          },
-        },
-      },
       VoidResult: {
         description: "Default success response",
         content: {
