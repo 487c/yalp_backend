@@ -1,6 +1,6 @@
 {
   "all": true,
-  "exclude": ["test", "mongo", "./src/yalp.js", "eslint.config.js" , "coverage/**"],
+  "exclude": ["test", "mongo","./src/services/demoData.js", "./src/yalp.js", "eslint.config.js" , "coverage/**"],
   "output": "reports",
   "reporter": ["text-summary"],
   "check-coverage": true

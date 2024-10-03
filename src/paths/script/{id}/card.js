@@ -1,3 +1,5 @@
+import Card from "../../../models/card.js";
+
 const parameters = [
   {
     name: "id",
@@ -17,13 +19,12 @@ export default {
 };
 
 async function POST(req, res) {
-  // const course = await Script.setScriptFile(req.params.uuid, req.userId, {
-  //   file: req.files[0],
-  //   name: req.body.name,
-  //   modifiedDate: req.body.modifiedDate,
-  // });
+  const card = await Card.create(req.params.id, req.userId, {
+    front: req.body.front,
+    back: req.body.back,
+  });
 
-  res.status(200).json({});
+  res.status(200).json(card.toJSON());
 }
 
 POST.apiDoc = {
@@ -34,22 +35,9 @@ POST.apiDoc = {
   tags: ["Script"],
   requestBody: {
     content: {
-      "multipart/form-data": {
+      "application/json": {
         schema: {
-          type: "object",
-          properties: {
-            file: {
-              type: "string",
-              format: "binary",
-            },
-            name: {
-              type: String,
-            },
-            modifiedDate: {
-              type: String,
-              example: new Date().valueOf(),
-            },
-          },
+          $ref: "#/components/schemas/ReducedCard",
         },
       },
     },

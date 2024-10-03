@@ -48,6 +48,7 @@ async function loadUsers() {
 async function loadCourses() {
   console.log("Loading course data");
   await Course.model.deleteMany({});
+  await Card.model.deleteMany({});
 
   const users = await User.model.find();
 
@@ -183,7 +184,7 @@ async function loadScripts() {
   });
   const fileBuff = fs.readFileSync(__dirname + "/../../test/example_file.pdf");
   const base64 = fileBuff.toString("base64");
-  const created = await Script.model.insertMany(
+  const createdScripts = await Script.model.insertMany(
     scripts.map((script) => ({
       _id: new mongoose.Types.ObjectId(script._id),
       name: script.name,
@@ -198,13 +199,38 @@ async function loadScripts() {
     }))
   );
 
-  created.forEach((script, i) => {
+  createdScripts.forEach((script, i) => {
     const course = courses.find((c) => c.code === scripts[i].code);
     course.scripts.push(script._id);
   }),
     await Promise.all(courses.map((course) => course.save()));
 
-  const cards = [{ front: "What is 1 + 1", back: "2 you dumb ass." }];
+  const cards = [
+    {
+      front: "What is 1 + 1",
+      back: "2 you dumb ass.",
+      id: "63fef46e9af90a018fd01014",
+    },
+    {
+      front: "What is 2 + 1",
+      back: "3, much wow, so smart.",
+      id: "62fef46e9af90a018fd01094",
+    },
+  ];
 
-  const createdCard = Card.create(scripts[0]._id, user[0]._id, cards[0]);
+  createdScripts[0].cards.push(cards[0].id, cards[1].id);
+
+  await Promise.all([
+    createdScripts[0].save(),
+    Card.model.insertMany(
+      cards.map(function (c) {
+        return {
+          _id: c.id,
+          front: c.front,
+          back: c.back,
+          author: user[0]._id,
+        };
+      })
+    ),
+  ]);
 }

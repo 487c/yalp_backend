@@ -1,6 +1,7 @@
 import User from "./models/user.js";
 import Script from "./models/script.js";
 import Course from "./models/course.js";
+import Card from "./models/card.js";
 
 export default {
   openapi: "3.0.0",
@@ -28,6 +29,8 @@ export default {
       Course: Course.getApiSchema("Course", "fullInfo"),
       ReducedScript: Script.getApiSchema("ReducedScript", "reducedInfo"),
       Script: Script.getApiSchema("Script", "fullInfo"),
+      Card: Card.getApiSchema("Card", "fullInfo"),
+      ReducedCard: Card.getApiSchema("ReducedCard", "reducedInfo"),
       Error: {
         type: "object",
         properties: {

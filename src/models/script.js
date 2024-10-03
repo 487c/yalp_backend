@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
 import Course from "./course.js";
-import ErrorCode, { CodeError } from "../services/errorCodes.js";
+import ErrorCode from "../services/errorCodes.js";
 import { shortenSchema } from "../services/utils.js";
 import { createHash } from "node:crypto";
 
@@ -146,7 +146,7 @@ export default {
   async delete(id, userId) {
     const script = await this.get(id, userId);
 
-    if (script.cards.length > 0) throw CodeError(3008);
+    if (script.cards.length > 0) throw ErrorCode(3008);
 
     return await this.model.deleteOne({ id: script.id });
   },
@@ -166,7 +166,11 @@ export default {
     if (name) script.name = name;
     if (description) script.description = description;
 
-    return await script.save();
+    try {
+      return await script.save();
+    } catch (e) {
+      throw ErrorCode(3005, e);
+    }
   },
 
   /**
