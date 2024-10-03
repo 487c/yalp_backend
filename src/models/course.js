@@ -17,7 +17,7 @@ export default {
       description: "Anzeigename des Kurses.",
       validate: {
         validator: function (v) {
-          return v.length > 2;
+          return v.length > 2; //TODO: Ordentliche validierung für Kursnamen
         },
         message: (props) => `${props.value} must be at least 3 signs long!`,
       },

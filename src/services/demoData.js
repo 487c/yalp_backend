@@ -126,10 +126,6 @@ async function loadCourses() {
   console.log("Demo courses loaded");
 }
 
-/**
- * TODO: Insert usefull demo data
- *
- */
 async function loadScripts() {
   await Script.model.deleteMany({});
   const user = await User.model.find({ login: "johnwhoRidesDoes" });

@@ -100,5 +100,5 @@ export default {
       name: "File",
     },
   ],
-  paths: {},
+  paths: {}, //TODO: Paths checken und Paramater etc. fixen
 };

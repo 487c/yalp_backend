@@ -24,10 +24,11 @@ export default {
         validator: function (v) {
           return /^[a-zA-Z0-9]{10,}$/.test(v);
         },
-        message: () => `The login must be at least 10 signs long!`,
+        message: () => `Der Login muss 10 Zeichen lang sein und \n
+        und darf nur aus Buchstaben und Zahlen bestehen.`,
       },
     },
-    settings: {
+    settings: { //TODO: Implement save settings path
       showLastOpenedCourse: {
         type: Boolean,
         description: "Show the last opened course on the startpage",

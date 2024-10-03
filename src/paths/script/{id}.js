@@ -30,7 +30,7 @@ GET.apiDoc = {
   description: `Reads the script properties. \n
     Allowed if the user is part of the course. \n
     `,
-  operationId: "getCourse",
+  operationId: "getScript",
   tags: ["Script"],
   responses: {
     200: {
