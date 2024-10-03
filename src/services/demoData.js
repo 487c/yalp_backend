@@ -1,6 +1,7 @@
 import Course from "../models/course.js";
 import User from "../models/user.js";
 import Script from "../models/script.js";
+import Card from "../models/card.js";
 import fs from "fs";
 
 import mongoose from "mongoose";
@@ -187,9 +188,8 @@ async function loadScripts() {
       _id: new mongoose.Types.ObjectId(script._id),
       name: script.name,
       description: script.description,
-      owner: user._id,
+      owner: user[0].id,
       file: fileBuff,
-      uuid: script.uuid,
       md5: createHash("md5").update(base64).digest("hex"),
       course: courses.find((c) => c.code === script.code)._id,
       fileDateModified: fs.statSync(__dirname + "/../../test/example_file.pdf")
@@ -203,4 +203,8 @@ async function loadScripts() {
     course.scripts.push(script._id);
   }),
     await Promise.all(courses.map((course) => course.save()));
+
+  const cards = [{ front: "What is 1 + 1", back: "2 you dumb ass." }];
+
+  const createdCard = Card.create(scripts[0]._id, user[0]._id, cards[0]);
 }

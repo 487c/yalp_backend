@@ -27,7 +27,9 @@ const codes = {
   3004: "Not a member of the course",
   3005: "The Script is missing a file (not yet fully created)",
   3006: "Missing id for script",
-  3007: "Error searching for script"
+  3007: "Error searching for script",
+  3008: "Can't delete script with existing cards",
+  4000: "Could not create Card",
 };
 
 const status = {

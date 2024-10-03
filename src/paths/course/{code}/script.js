@@ -41,7 +41,7 @@ POST.apiDoc = {
   },
   responses: {
     200: {
-      description: "Default success response",
+      description: "Script",
       content: {
         "application/json": {
           schema: {

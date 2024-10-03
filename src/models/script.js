@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
 import Course from "./course.js";
-import ErrorCode from "../services/errorCodes.js";
+import ErrorCode, { CodeError } from "../services/errorCodes.js";
 import { shortenSchema } from "../services/utils.js";
-import { createHash, randomUUID } from "node:crypto";
+import { createHash } from "node:crypto";
 
 export default {
   reducedInfo: ["name", "description"],
@@ -16,6 +16,7 @@ export default {
     "cards",
     "dateCreated",
     "md5",
+    "owner",
     "id",
   ],
   model: mongoose.model(
@@ -55,15 +56,25 @@ export default {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Course",
           description: "Kurs UUID zu dem das Skript gehört",
+          required: true,
+          immutable: true,
         },
         cards: {
           type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Card" }],
           description: "Kartenids zu einem Skript",
+          default: [],
         },
         dateCreated: {
           type: Date,
           description: "Erstellungsdatum des Skriptes",
           default: Date.now,
+          required: true,
+          immutable: true,
+        },
+        owner: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          immutable: true,
           required: true,
         },
       },
@@ -114,12 +125,10 @@ export default {
         name,
         description,
         owner: userId,
-        uuid: randomUUID(),
         file: Buffer.from(file, "base64"),
         fileDateModified,
         course: course._id,
         md5: createHash("md5").update(file).digest("hex"),
-        cards: [],
       });
     } catch (e) {
       throw ErrorCode(3003, e);
@@ -128,16 +137,35 @@ export default {
     return newScript.toJSON();
   },
 
-  async update(uuid, userId, { file, name, modifiedDate }) {
-    const script = await this.model
-      .findOne({ uuid }, { file: 1, course: 1 })
-      .populate("course", { members: 1 });
+  /**
+   * Deletes the Script if:
+   * 1. It has no cards
+   * @param {String} id
+   * @param {String} userId
+   */
+  async delete(id, userId) {
+    const script = await this.get(id, userId);
 
-    if (!script) throw ErrorCode(3001);
-    if (!this.userIn(script, userId)) throw ErrorCode(3004);
+    if (script.cards.length > 0) throw CodeError(3008);
 
-    const fileId = await File.create(file, name, modifiedDate);
-    script.file = fileId;
+    return await this.model.deleteOne({ id: script.id });
+  },
+
+  /**
+   * Updates the script name and description
+   * @param {String} id
+   * @param {String} userId
+   * @param {Object} param2
+   * @param {String} [param2.name]
+   * @param {String} [param2.description]
+   * @returns
+   */
+  async update(id, userId, { name, description }) {
+    const script = await this.get(id, userId);
+
+    if (name) script.name = name;
+    if (description) script.description = description;
+
     return await script.save();
   },
 
@@ -155,15 +183,19 @@ export default {
    * Returns the script with the id and the userId that must be member
    * @param {String} id of the script
    * @param {String} userId userId
+   * @param {Object} populate
+   * @param {boolean} card
    * @returns {Object}
    */
-  async get(id, userId) {
+  async get(id, userId, populate = { cards: false }) {
     if (!id) throw ErrorCode(3006);
     let script;
     try {
-      script = await this.model
+      const promise = this.model
         .findOne({ _id: id }, { __v: 0 })
         .populate("course", { members: 1 });
+      if (populate.cards) promise.populate("cards");
+      script = await promise;
     } catch (e) {
       throw ErrorCode(3007, e);
     }
@@ -172,7 +204,7 @@ export default {
 
     if (!this.userIn(script, userId)) throw ErrorCode(3004);
 
-    return script.toJSON();
+    return script;
   },
 
   getApiSchema(title, type) {

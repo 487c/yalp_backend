@@ -22,7 +22,7 @@ export default {
 
 async function GET(req, res) {
   const course = await Script.get(req.params.id, req.userId);
-  res.status(200).json(course);
+  res.status(200).json(course.toJSON());
 }
 
 GET.apiDoc = {
@@ -34,7 +34,7 @@ GET.apiDoc = {
   tags: ["Script"],
   responses: {
     200: {
-      description: "Default success response",
+      description: "Getting the Script",
       content: {
         "application/json": {
           schema: {
@@ -59,8 +59,11 @@ GET.apiDoc = {
 };
 
 async function PATCH(req, res) {
-  const course = await Script.update(req.params.code, req.userId, {
-    ...req.body,
+  const course = await Script.update(req.params.id, req.userId, {
+    file: req.body.file,
+    modifiedDate: req.body.modifiedDate,
+    name: req.body.name,
+    description: req.body.description,
   });
 
   res.status(200).json(course);
@@ -121,7 +124,7 @@ PATCH.apiDoc = {
 };
 
 async function DELETE(req, res) {
-  await Script.delete(req.params.code, req.userId);
+  await Script.delete(req.params.id, req.userId);
   res.status(200).json({ result: "OK" });
 }
 
@@ -132,20 +135,7 @@ DELETE.apiDoc = {
   tags: ["Script"],
   responses: {
     200: {
-      description: "OK",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              result: {
-                type: String,
-                default: "OK",
-              },
-            },
-          },
-        },
-      },
+     $ref:'#/components/responses/VoidResult'
     },
     400: {
       $ref: "#/components/responses/InvalidRequest",
