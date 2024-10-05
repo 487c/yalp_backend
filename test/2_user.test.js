@@ -2,9 +2,11 @@ import request from "supertest";
 import { expect } from "chai";
 import "dotenv/config";
 import { app } from "./hooks.js";
+import user from "../src/models/user.js";
+import { token } from "./hooks.js";
 
 describe("User", function () {
-  it("log a user in", function (done) {
+  it("succ: user login", function (done) {
     request(app)
       .post("/api/user/login")
       .set("Accept", "application/json")
@@ -12,7 +14,8 @@ describe("User", function () {
       .send({ login: "johnwhoRidesDoes" })
       .expect(200)
       .end(function (err, res) {
-        expect(res.body).to.have.keys("token", "expiresInSeconds", "timestamp");
+        expect(res.body).to.have.keys("token", "expiresInSeconds", "timestamp", 'profile');
+        expect(res.body.profile).to.have.keys(user.fullInfo);
         done(err);
       });
   });
@@ -69,4 +72,19 @@ describe("User", function () {
       });
   });
 
+  it("fail: POST register -> invalid values");
+  it("succ: GET user profile", function (done) {
+    request(app)
+      .get("/api/user")
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send()
+      .expect(200)
+      .end(function (err, res) {
+        expect(res.body).to.have.keys(user.fullInfo);
+        done(err);
+      });
+  });
+  it("fail: GET user profile -> user not found");
 });

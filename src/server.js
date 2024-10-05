@@ -39,6 +39,7 @@ export default async function () {
       pathSecurity: [
         [/^\/course/, [{ bearerAuth: [] }]],
         [/^\/script/, [{ bearerAuth: [] }]],
+        [/^\/user$/, [{ bearerAuth: [] }]],
       ],
       paths: "src/paths",
     }),

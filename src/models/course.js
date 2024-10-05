@@ -9,44 +9,47 @@ function generateInviteCode() {
 }
 
 export default {
-  reducedInfo: ["name", "code"],
+  reducedInfo: ["name", "code", "owner"],
   fullInfo: ["name", "members", "scripts", "code", "owner"],
-  model: mongoose.model("Course", {
-    name: {
-      type: String,
-      description: "Anzeigename des Kurses.",
-      validate: {
-        validator: function (v) {
-          return v.length > 2; //TODO: Ordentliche validierung für Kursnamen
+  model: mongoose.model(
+    "Course",
+    new mongoose.Schema({
+      name: {
+        type: String,
+        description: "Anzeigename des Kurses.",
+        validate: {
+          validator: function (v) {
+            return v.length > 2; //TODO: Ordentliche validierung für Kursnamen
+          },
+          message: (props) => `${props.value} must be at least 3 signs long!`,
         },
-        message: (props) => `${props.value} must be at least 3 signs long!`,
+        required: true,
       },
-      required: true,
-    },
-    members: {
-      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-      description: "Ids der User",
-      required: true,
-    },
-    scripts: {
-      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Script" }],
-      description: "Ids von Skripten zu einer Kurs.",
-      required: true,
-    },
-    code: {
-      type: String,
-      description: "Invite Code für andere User",
-      required: true,
-      min: 10,
-      unique: true,
-    },
-    owner: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      description: "Owner of the Course",
-      required: true,
-    },
-  }),
+      members: {
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+        description: "Ids der User",
+        required: true,
+      },
+      scripts: {
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Script" }],
+        description: "Ids von Skripten zu einer Kurs.",
+        required: true,
+      },
+      code: {
+        type: String,
+        description: "Invite Code für andere User",
+        required: true,
+        min: 10,
+        unique: true,
+      },
+      owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        description: "Owner of the Course",
+        required: true,
+      },
+    })
+  ),
 
   async create({ name, owner, code, members }) {
     let newCourse;
@@ -66,6 +69,12 @@ export default {
     return { name: obj.name, code: obj.code };
   },
 
+  /**
+   * Return a course for an User
+   * @param {String} code 
+   * @param {String} userId 
+   * @returns {Object} Course
+   */
   async getCourseForUser(code, userId) {
     const course = await this.model
       .findOne(
@@ -107,6 +116,12 @@ export default {
     return course;
   },
 
+  /**
+   * Deletes an course if the user is owner of the course
+   * @param {String} code 
+   * @param {String} owner id
+   * @returns {void}
+   */
   async delete(code, owner) {
     const course = await this.model.findOne({ code, owner });
 
@@ -124,9 +139,10 @@ export default {
    * @returns {Object[]}
    */
   async getReducedCoursesForUser(userId) {
-    return await this.model
-      .find({ members: userId }, { name: 1, code: 1, _id: 0 })
+    const list = await this.model
+      .find({ members: userId }, { name: 1, code: 1, _id: 0, owner: 1 })
       .lean();
+    return list;
   },
 
   /**
