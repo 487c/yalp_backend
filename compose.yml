@@ -2,7 +2,7 @@ services:
   yalp_backend:
     build:
       context: .
-    image: ghcr.io/waffelmeister/yalp_backend:latest
+    # image: ghcr.io/waffelmeister/yalp_backend:latest
     container_name: yalp_backend
     env_file:
       - .env
