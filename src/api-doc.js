@@ -1,6 +1,7 @@
-import Course from "./models/course.js";
 import User from "./models/user.js";
 import Script from "./models/script.js";
+import Course from "./models/course.js";
+import Card from "./models/card.js";
 
 export default {
   openapi: "3.0.0",
@@ -22,19 +23,41 @@ export default {
       },
     },
     schemas: {
+      ReducedUser: User.getApiSchema("ReducedUser", "reducedInfo"),
+      User: User.getApiSchema("User", "fullInfo"),
+      ReducedCourse: Course.getApiSchema("ReducedCourse", "reducedInfo"),
+      Course: Course.getApiSchema("Course", "fullInfo"),
+      ReducedScript: Script.getApiSchema("ReducedScript", "reducedInfo"),
+      Script: Script.getApiSchema("Script", "fullInfo"),
+      Card: Card.getApiSchema("Card", "fullInfo"),
+      ReducedCard: Card.getApiSchema("ReducedCard", "reducedInfo"),
       Error: {
         type: "object",
         properties: {
+          status: { type: String },
           code: { type: String },
           message: { type: String },
         },
-        required: ["code", "message"],
+        required: ["status", "message", "code"],
       },
-      ReducedUserSchema: User.getReducedSchema(),
-      // ReducedCourseSchema: Course.getReducedSchema(),
-      ReducedScriptSchema: Script.getReducedSchema(),
+      OkResult: {
+        type: "object",
+        properties: {
+          result: { type: String, default: "OK" },
+        },
+      },
     },
     responses: {
+      VoidResult: {
+        description: "Default success response",
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/OkResult",
+            },
+          },
+        },
+      },
       Error: {
         description: "Error Response",
         content: {
@@ -72,6 +95,10 @@ export default {
       description: "Operations for Scripts",
       name: "Script",
     },
+    {
+      description: "Operations for Files",
+      name: "File",
+    },
   ],
-  paths: {},
+  paths: {}, //TODO: Paths checken und Paramater etc. fixen
 };

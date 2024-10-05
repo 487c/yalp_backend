@@ -7,15 +7,11 @@ export default {
 };
 
 async function POST(req, res) {
-  try {
-    const login = req.body.login;
+  const login = req.body.login;
 
-    const loginResult = await User.login(login);
+  const loginResult = await User.login(login);
 
-    res.status(200).json(loginResult);
-  } catch (e) {
-    throw { status: 400, message: e.toString() };
-  }
+  res.status(200).json(loginResult);
 }
 
 POST.apiDoc = {
@@ -33,7 +29,7 @@ POST.apiDoc = {
           properties: {
             login: {
               type: String,
-              example: "john",
+              example: "johnwhoRidesDoes",
             },
           },
         },
@@ -46,18 +42,7 @@ POST.apiDoc = {
       content: {
         "application/json": {
           schema: {
-            type: "object",
-            properties: {
-              token: {
-                type: String,
-              },
-              expiresInSeconds: {
-                type: Number,
-              },
-              timestamp: {
-                type: Number,
-              },
-            },
+            $ref: "#/components/schemas/User",
           },
         },
       },

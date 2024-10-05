@@ -4,7 +4,7 @@ export default {
   PATCH: PATCH,
 };
 
-async function PATCH(req, res, next) {
+async function PATCH(req, res) {
   Course.changeOwner(req.params.code, req.userId, req.body.user);
   res.status(200).json({ result: "OK" });
 }
@@ -12,7 +12,7 @@ async function PATCH(req, res, next) {
 PATCH.apiDoc = {
   summary: "Transfers course ownership",
   description: "Sets the *Owner* of the Course to another person.",
-  operationId: "joinCourse",
+  operationId: "changeOwner",
   tags: ["Course"],
   requestBody: {
     content: {

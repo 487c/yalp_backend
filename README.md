@@ -1,12 +1,13 @@
 # yalp_backend
 
+
 **Yet another learning platform**
 
-Backendsoftware für YALP.
+## Backendsoftware für YALP
 
-Die Schnittstelle wurde mit OpenApi implementiert und über [Swagger](http://localhost:3001/api/api-documentation/) kann die Api getestet werden.
+Testing Plattform: [Swagger-Ui](http://localhost:3001/api/api-documentation/)
 
-Über den Port 8081 kann auf MongoDb Express (Administrationstool der Datenbank) zugegriffen werden.
+Mongodb - Express: [Mongo-Express] (http://localhost:8081)
 
 Koordination der Bemühungen und Zusammenarbeit über: [Projektboard](https://github.com/users/svolume/projects/1/views/1)
 
@@ -31,6 +32,31 @@ Starten des Stacks
 ```bash
 docker compose up
 ```
+
+## Erro Codes
+
+Implementation see: [ErrorCodes]('./src/services/errorCodes.js')
+
+| Code | Erklärung                                                   |
+| ---- | ----------------------------------------------------------- |
+| 1000 | The login is already taken.                                 |
+| 1001 | Name is already taken.                                      |
+| 1002 | Login is missing.                                           |
+| 1003 | User could not be found.                                    |
+| 2000 | Course could not be created.                                |
+| 2001 | Could not find course or user is not a member of the course |
+| 2002 | Could not find course / you are not the owner of the course |
+| 2003 | You are not the sole member of the course (delete course)   |
+| 2004 | You are already member of the course                        |
+| 2005 | You are not owner of course (delete Course/change Owner)    |
+| 2006 | You is something wrong, the course has no members           |
+| 2007 | The given name does not correspond to a user                |
+| 2008 | New owner is current course owner                           |
+| 3001 | Sript could not be found                                    |
+| 3002 | Sript name is already taken                                 |
+| 3003 | Could not create Script ( + Error)                          |
+| 3004 | Not a member of the course                                  |
+| 3005 | The Script is missing a file (not yet fully created)        |
 
 ## Features
 

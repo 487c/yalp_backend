@@ -19,13 +19,10 @@ export default {
   DELETE: DELETE,
   parameters: parameters,
 };
-async function GET(req, res, next) {
-  try {
+async function GET(req, res) {
     const course = await Course.getCourseForUser(req.params.code, req.userId);
     res.status(200).json(course);
-  } catch (e) {
-    throw { status: 400, message: e.toString() };
-  }
+
 }
 
 GET.apiDoc = {
@@ -36,15 +33,42 @@ GET.apiDoc = {
   tags: ["Course"],
   responses: {
     200: {
-      description: "OK",
+      description: "Course properties",
       content: {
         "application/json": {
           schema: {
             type: "object",
             properties: {
-              result: {
+              name: {
                 type: String,
-                default: "OK",
+              },
+              members: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    name: {
+                      type: String,
+                    },
+                  },
+                },
+              },
+              scripts: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+              },
+              code: {
+                type: String,
+              },
+              owner: {
+                type: "object",
+                properties: {
+                  name: {
+                    type: String,
+                  },
+                },
               },
             },
           },
@@ -66,16 +90,13 @@ GET.apiDoc = {
   },
 };
 
-async function PATCH(req, res, next) {
-  try {
+async function PATCH(req, res) {
     const course = await Course.update(req.params.code, req.userId, {
       ...req.body,
     });
 
     res.status(200).json(course);
-  } catch (e) {
-    throw { status: 400, message: e.toString() };
-  }
+
 }
 
 PATCH.apiDoc = {
@@ -132,14 +153,11 @@ PATCH.apiDoc = {
   },
 };
 
-async function DELETE(req, res, next) {
-  try {
+async function DELETE(req, res) {
     await Course.delete(req.params.code, req.userId);
 
     res.status(200).json({ result: "OK" });
-  } catch (e) {
-    throw { status: 400, message: e.toString() };
-  }
+
 }
 
 DELETE.apiDoc = {

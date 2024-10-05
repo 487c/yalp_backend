@@ -8,7 +8,7 @@ export let token;
 export const mochaHooks = async () => {
   app = await loading();
   const response = await request(app).post("/api/user/login").send({
-    login: "john",
+    login: "johnwhoRidesDoes",
   });
   if (response.statusCode !== 200) {
     // throw new Error(response.body.message);

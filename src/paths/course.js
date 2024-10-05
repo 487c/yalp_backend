@@ -1,26 +1,19 @@
 import Course from "../models/course.js";
+import ErrorCodes from "../services/errorCodes.js";
 
 export default {
   POST: POST,
 };
 
-async function POST(req, res, next) {
+async function POST(req, res) {
   const courseName = req.body.name;
-  try {
-    if (!courseName)
-      throw {
-        status: 400,
-        message: "Missing course name",
-      };
-    const newCourse = await Course.create({
-      name: courseName,
-      owner: req.userId,
-    });
+  if (!courseName) throw ErrorCodes(2009);
+  const newCourse = await Course.create({
+    name: courseName,
+    owner: req.userId,
+  });
 
-    res.status(200).json(newCourse);
-  } catch (e) {
-    throw { status: 400, message: e.toString() };
-  }
+  res.status(200).json(newCourse);
 }
 
 POST.apiDoc = {

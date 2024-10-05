@@ -1,7 +1,16 @@
 import Course from "../models/course.js";
 import User from "../models/user.js";
 import Script from "../models/script.js";
-import { randomUUID } from "crypto";
+import Card from "../models/card.js";
+import fs from "fs";
+
+import mongoose from "mongoose";
+import { createHash } from "node:crypto";
+
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 export default async function loadDemoData() {
   await loadUsers();
   await loadCourses();
@@ -14,15 +23,23 @@ async function loadUsers() {
   await User.model.insertMany([
     {
       name: "John Doe",
-      login: "john",
+      login: "johnwhoRidesDoes",
     },
     {
       name: "Jane Doe",
-      login: "jane",
+      login: "janeIsLikeSuperGreat",
     },
     {
       name: "Alice",
-      login: "alice",
+      login: "aliceIsInWonderland",
+    },
+    {
+      name: "Bob",
+      login: "bobIsNotYourUncle",
+    },
+    {
+      name: "Charlie",
+      login: "charlieIsNotTheUncle",
     },
   ]);
   console.log("Demo data loaded");
@@ -31,6 +48,7 @@ async function loadUsers() {
 async function loadCourses() {
   console.log("Loading course data");
   await Course.model.deleteMany({});
+  await Card.model.deleteMany({});
 
   const users = await User.model.find();
 
@@ -59,6 +77,14 @@ async function loadCourses() {
       name: "Information Technology",
       code: "ITISGREATE101",
     },
+    {
+      name: "History",
+      code: "HISTORYISGREAT101",
+    },
+    {
+      name: "Geography",
+      code: "GEOGRAPHYISGREAT101",
+    },
   ];
 
   await Promise.all(
@@ -84,6 +110,16 @@ async function loadCourses() {
           code: "MUSICISGREAT101",
           owner: users[1]._id,
         }),
+        Course.create({
+          name: "Art",
+          code: "ARTISGREAT101102",
+          owner: users[2]._id,
+        }),
+        Course.create({
+          name: "Exitcourse",
+          code: "EXITISGREAT101",
+          owner: users[0]._id,
+        }),
       ])
   );
 
@@ -92,60 +128,105 @@ async function loadCourses() {
 
 async function loadScripts() {
   await Script.model.deleteMany({});
-  const user = await User.model.find({ login: "john" });
+  const user = await User.model.find({ login: "johnwhoRidesDoes" });
 
   const scripts = [
     {
       name: "Algebra",
       description: "Algebra is super duper great.",
       code: "MATHISGREAT101",
-      uuid: "f317ee1a-00fc-4682-a79c-58c1cf1859ae",
+      _id: "66fdc364ec1a0050d720b667",
     },
     {
       name: "Mengenlehre",
       description: "Mengenlehre ist nichts für Anfänger",
       code: "MATHISGREAT101",
-      uuid: "1e274ba0-b772-4edd-8c04-b5291af2e8bb",
+      _id: "57fdc364ec1a0050d720b667",
     },
     {
       name: "Trigonometry",
       description: "Lehre über Trigonometrie",
       code: "MATHISGREAT101",
-      uuid: "2c01f96d-69c4-4a0f-b8b0-0ee2f539871e",
+      _id: "87fdc364ec1a0050d720b667",
     },
     {
       name: "Grammatik",
       code: "DEUTSCHISGREAT101",
       description: "Grammatik ist super wichtig",
-      uuid: "a4022ea6-a6b0-42f4-b7fe-e0c7a04a7320",
+      _id: "27fdc364ec1a0050d720b667",
     },
     {
       name: "Rechtschreibung",
       code: "DEUTSCHISGREAT101",
       description: "Rechtschreibung sollte beachtet werden",
-      uuid: "c6326f9a-6873-4ea9-92e3-1af68ae36a03",
+      _id: "17fdc364ec1a0050d720b667",
+    },
+    {
+      name: "Vokabeln",
+      code: "DEUTSCHISGREAT101",
+      description: "Vokabeln sind super wichtig",
+      _id: "37fdc364ec1a0050d720b667",
+    },
+    {
+      name: "Vocabulary",
+      code: "ENGLISHISGREAT101",
+      description: "Vocabulary is super important",
+      _id: "47fdc364ec1a0050d720b667",
     },
   ];
-
-  const created = await Script.model.insertMany(
-    scripts.map((script) => ({
-      name: script.name,
-      description: script.description,
-      owner: user._id,
-      uuid: script.uuid,
-      cards: [],
-    }))
-  );
 
   const courses = await Course.model.find({
     code: { $in: Array.from(new Set(scripts.map((s) => s.code)).values()) },
   });
+  const fileBuff = fs.readFileSync(__dirname + "/../../test/example_file.pdf");
+  const base64 = fileBuff.toString("base64");
+  const createdScripts = await Script.model.insertMany(
+    scripts.map((script) => ({
+      _id: new mongoose.Types.ObjectId(script._id),
+      name: script.name,
+      description: script.description,
+      owner: user[0].id,
+      file: fileBuff,
+      md5: createHash("md5").update(base64).digest("hex"),
+      course: courses.find((c) => c.code === script.code)._id,
+      fileDateModified: fs.statSync(__dirname + "/../../test/example_file.pdf")
+        .mtime,
+      cards: [],
+    }))
+  );
 
-  created.forEach((script, i) => {
+  createdScripts.forEach((script, i) => {
     const course = courses.find((c) => c.code === scripts[i].code);
     course.scripts.push(script._id);
   }),
     await Promise.all(courses.map((course) => course.save()));
 
-  console.log("Demo courses loaded");
+  const cards = [
+    {
+      front: "What is 1 + 1",
+      back: "2 you dumb ass.",
+      id: "63fef46e9af90a018fd01014",
+    },
+    {
+      front: "What is 2 + 1",
+      back: "3, much wow, so smart.",
+      id: "62fef46e9af90a018fd01094",
+    },
+  ];
+
+  createdScripts[0].cards.push(cards[0].id, cards[1].id);
+
+  await Promise.all([
+    createdScripts[0].save(),
+    Card.model.insertMany(
+      cards.map(function (c) {
+        return {
+          _id: c.id,
+          front: c.front,
+          back: c.back,
+          author: user[0]._id,
+        };
+      })
+    ),
+  ]);
 }

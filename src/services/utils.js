@@ -1,13 +1,15 @@
-/**
- * Returns an new Object, reduced to the keys given
- * @param {Object} obj from which to take the values
- * @param {String[]} keys to keep
- */
-export function reduceObject(obj, keys) {
-  return Object.keys(obj).reduce((acc, key) => {
-    if (keys.includes(key)) {
-      acc[key] = obj[key];
+export function shortenSchema(schema, modelname, arrProps) {
+  return arrProps.reduce(
+    function (obj, property) {
+      if (schema.properties[property])
+        obj.properties[property] = schema.properties[property];
+      return obj;
+    },
+    {
+      title: modelname,
+      properties: {
+        id: { ...schema.properties._id, description: "Id der Entity" },
+      },
     }
-    return acc;
-  }, {});
+  );
 }

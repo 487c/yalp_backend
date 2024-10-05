@@ -1,15 +1,15 @@
-import Course from "../../models/course.js";
+import Script from "../../models/script.js";
 
 const parameters = [
   {
-    name: "uuid",
+    name: "id",
     in: "path",
     schema: {
       type: "string",
     },
-    example: "1e274ba0-b772-4edd-8c04-b5291af2e8bb",
+    example: "66fdc364ec1a0050d720b667",
     required: true,
-    description: "The uuid of the script",
+    description: "The id of the script",
   },
 ];
 
@@ -20,53 +20,25 @@ export default {
   parameters: parameters,
 };
 
-//TODO: where do we go?
-// Lets do something nice here
-
-/**
- * TODO: talk about expected result values
- * where to go from here
- */
-
-
-/**
- * TODO: talk not about expected result values
- *  where to go from here
- */
-
-/**
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- */
-async function GET(req, res, next) {
-  try {
-    const course = await Course.getCourseForUser(req.params.code, req.userId);
-    res.status(200).json(course);
-  } catch (e) {
-    throw { status: 400, message: e.toString() };
-  }
+async function GET(req, res) {
+  const course = await Script.get(req.params.id, req.userId);
+  res.status(200).json(course.toJSON());
 }
 
 GET.apiDoc = {
   summary: "Read the script metadata",
-  description:
-    "Reads the script properties. Allowed if the user is part of the course. ",
-  operationId: "getCourse",
+  description: `Reads the script properties. \n
+    Allowed if the user is part of the course. \n
+    `,
+  operationId: "getScript",
   tags: ["Script"],
   responses: {
     200: {
-      description: "OK",
+      description: "Getting the Script",
       content: {
         "application/json": {
           schema: {
-            type: "object",
-            properties: {
-              result: {
-                type: String,
-                default: "OK",
-              },
-            },
+            $ref: "#/components/schemas/Script",
           },
         },
       },
@@ -86,16 +58,15 @@ GET.apiDoc = {
   },
 };
 
-async function PATCH(req, res, next) {
-  try {
-    const course = await Course.update(req.params.code, req.userId, {
-      ...req.body,
-    });
+async function PATCH(req, res) {
+  const course = await Script.update(req.params.id, req.userId, {
+    file: req.body.file,
+    modifiedDate: req.body.modifiedDate,
+    name: req.body.name,
+    description: req.body.description,
+  });
 
-    res.status(200).json(course);
-  } catch (e) {
-    throw { status: 400, message: e.toString() };
-  }
+  res.status(200).json(course);
 }
 
 PATCH.apiDoc = {
@@ -152,14 +123,9 @@ PATCH.apiDoc = {
   },
 };
 
-async function DELETE(req, res, next) {
-  try {
-    await Course.delete(req.params.code, req.userId);
-
-    res.status(200).json({ result: "OK" });
-  } catch (e) {
-    throw { status: 400, message: e.toString() };
-  }
+async function DELETE(req, res) {
+  await Script.delete(req.params.id, req.userId);
+  res.status(200).json({ result: "OK" });
 }
 
 DELETE.apiDoc = {
@@ -169,20 +135,7 @@ DELETE.apiDoc = {
   tags: ["Script"],
   responses: {
     200: {
-      description: "OK",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              result: {
-                type: String,
-                default: "OK",
-              },
-            },
-          },
-        },
-      },
+     $ref:'#/components/responses/VoidResult'
     },
     400: {
       $ref: "#/components/responses/InvalidRequest",

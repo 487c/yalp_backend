@@ -4,14 +4,10 @@ export default {
   GET: GET,
 };
 
-async function GET(req, res, next) {
-  try {
-    const courses = await Course.getReducedCoursesForUser(req.userId);
+async function GET(req, res) {
+  const courses = await Course.getReducedCoursesForUser(req.userId);
 
-    res.status(200).json(courses);
-  } catch (e) {
-    res.status(500).json(e.toString());
-  }
+  res.status(200).json(courses);
 }
 
 GET.apiDoc = {
