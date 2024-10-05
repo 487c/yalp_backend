@@ -18,6 +18,12 @@ export default {
           description: "Name that is shown in the Client and to other users.",
           required: true,
           unique: true,
+          validate: {
+            validator: function (v) {
+              return v.length > 2;
+            },
+            message: () => `Der name muss länger als 2 Zeichen sein..`,
+          },
         },
         login: {
           type: String,
@@ -33,7 +39,6 @@ export default {
           },
         },
         settings: {
-          //TODO: Implement save settings path
           showLastOpenedCourse: {
             type: Boolean,
             description: "Show the last opened course on the startpage",
@@ -56,7 +61,7 @@ export default {
         },
         toJSON: {
           transform: function (user, ret) {
-            ret.id = ret._id;
+            ret.id = ret._id.toString();
             delete ret._id;
             delete ret.__v;
             delete ret.login;
@@ -66,6 +71,13 @@ export default {
     ).plugin(mongooseLeanVirtuals)
   ),
 
+  /**
+   * Creates a user
+   * @param {Object} param0
+   * @param {String} param0.name
+   * @param {String} param0.login
+   * @returns {User}
+   */
   register: async function ({ name, login }) {
     let newUser;
     try {
@@ -77,8 +89,7 @@ export default {
       throw ErrorCodes(1001, e);
     }
 
-    const obj = await newUser.toObject();
-    return { name: obj.name };
+    return this.get(newUser._id);
   },
 
   /**
@@ -114,6 +125,18 @@ export default {
     delete user._id;
     delete user.login;
     return user;
+  },
+
+  async update(userId, data) {
+    const user = await this.model.findOne({ _id: userId });
+    user.set(data);
+    let result;
+    try {
+      result = await user.save();
+      return result.toJSON();
+    } catch (e) {
+      throw ErrorCodes(1004, e);
+    }
   },
 
   getApiSchema(title, type) {

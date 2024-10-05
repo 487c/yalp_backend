@@ -6,7 +6,7 @@ import user from "../src/models/user.js";
 import { token } from "./hooks.js";
 
 describe("User", function () {
-  it("succ: user login", function (done) {
+  it("succ: POST user login", function (done) {
     request(app)
       .post("/api/user/login")
       .set("Accept", "application/json")
@@ -14,13 +14,18 @@ describe("User", function () {
       .send({ login: "johnwhoRidesDoes" })
       .expect(200)
       .end(function (err, res) {
-        expect(res.body).to.have.keys("token", "expiresInSeconds", "timestamp", 'profile');
+        expect(res.body).to.have.keys(
+          "token",
+          "expiresInSeconds",
+          "timestamp",
+          "profile"
+        );
         expect(res.body.profile).to.have.keys(user.fullInfo);
         done(err);
       });
   });
 
-  it("fail: user register, login too short", function (done) {
+  it("fail: POST user register, invalid values", function (done) {
     request(app)
       .post("/api/user/register")
       .set("Accept", "application/json")
@@ -32,7 +37,7 @@ describe("User", function () {
       });
   });
 
-  it("fail: user login, missing login", function (done) {
+  it("fail: POST user login, missing login", function (done) {
     request(app)
       .post("/api/user/login")
       .set("Accept", "application/json")
@@ -44,7 +49,7 @@ describe("User", function () {
       });
   });
 
-  it("fail: user login, login not existing", function (done) {
+  it("fail: POST user login, login not existing", function (done) {
     request(app)
       .post("/api/user/login")
       .set("Accept", "application/json")
@@ -56,7 +61,7 @@ describe("User", function () {
       });
   });
 
-  it("succ: user register", function (done) {
+  it("succ: POST user register", function (done) {
     request(app)
       .post("/api/user/register")
       .set("Accept", "application/json")
@@ -67,12 +72,11 @@ describe("User", function () {
       })
       .expect(200)
       .end(function (err, res) {
-        expect(res.body).to.have.property("name", "Peter Pan");
+        expect(res.body).to.have.keys(user.fullInfo);
         done(err);
       });
   });
 
-  it("fail: POST register -> invalid values");
   it("succ: GET user profile", function (done) {
     request(app)
       .get("/api/user")
@@ -86,5 +90,38 @@ describe("User", function () {
         done(err);
       });
   });
-  it("fail: GET user profile -> user not found");
+
+  it("succ: PATCH user profile", function (done) {
+    request(app)
+      .patch("/api/user")
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "John Doe the third",
+        settings: {
+          showLastOpenedCourse: true,
+        },
+        lastOpenedCourse: "MATHISGREAT101",
+      })
+      .expect(200)
+      .end(function (err, res) {
+        expect(res.body).to.have.keys(user.fullInfo);
+        done(err);
+      });
+  });
+
+  it("fail: PATCH user profile -> invalid values", function (done) {
+    request(app)
+      .patch("/api/user")
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({name:"te"})
+      .expect(400)
+      .end(function (err, res) {
+        expect(res.body).to.have.property("code", 1004);
+        done(err);
+      });
+  });
 });

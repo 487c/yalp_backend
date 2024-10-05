@@ -10,6 +10,7 @@ const codes = {
   1001: "User could not be created",
   1002: "Login is missing",
   1003: "User could not be found",
+  1004: "Profile could not be updated",
   2000: "Course could not be created",
   2001: "Could not find course or user is not a member of the course",
   2002: "Could not find course / you are not the owner of the course",
