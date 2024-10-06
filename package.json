@@ -8,7 +8,6 @@
     "build:coverage": "c8 mocha --require test/hooks.js --exit && c8 check-coverage --lines 80 --functions 80 --branches 80",
     "build:eslint": "eslint src/**",
     "test:coverage:exit": "c8 mocha --require test/hooks.js --exit",
-    "test:coverage": "c8 mocha --require test/hooks.js ",
     "test:watch:coverage": "nodemon -e yml,js,json --exec npm run test:coverage:exit",
     "test:watch": "nodemon -e yml,js,json --exec mocha --reporter=min -require test/hooks.js",
     "start:api": "nodemon -e yml,js,json ./src/yalp.js",
