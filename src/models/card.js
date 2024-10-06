@@ -5,7 +5,7 @@ import ErrorCodes from "../services/errorCodes.js";
 import { shortenSchema } from "../services/utils.js";
 
 export default {
-  fullInfo: ["id", "front", "back", "author", "creationDate"],
+  fullInfo: ["id", "front", "back", "author", "creationDate", "anchor"],
   reducedInfo: ["back", "front"],
 
   model: mongoose.model(
@@ -34,6 +34,14 @@ export default {
           description: "Erstellungszeit der Karte",
           default: Date.now,
           immutable: true,
+        },
+        anchor: {
+          scriptId: {
+            type: "string",
+          },
+          context: [
+            Number
+          ],
         },
       },
       {
