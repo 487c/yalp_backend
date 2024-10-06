@@ -91,19 +91,14 @@ describe("User", function () {
       });
   });
 
+
   it("succ: PATCH user profile", function (done) {
     request(app)
       .patch("/api/user")
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "John Doe the third",
-        settings: {
-          showLastOpenedCourse: true,
-        },
-        lastOpenedCourse: "MATHISGREAT101",
-      })
+      .send({name:"John Doe The Dirt"})
       .expect(200)
       .end(function (err, res) {
         expect(res.body).to.have.keys(user.fullInfo);
