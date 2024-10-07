@@ -16,6 +16,7 @@ const parameters = [
 export default {
   GET,
   // PATCH, //TODO: Insert Patch path
+  // PATCH, //Issue URL: https://github.com/Waffelmeister/yalp_backend/issues/39
   // DELETE,
   parameters: parameters,
 };
