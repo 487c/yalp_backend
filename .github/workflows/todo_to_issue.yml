@@ -1,5 +1,7 @@
 name: "Run TODO to Issue"
-on: [ "push" ]
+on:
+  push:
+    branches: ["dev"]
 jobs:
   build:
     runs-on: "ubuntu-latest"
@@ -17,4 +19,4 @@ jobs:
         run: |
           git add .
           git commit -m "Automatically added GitHub issue links to TODOs"
-          git push origin main
+          git push origin dev
