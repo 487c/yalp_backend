@@ -38,10 +38,22 @@ export default {
         anchor: {
           scriptId: {
             type: "string",
+            required: true,
           },
-          context: [
-            Number
-          ],
+
+          context: {
+            type: [Number],
+            validate: [
+              (array) => {
+                if (array.length === 0) {
+                  return false;
+                } else {
+                  return true;
+                }
+              },
+              "Anchor context is required.",
+            ],
+          },
         },
       },
       {
@@ -63,8 +75,9 @@ export default {
    * @param {Object} param1 Card infos
    * @param {String} param1.front
    * @param {String} param1.back
+   * @param {String} param1.context
    */
-  async create(scriptId, userId, { front, back }) {
+  async create(scriptId, userId, { front, back, context }) {
     const script = await Script.get(scriptId, userId);
     let card;
     try {
@@ -72,6 +85,10 @@ export default {
         author: userId,
         front,
         back,
+        anchor: {
+          scriptId,
+          context,
+        },
       });
     } catch (e) {
       throw ErrorCodes(4000, e);

@@ -1,4 +1,3 @@
-
 import request from "supertest";
 import { expect } from "chai";
 import "dotenv/config";
@@ -15,6 +14,10 @@ describe("Deck", function () {
       .send({
         front: "Was sind binomsiche Formel?",
         back: "Woher soll ich das wissen?",
+        anchor: {
+          scriptId: "66fdc364ec1a0050d720b667",
+          context: [0],
+        },
       })
       .end(function (err, res) {
         expect(res.body).to.have.keys(Card.fullInfo);
@@ -32,7 +35,7 @@ describe("Deck", function () {
         back: "Woher soll ich das wissen?",
       })
       .end(function (err, res) {
-        expect(res.body).to.have.property('code', 4000);
+        expect(res.body).to.have.property("code", 4000);
         done(err);
       });
   });

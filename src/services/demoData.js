@@ -216,17 +216,18 @@ async function loadScripts() {
 
   createdScripts[0].cards.push(cards[0].id, cards[1].id);
 
-  await Promise.all([
-    createdScripts[0].save(),
-    Card.model.insertMany(
-      cards.map(function (c) {
-        return {
-          _id: c.id,
-          front: c.front,
-          back: c.back,
-          author: user[0]._id,
-        };
-      })
-    ),
-  ]);
+  await Card.model.insertMany(
+    cards.map(function (c) {
+      return {
+        _id: c.id,
+        front: c.front,
+        back: c.back,
+        author: user[0]._id,
+        anchor: {
+          scriptId: createdScripts[0]._id,
+          context: [0],
+        },
+      };
+    })
+  );
 }
