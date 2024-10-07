@@ -19,4 +19,4 @@ jobs:
         run: |
           git add .
           git commit -m "Automatically added GitHub issue links to TODOs"
-          git push origin dev
+          git push

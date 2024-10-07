@@ -15,7 +15,7 @@ const parameters = [
 
 export default {
   GET,
-  // PATCH,
+  // PATCH, //TODO: Insert Patch path
   // DELETE,
   parameters: parameters,
 };
