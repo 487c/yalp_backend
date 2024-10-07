@@ -147,12 +147,13 @@ export default {
   async delete(id, userId) {
     const loadingScript = this.get(id, userId);
 
-    const loadingCard = Card.model.findOne({ anchor: { scriptId: id } }).lean();
+    const loadingCard = Card.model.findOne({ "anchor.scriptId": id });
 
     const [script, card] = await Promise.all([loadingScript, loadingCard]);
     if (card) throw ErrorCode(3008);
+    if (!script) throw ErrorCode(3001);
 
-    return await this.model.deleteOne({ id: script.id });
+    return await this.model.deleteOne({ id });
   },
 
   /**

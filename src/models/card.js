@@ -37,10 +37,10 @@ export default {
         },
         anchor: {
           scriptId: {
-            type: "string",
+            type: mongoose.Types.ObjectId,
+            ref: "Script",
             required: true,
           },
-
           context: {
             type: [Number],
             validate: [
@@ -77,7 +77,7 @@ export default {
    * @param {String} param1.back
    * @param {String} param1.context
    */
-  async create(scriptId, userId, { front, back, context }) {
+  async create(scriptId, userId, { front, back, anchor }) {
     const script = await Script.get(scriptId, userId);
     let card;
     try {
@@ -85,10 +85,7 @@ export default {
         author: userId,
         front,
         back,
-        anchor: {
-          scriptId,
-          context,
-        },
+        anchor,
       });
     } catch (e) {
       throw ErrorCodes(4000, e);
@@ -96,6 +93,19 @@ export default {
 
     script.cards.push(card._id);
     await script.save();
+    return card;
+  },
+
+  async get(cardId) {
+    const card = await this.model.findOne({ _id: cardId }).lean({
+      transform: function (ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+        return ret;
+      },
+    });
+    if (!card) throw ErrorCodes(4001);
     return card;
   },
 

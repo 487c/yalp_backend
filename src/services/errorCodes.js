@@ -31,6 +31,7 @@ const codes = {
   3007: "Error searching for script",
   3008: "Can't delete script with existing cards",
   4000: "Could not create Card",
+  4001: "Could not find Card",
 };
 
 const status = {

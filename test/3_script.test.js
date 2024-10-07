@@ -167,6 +167,19 @@ describe("Script", function () {
       });
   });
 
+  it("fail: DELETE script -> script not found", function (done) {
+    request(app)
+      .delete(`/api/script/66fdc333333333333320b667`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send()
+      .end(function (err, res) {
+        expect(res.body).to.have.property("code", 3001);
+        done(err);
+      });
+  });
+
   it("succ: PATCH script", function (done) {
     request(app)
       .patch(`/api/script/47fdc364ec1a0050d720b667`)
