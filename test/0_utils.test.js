@@ -41,7 +41,6 @@ describe("Others", function () {
         expect(err).to.be.an("object");
         expect(err).to.have.property("code", 200);
         expect(err).to.have.property("status", 403);
-
         done();
       }
     );
@@ -81,12 +80,44 @@ describe("Others", function () {
   });
 
   it("should make logstring", function (done) {
-    const msg = new CodeError(0, 100, "test").log({
+    const msg = new CodeError(0, 100, "test").getMessage({
       originalUrl: "https://test",
       body: { test: "test" },
     });
     expect(msg).to.be.an("string");
     expect(msg).to.match(/test/);
     done();
+  });
+
+  it("should create an jwt_token", function (done) {
+    const token = generateAccessToken("test");
+    expect(token);
+    done();
+  });
+
+  it("token should test invalid", function (done) {
+    const token =
+      "dslf.eyJpZCI6InRlc3QiLCJpYXQiOjE3Mjg0MTIzOTIsImV4cCI6MTcyODQxNDE5Mn0.c7KTKDt846G7HG3lcLXUYGnKeIz7_ydU5umd_xNOvE0";
+     verifyToken({
+      headers: { authorization: `bearer ${token}` },
+    })
+      .then(function () {
+      })
+      .catch(function (e) {
+        expect(e).to.have.property("code", 200);
+        done();
+      });
+  });
+
+  it("token should test missing", function (done) {
+     verifyToken({
+      headers: {  },
+    })
+      .then(function () {
+      })
+      .catch(function (e) {
+        expect(e).to.have.property("code", 100);
+        done();
+      });
   });
 });
