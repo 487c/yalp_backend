@@ -32,7 +32,10 @@ describe("Courses", function () {
       })
       .expect(200)
       .end(function (err, res) {
-        expect(res.body, makeMessage(res.body)).to.have.property("name", "Philosophy");
+        expect(res.body, makeMessage(res.body)).to.have.property(
+          "name",
+          "Philosophy"
+        );
         done(err);
       });
   });
@@ -106,7 +109,10 @@ describe("Courses", function () {
       })
       .expect(200)
       .end(function (err, res) {
-        expect(res.body, makeMessage(res.body)).to.have.property("name", "Deutschunterricht");
+        expect(res.body, makeMessage(res.body)).to.have.property(
+          "name",
+          "Deutschunterricht"
+        );
         done(err);
       });
   });
@@ -230,7 +236,19 @@ describe("Courses", function () {
       });
   });
 
-  it("fail: change course owner -> candiate not part of the course");
-
-  it("fail: change course owner -> not the owner");
+  it("fail: change course owner -> course could not be found (not owner / user not a member)", function (done) {
+    request(app)
+      .patch("/api/course/CHANGEISGREAT101/owner")
+      .set("Authorization", `Bearer ${token}`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .send({ user: "670238fcc348c69519024e7c" })
+      .end(function (err, res) {
+        expect(res.body, makeMessage(res.body)).to.to.have.property(
+          "code",
+          2007
+        );
+        done(err);
+      });
+  });
 });

@@ -67,6 +67,7 @@ export class CodeError {
 
     console.error(msg);
     logger.error(msg);
+    return msg
   }
 }
 

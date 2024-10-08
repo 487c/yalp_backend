@@ -1,4 +1,7 @@
-import errorCodes from "../src/services/errorCodes.js";
+import errorCodes, {
+  CodeError,
+  makeMessage,
+} from "../src/services/errorCodes.js";
 import { expect } from "chai";
 import {
   generateAccessToken,
@@ -54,10 +57,36 @@ describe("Others", function () {
     });
   });
 
-  it("should parse mongoose to api schema", function (done) {
+  it("should parse mongoose to api schema w id", function (done) {
+    const api = user.getApiSchema("User", "fullInfo");
+    expect(api).to.be.an("object");
+    expect(api).to.have.property("title", "User");
+    expect(api.properties).to.have.keys(user.fullInfo);
+    done();
+  });
+
+  it("should parse mongoose to api schema w/o id", function (done) {
     const api = user.getApiSchema("User", "reducedInfo");
     expect(api).to.be.an("object");
     expect(api).to.have.property("title", "User");
+    expect(api.properties).to.not.have.key("id");
+    done();
+  });
+
+  it("should parse error (code, message)", function (done) {
+    const api = makeMessage({ code: 1001, message: "test" });
+    expect(api).to.be.an("string");
+    expect(api).to.match(/1001/);
+    done();
+  });
+
+  it("should make logstring", function (done) {
+    const msg = new CodeError(0, 100, "test").log({
+      originalUrl: "https://test",
+      body: { test: "test" },
+    });
+    expect(msg).to.be.an("string");
+    expect(msg).to.match(/test/);
     done();
   });
 });
