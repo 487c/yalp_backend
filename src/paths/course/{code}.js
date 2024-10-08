@@ -20,9 +20,8 @@ export default {
   parameters: parameters,
 };
 async function GET(req, res) {
-    const course = await Course.getCourseForUser(req.params.code, req.userId);
-    res.status(200).json(course);
-
+  const course = await Course.getCourseForUser(req.params.code, req.userId);
+  res.status(200).json(course);
 }
 
 GET.apiDoc = {
@@ -37,40 +36,7 @@ GET.apiDoc = {
       content: {
         "application/json": {
           schema: {
-            type: "object",
-            properties: {
-              name: {
-                type: String,
-              },
-              members: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    name: {
-                      type: String,
-                    },
-                  },
-                },
-              },
-              scripts: {
-                type: "array",
-                items: {
-                  type: "string",
-                },
-              },
-              code: {
-                type: String,
-              },
-              owner: {
-                type: "object",
-                properties: {
-                  name: {
-                    type: String,
-                  },
-                },
-              },
-            },
+            $ref: "#/components/schemas/Course",
           },
         },
       },
@@ -91,12 +57,11 @@ GET.apiDoc = {
 };
 
 async function PATCH(req, res) {
-    const course = await Course.update(req.params.code, req.userId, {
-      ...req.body,
-    });
+  const course = await Course.update(req.params.code, req.userId, {
+    ...req.body,
+  });
 
-    res.status(200).json(course);
-
+  res.status(200).json(course);
 }
 
 PATCH.apiDoc = {
@@ -108,13 +73,7 @@ PATCH.apiDoc = {
     content: {
       "application/json": {
         schema: {
-          type: "object",
-          properties: {
-            name: {
-              type: String,
-              example: "Math for beginners",
-            },
-          },
+          $ref: "#/components/schemas/PatchableCourse",
         },
       },
     },
@@ -125,15 +84,7 @@ PATCH.apiDoc = {
       content: {
         "application/json": {
           schema: {
-            type: "object",
-            properties: {
-              name: {
-                type: String,
-              },
-              code: {
-                type: String,
-              },
-            },
+            $ref: "#/components/schemas/Course",
           },
         },
       },
@@ -154,10 +105,9 @@ PATCH.apiDoc = {
 };
 
 async function DELETE(req, res) {
-    await Course.delete(req.params.code, req.userId);
+  await Course.delete(req.params.code, req.userId);
 
-    res.status(200).json({ result: "OK" });
-
+  res.status(200).json({ result: "OK" });
 }
 
 DELETE.apiDoc = {
@@ -167,20 +117,7 @@ DELETE.apiDoc = {
   tags: ["Course"],
   responses: {
     200: {
-      description: "OK",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              result: {
-                type: String,
-                default: "OK",
-              },
-            },
-          },
-        },
-      },
+      $ref: "#/components/responses/VoidResult",
     },
     400: {
       $ref: "#/components/responses/InvalidRequest",

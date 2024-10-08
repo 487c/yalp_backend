@@ -27,6 +27,7 @@ export default {
       User: User.getApiSchema("User", "fullInfo"),
       ReducedCourse: Course.getApiSchema("ReducedCourse", "reducedInfo"),
       Course: Course.getApiSchema("Course", "fullInfo"),
+      PatchableCourse: Course.getApiSchema("PatchableCourse", "patchableInfo"),
       ReducedScript: Script.getApiSchema("ReducedScript", "reducedInfo"),
       Script: Script.getApiSchema("Script", "fullInfo"),
       Card: Card.getApiSchema("Card", "fullInfo"),
