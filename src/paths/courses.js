@@ -26,15 +26,7 @@ GET.apiDoc = {
               courses: {
                 type: "array",
                 items: {
-                  type: "object",
-                  properties: {
-                    name: {
-                      type: String,
-                    },
-                    code: {
-                      type: String,
-                    },
-                  },
+                 $ref:"#/components/schemas/ReducedCourse"
                 },
               },
             },
