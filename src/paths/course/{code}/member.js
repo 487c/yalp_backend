@@ -64,20 +64,7 @@ DELETE.apiDoc = {
   tags: ["Course"],
   responses: {
     200: {
-      description: "OK",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              result: {
-                type: String,
-                default: "OK",
-              },
-            },
-          },
-        },
-      },
+      $ref: "#/components/responses/VoidResult",
     },
     400: {
       $ref: "#/components/responses/InvalidRequest",

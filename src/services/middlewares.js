@@ -28,6 +28,8 @@ export function verifyToken(req) {
 export function handleError(err, req, res, next) {
   let error =
     err instanceof CodeError ? err : ErrorCodes(0, err._message || err.message);
+  
+  logger.error(error.getMessage(req));
   res.status(error.status).json(error);
 
   next();
@@ -55,6 +57,7 @@ export function logInfo(req, res, next) {
   next();
 }
 
+/* c8 ignore next 19*/
 export const consumesMiddleware = {
   "multipart/form-data": function (req, res, next) {
     multer().any()(req, res, function (err) {

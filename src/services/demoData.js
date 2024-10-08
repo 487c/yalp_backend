@@ -221,6 +221,11 @@ async function loadScripts() {
       back: "3, much wow, so smart.",
       id: "62fef46e9af90a018fd01094",
     },
+    {
+      front: "Will this card be deleted???",
+      back: "Yes.",
+      id: "63fef22222220a018fd01014",
+    },
   ];
 
   createdScripts[0].cards.push(cards[0].id, cards[1].id);

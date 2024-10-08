@@ -21,22 +21,9 @@ GET.apiDoc = {
       content: {
         "application/json": {
           schema: {
-            type: "object",
-            properties: {
-              courses: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    name: {
-                      type: String,
-                    },
-                    code: {
-                      type: String,
-                    },
-                  },
-                },
-              },
+            type: "array",
+            items: {
+              $ref: "#/components/schemas/ReducedCourse",
             },
           },
         },

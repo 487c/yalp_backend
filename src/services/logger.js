@@ -11,4 +11,4 @@ export default winston.createLogger({
     new winston.transports.File({ filename: "./logging/yalp.log" }),
     new winston.transports.Console({ level: "error" }),
   ],
-});
+})

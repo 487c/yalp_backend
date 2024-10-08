@@ -10,6 +10,7 @@ function generateInviteCode() {
 
 export default {
   reducedInfo: ["name", "code", "owner"],
+  patchableInfo: ["name" ],
   fullInfo: ["name", "members", "scripts", "code", "owner"],
   model: mongoose.model(
     "Course",
@@ -167,6 +168,8 @@ export default {
 
     if (!course) throw ErrorCodes(2001);
 
+    //TODO: Add Deck on join course / create course
+    //Issue URL: https://github.com/Waffelmeister/yalp_backend/issues/43
     if (!course.members.includes(userId)) {
       course.members.push(userId);
       await course.save();
