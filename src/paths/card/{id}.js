@@ -7,7 +7,7 @@ const parameters = [
     schema: {
       type: "string",
     },
-    example: "66fdc364ec1a0050d720b667",
+    example: "62fef46e9af90a018fd01094",
     required: true,
     description: "The id of the card",
   },

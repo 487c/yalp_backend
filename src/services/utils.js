@@ -8,7 +8,9 @@ export function shortenSchema(schema, modelname, arrProps) {
     {
       title: modelname,
       properties: {
-        id: { ...schema.properties._id, description: "Id der Entity" },
+        id: arrProps.includes("id")
+          ? { ...schema.properties._id, description: "Id der Entity" }
+          : {},
       },
     }
   );

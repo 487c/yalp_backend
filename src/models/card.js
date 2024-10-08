@@ -7,6 +7,7 @@ import { shortenSchema } from "../services/utils.js";
 export default {
   fullInfo: ["id", "front", "back", "author", "creationDate", "anchor"],
   reducedInfo: ["back", "front"],
+  inputInfo: ["back", "front", "anchor"],
 
   model: mongoose.model(
     "Card",

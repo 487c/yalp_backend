@@ -22,7 +22,10 @@ async function POST(req, res) {
   const card = await Card.create(req.params.id, req.userId, {
     front: req.body.front,
     back: req.body.back,
-    anchor: req.body.anchor,
+    anchor: {
+      scriptId: req.params.id,
+      context: req.body.anchor?.context,
+    },
   });
 
   res.status(200).json(card.toJSON());
@@ -38,7 +41,7 @@ POST.apiDoc = {
     content: {
       "application/json": {
         schema: {
-          $ref: "#/components/schemas/Card",
+          $ref: "#/components/schemas/ReducedCard",
         },
       },
     },

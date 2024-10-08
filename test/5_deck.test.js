@@ -4,6 +4,8 @@ import "dotenv/config";
 import { app, token } from "./hooks.js";
 import Card from "../src/models/card.js";
 
+import { makeMessage } from "../src/services/errorCodes.js";
+
 describe("Deck", function () {
   it("succ: POST a card", function (done) {
     request(app)
@@ -20,7 +22,7 @@ describe("Deck", function () {
         },
       })
       .end(function (err, res) {
-        expect(res.body).to.have.keys(Card.fullInfo);
+        expect(res.body, makeMessage(res.body)).to.have.keys(Card.fullInfo);
         done(err);
       });
   });
@@ -35,7 +37,7 @@ describe("Deck", function () {
         back: "Woher soll ich das wissen?",
       })
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 4000);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 4000);
         done(err);
       });
   });

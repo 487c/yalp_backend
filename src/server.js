@@ -14,7 +14,8 @@ import "dotenv/config";
 import loadDemoData from "./services/demoData.js";
 
 const app = express();
-app.use(express.json({limit:"20mb"}));
+app.use(express.json({ limit: "20mb" }));
+app.disable("x-powered-by");
 app.use(cors());
 app.use(logInfo);
 app.use(...swaggerUiParams);
@@ -40,6 +41,7 @@ export default async function () {
         [/^\/course/, [{ bearerAuth: [] }]],
         [/^\/script/, [{ bearerAuth: [] }]],
         [/^\/user$/, [{ bearerAuth: [] }]],
+        [/^\/card/, [{ bearerAuth: [] }]],
       ],
       paths: "src/paths",
     }),

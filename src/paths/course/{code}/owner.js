@@ -5,13 +5,18 @@ export default {
 };
 
 async function PATCH(req, res) {
-  Course.changeOwner(req.params.code, req.userId, req.body.user);
-  res.status(200).json({ result: "OK" });
+  const course = await Course.changeOwner(
+    req.params.code,
+    req.userId,
+    req.body.user
+  );
+  res.status(200).json(course.toJSON());
 }
 
 PATCH.apiDoc = {
   summary: "Transfers course ownership",
-  description: "Sets the *Owner* of the Course to another person.",
+  description:`  Sets the *Owner* of the Course to another person. \n
+  The new Owner must be part of the course. `,
   operationId: "changeOwner",
   tags: ["Course"],
   requestBody: {
@@ -35,13 +40,7 @@ PATCH.apiDoc = {
       content: {
         "application/json": {
           schema: {
-            type: "object",
-            properties: {
-              result: {
-                type: String,
-                default: "OK",
-              },
-            },
+            $ref: "#/components/schemas/Course",
           },
         },
       },

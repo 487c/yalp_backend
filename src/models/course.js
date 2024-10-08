@@ -13,42 +13,53 @@ export default {
   fullInfo: ["name", "members", "scripts", "code", "owner"],
   model: mongoose.model(
     "Course",
-    new mongoose.Schema({
-      name: {
-        type: String,
-        description: "Anzeigename des Kurses.",
-        validate: {
-          validator: function (v) {
-            return v.length > 2; //TODO: Ordentliche validierung für Kursnamen
+    new mongoose.Schema(
+      {
+        name: {
+          type: String,
+          description: "Anzeigename des Kurses.",
+          validate: {
+            validator: function (v) {
+              return v.length > 2; //TODO: Ordentliche validierung für Kursnamen
+            },
+            message: (props) => `${props.value} must be at least 3 signs long!`,
           },
-          message: (props) => `${props.value} must be at least 3 signs long!`,
+          required: true,
         },
-        required: true,
+        members: {
+          type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+          description: "Ids der User",
+          required: true,
+        },
+        scripts: {
+          type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Script" }],
+          description: "Ids von Skripten zu einer Kurs.",
+          required: true,
+        },
+        code: {
+          type: String,
+          description: "Invite Code für andere User",
+          required: true,
+          min: 10,
+          unique: true,
+        },
+        owner: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          description: "Owner of the Course",
+          required: true,
+        },
       },
-      members: {
-        type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-        description: "Ids der User",
-        required: true,
-      },
-      scripts: {
-        type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Script" }],
-        description: "Ids von Skripten zu einer Kurs.",
-        required: true,
-      },
-      code: {
-        type: String,
-        description: "Invite Code für andere User",
-        required: true,
-        min: 10,
-        unique: true,
-      },
-      owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        description: "Owner of the Course",
-        required: true,
-      },
-    })
+      {
+        toJSON: {
+          transform: function (doc, ret) {
+            ret.id = ret._id;
+            delete ret._id;
+            delete ret.__v;
+          },
+        },
+      }
+    )
   ),
 
   async create({ name, owner, code, members }) {
@@ -71,8 +82,8 @@ export default {
 
   /**
    * Return a course for an User
-   * @param {String} code 
-   * @param {String} userId 
+   * @param {String} code
+   * @param {String} userId
    * @returns {Object} Course
    */
   async getCourseForUser(code, userId) {
@@ -118,7 +129,7 @@ export default {
 
   /**
    * Deletes an course if the user is owner of the course
-   * @param {String} code 
+   * @param {String} code
    * @param {String} owner id
    * @returns {void}
    */
@@ -187,21 +198,16 @@ export default {
    * @param {String} newOwner id of the new owner
    * @returns
    */
-  async changeOwner(code, userId, newOwner) {
-    const course = await this.model.getCourse({ code: code });
-
-    if (!course.owner.equals(userId)) throw ErrorCodes(2005);
-
-    const candidate = await this.findUserByName({
-      name: newOwner,
+  async changeOwner(code, fromUser, toUser) {
+    const course = await this.model.findOne({
+      code,
+      owner: fromUser,
+      members: toUser,
     });
 
-    if (!candidate) throw ErrorCodes(2007);
+    if (!course) throw ErrorCodes(2007);
 
-    if (course.owner.equals(candidate._id)) throw ErrorCodes(2008);
-
-    course.owner = candidate._id;
-    return await course.save();
+    return await course.set("owner", toUser).save();
   },
 
   getApiSchema(title, type) {

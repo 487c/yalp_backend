@@ -78,13 +78,7 @@ PATCH.apiDoc = {
     content: {
       "application/json": {
         schema: {
-          type: "object",
-          properties: {
-            name: {
-              type: String,
-              example: "Math for beginners",
-            },
-          },
+          $ref: "#/components/schemas/Script",
         },
       },
     },
@@ -135,7 +129,7 @@ DELETE.apiDoc = {
   tags: ["Script"],
   responses: {
     200: {
-     $ref:'#/components/responses/VoidResult'
+      $ref: "#/components/responses/VoidResult",
     },
     400: {
       $ref: "#/components/responses/InvalidRequest",

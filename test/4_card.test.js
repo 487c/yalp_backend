@@ -3,6 +3,7 @@ import { expect } from "chai";
 import "dotenv/config";
 import { app, token } from "./hooks.js";
 import Card from "../src/models/card.js";
+import { makeMessage } from "../src/services/errorCodes.js";
 
 describe("Cards", function () {
   it("succ: POST a card", function (done) {
@@ -20,7 +21,7 @@ describe("Cards", function () {
         },
       })
       .end(function (err, res) {
-        expect(res.body).to.have.keys(Card.fullInfo);
+        expect(res.body, makeMessage(res.body)).to.have.keys(Card.fullInfo);
         done(err);
       });
   });
@@ -35,7 +36,7 @@ describe("Cards", function () {
         back: "Woher soll ich das wissen?",
       })
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 4000);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 4000);
         done(err);
       });
   });
@@ -48,7 +49,7 @@ describe("Cards", function () {
       .set("Authorization", `Bearer ${token}`)
       .send()
       .end(function (err, res) {
-        expect(res.body).to.have.all.keys(Card.fullInfo);
+        expect(res.body, makeMessage(res.body)).to.have.all.keys(Card.fullInfo);
         done(err);
       });
   });
@@ -61,7 +62,7 @@ describe("Cards", function () {
       .set("Authorization", `Bearer ${token}`)
       .send()
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 4001);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 4001);
         done(err);
       });
   });
@@ -78,7 +79,7 @@ describe("Cards", function () {
       .set("Authorization", `Bearer ${token}`)
       .send()
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 4001);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 4001);
         done(err);
       });
   });
