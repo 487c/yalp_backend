@@ -6,7 +6,7 @@ import { shortenSchema } from "../services/utils.js";
 import mongooseLeanVirtuals from "mongoose-lean-virtuals";
 
 export default {
-  fullInfo: ["name", "settings", "lastOpenedCourse", "id"],
+  fullInfo: ["name", "settings", "id"],
   reducedInfo: ["name"],
 
   model: mongoose.model(
@@ -44,11 +44,21 @@ export default {
             description: "Show the last opened course on the startpage",
             default: true,
           },
-        },
-        lastOpenedCourse: {
-          type: String,
-          description: "Code of the last opened course",
-          default: null,
+          language: {
+            type: String,
+            description: "Die Sprache des Clients",
+            example: "de",
+            validate: [
+              (v) => /^[a-z]{2}$/.test(v),
+              "Falsches Pattern im Sprachcode -> 'de'",
+            ],
+            default: () => "de",
+          },
+          lastOpenedCourse: {
+            type: String,
+            description: "Code of the last opened course",
+            default: null,
+          },
         },
       },
       {

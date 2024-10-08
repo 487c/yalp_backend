@@ -71,5 +71,5 @@ export class CodeError {
 }
 
 export function makeMessage(codeError) {
-  return `${codeError.code} -> ${codeError.message}`;
+  return codeError.message ? `${codeError.code} -> ${codeError.message}`: "Failed resulttest";
 }
