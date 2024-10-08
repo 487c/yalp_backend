@@ -32,6 +32,7 @@ export default {
       Script: Script.getApiSchema("Script", "fullInfo"),
       Card: Card.getApiSchema("Card", "fullInfo"),
       ReducedCard: Card.getApiSchema("ReducedCard", "reducedInfo"),
+      PatchableCard: Card.getApiSchema("PatchCard", "inputInfo"),
       Error: {
         type: "object",
         properties: {
@@ -95,6 +96,10 @@ export default {
     {
       description: "Operations for Scripts",
       name: "Script",
+    },
+    {
+      name:"Cards",
+      description: "Operations for the cards"
     },
     {
       name:"Deck",

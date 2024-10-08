@@ -168,6 +168,7 @@ export default {
 
     if (!course) throw ErrorCodes(2001);
 
+    //TODO: Add Deck on join course / create course
     if (!course.members.includes(userId)) {
       course.members.push(userId);
       await course.save();

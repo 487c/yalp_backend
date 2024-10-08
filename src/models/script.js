@@ -153,6 +153,8 @@ export default {
     if (card) throw ErrorCode(3008);
     if (!script) throw ErrorCode(3001);
 
+    //TODO: Remove Refrence to Course
+
     return await this.model.deleteOne({ id });
   },
 

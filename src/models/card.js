@@ -97,6 +97,11 @@ export default {
     return card;
   },
 
+  /**
+   * Returns the Card for Id
+   * @param {String} cardId
+   * @returns {card}
+   */
   async get(cardId) {
     const card = await this.model.findOne({ _id: cardId }).lean({
       transform: function (ret) {
@@ -108,6 +113,44 @@ export default {
     });
     if (!card) throw ErrorCodes(4001);
     return card;
+  },
+
+  /**
+   * Updates the card
+   */
+  async update(cardId, userId, { front, back, anchor }) {
+    const card = await this.model.findOne({ _id: cardId });
+
+    if (!card) throw ErrorCodes(4001);
+
+    if (front) card.set("front", front);
+    if (back) card.set("back", back);
+    if (anchor) {
+      if (anchor.context) card.set("anchor.context", anchor.context);
+    }
+
+    try {
+      await card.save();
+    } catch (e) {
+      throw ErrorCodes(4002, e);
+    }
+
+    return card;
+  },
+
+  /**
+   * Removes the card from all decks
+   * @param {String} cardId
+   * @param {String} userId
+   */
+  async delete(cardId, userId) {
+    const card = await this.model.findOne({ _id: cardId }).lean();
+
+    if (!card) throw ErrorCodes(4001);
+
+    // TODO: Remove Reference to deck
+
+    return await this.model.deleteOne({ _id: cardId });
   },
 
   getApiSchema(title, type) {

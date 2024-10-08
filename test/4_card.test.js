@@ -84,10 +84,79 @@ describe("Cards", function () {
       });
   });
 
-  it("succ: UPDATE a card");
-  it("fail: UPDATE a card, card not found");
-  it("fail: UPDATE a card, invalid values");
+  it("succ: UPDATE a card", function (done) {
+    request(app)
+      .patch(`/api/card/62fef46e9af90a018fd01094`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        back: "I think i spider, it is 3!",
+        front: "What is 1 + 2 with spiders?",
+        anchor: {
+          context: [1],
+        },
+      })
+      .end(function (err, res) {
+        expect(res.body, makeMessage(res.body)).to.have.all.keys(Card.fullInfo);
+        done(err);
+      });
+  });
 
-  it("succ: DELETE a card");
-  it("fail: DELETE a card, card not found");
+  it("fail: UPDATE a card, card not found", function (done) {
+    request(app)
+      .patch(`/api/card/62fef9999999999999901094`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({})
+      .end(function (err, res) {
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 4001);
+        done(err);
+      });
+  });
+
+  it("fail: UPDATE a card, invalid values", function (done) {
+    request(app)
+      .patch(`/api/card/62fef46e9af90a018fd01094`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        anchor: { context: [] },
+      })
+      .end(function (err, res) {
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 4002);
+        done(err);
+      });
+  });
+
+  it("succ: DELETE a card", function (done) {
+    request(app)
+      .delete(`/api/card/63fef22222220a018fd01014`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send()
+      .end(function (err, res) {
+        expect(res.body, makeMessage(res.body)).to.have.property(
+          "result",
+          "OK"
+        );
+        done(err);
+      });
+  });
+});
+
+it("fail: DELETE a card, card not found", function (done) {
+  request(app)
+    .delete(`/api/card/6322222222220a018fd01014`)
+    .set("Accept", "application/json")
+    .set("Content-Type", "application/json")
+    .set("Authorization", `Bearer ${token}`)
+    .send()
+    .end(function (err, res) {
+      expect(res.body, makeMessage(res.body)).to.have.property("code", 4001);
+      done(err);
+    });
 });
