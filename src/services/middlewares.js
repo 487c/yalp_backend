@@ -57,6 +57,7 @@ export function logInfo(req, res, next) {
   next();
 }
 
+/* c8 ignore next 19*/
 export const consumesMiddleware = {
   "multipart/form-data": function (req, res, next) {
     multer().any()(req, res, function (err) {

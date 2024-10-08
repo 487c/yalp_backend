@@ -1,4 +1,3 @@
-
 // TODO(@svolume): Code pro Pfad für die swagger_ui?
 //  Ich denke du wirst die Fehlermeldungen ja gesammelt behandeln.
 const codes = {
@@ -60,9 +59,7 @@ export class CodeError {
   getMessage(req) {
     const msg = `${new Date().toUTCString()} - ${req.originalUrl} + ${
       typeof req.body === "object" ? JSON.stringify(req.body) : req.body || ""
-    } = status: ${this.status || 500}, code: ${this.code}, message: ${
-      this.message
-    }`;
+    } = status: ${this.status}, code: ${this.code}, message: ${this.message}`;
 
     return msg;
   }
