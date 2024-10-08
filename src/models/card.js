@@ -149,6 +149,7 @@ export default {
     if (!card) throw ErrorCodes(4001);
 
     // TODO: Remove Reference to deck
+    // Issue URL: https://github.com/Waffelmeister/yalp_backend/issues/42
 
     return await this.model.deleteOne({ _id: cardId });
   },
