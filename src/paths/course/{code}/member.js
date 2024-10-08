@@ -7,7 +7,7 @@ const parameters = [
     schema: {
       type: "string",
     },
-    example: "",
+    example: "MUSICISGREAT101",
     required: true,
     description: "Referral code of the course",
   },
@@ -35,13 +35,7 @@ POST.apiDoc = {
       content: {
         "application/json": {
           schema: {
-            type: "object",
-            properties: {
-              result: {
-                type: String,
-                default: "OK",
-              },
-            },
+            $ref: "#/components/schemas/Course",
           },
         },
       },

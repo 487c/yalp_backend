@@ -28,6 +28,7 @@ async function loadUsers() {
     {
       name: "Jane Doe",
       login: "janeIsLikeSuperGreat",
+      _id: "670538fcc348c69519024e7c",
     },
     {
       name: "Alice",
@@ -116,12 +117,20 @@ async function loadCourses() {
           owner: users[2]._id,
         }),
         Course.create({
+          name: "ChangeOwnerCourse",
+          code: "CHANGEISGREAT101",
+          owner: users[0]._id,
+          members: [users[1]._id, users[0]._id],
+        }),
+        Course.create({
           name: "Exitcourse",
           code: "EXITISGREAT101",
           owner: users[0]._id,
         }),
       ])
   );
+
+  // await Course.addMember("CHANGEISGREATE101", users[1]._id);
 
   console.log("Demo courses loaded");
 }
@@ -216,17 +225,18 @@ async function loadScripts() {
 
   createdScripts[0].cards.push(cards[0].id, cards[1].id);
 
-  await Promise.all([
-    createdScripts[0].save(),
-    Card.model.insertMany(
-      cards.map(function (c) {
-        return {
-          _id: c.id,
-          front: c.front,
-          back: c.back,
-          author: user[0]._id,
-        };
-      })
-    ),
-  ]);
+  await Card.model.insertMany(
+    cards.map(function (c) {
+      return {
+        _id: c.id,
+        front: c.front,
+        back: c.back,
+        author: user[0]._id,
+        anchor: {
+          scriptId: createdScripts[0]._id,
+          context: [0],
+        },
+      };
+    })
+  );
 }

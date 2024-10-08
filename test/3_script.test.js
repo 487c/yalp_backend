@@ -7,6 +7,8 @@ import Script from "../src/models/script.js";
 
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import { makeMessage } from "../src/services/errorCodes.js";
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe("Script", function () {
@@ -26,7 +28,7 @@ describe("Script", function () {
             fileDateModified: stat.mtime,
           })
           .end(function (err, res) {
-            expect(res.body).to.have.keys(Script.fullInfo);
+            expect(res.body, makeMessage(res.body)).to.have.keys(Script.fullInfo);
             done(err);
           });
       });
@@ -49,7 +51,7 @@ describe("Script", function () {
             fileDateModified: stat.mtime,
           })
           .end(function (err, res) {
-            expect(res.body).to.have.property("code", 3001);
+            expect(res.body, makeMessage(res.body)).to.have.property("code", 3001);
             done(err);
           });
       });
@@ -79,7 +81,7 @@ describe("Script", function () {
       .send({ name: "alg", description: "Algebra is the best" })
       .expect(400)
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 3003);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 3003);
         done(err);
       });
   });
@@ -93,7 +95,7 @@ describe("Script", function () {
       .send()
       .expect(200)
       .end(function (err, res) {
-        expect(res.body).to.have.keys(Script.fullInfo);
+        expect(res.body, makeMessage(res.body)).to.have.keys(Script.fullInfo);
         done(err);
       });
   });
@@ -107,7 +109,7 @@ describe("Script", function () {
       .send()
       .expect(400)
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 3007);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 3007);
         done(err);
       });
   });
@@ -121,7 +123,7 @@ describe("Script", function () {
       .send()
       .expect(400)
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 3001);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 3001);
         done(err);
       });
   });
@@ -135,7 +137,7 @@ describe("Script", function () {
       .send()
       .expect(400)
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 3004);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 3004);
         done(err);
       });
   });
@@ -149,7 +151,7 @@ describe("Script", function () {
       .send()
       .expect(200)
       .end(function (err, res) {
-        expect(res.body).to.have.property("result", "OK");
+        expect(res.body, makeMessage(res.body)).to.have.property("result", "OK");
         done(err);
       });
   });
@@ -162,7 +164,20 @@ describe("Script", function () {
       .set("Authorization", `Bearer ${token}`)
       .send()
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 3008);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 3008);
+        done(err);
+      });
+  });
+
+  it("fail: DELETE script -> script not found", function (done) {
+    request(app)
+      .delete(`/api/script/66fdc333333333333320b667`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send()
+      .end(function (err, res) {
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 3001);
         done(err);
       });
   });
@@ -176,7 +191,7 @@ describe("Script", function () {
       .send()
       .expect(200)
       .end(function (err, res) {
-        expect(res.body).to.have.keys(Script.fullInfo);
+        expect(res.body, makeMessage(res.body)).to.have.keys(Script.fullInfo);
         done(err);
       });
   });
@@ -190,7 +205,7 @@ describe("Script", function () {
       .send({name: "a", description:"Name is too short."})
       .expect(400)
       .end(function (err, res) {
-        expect(res.body).to.have.property('code', 3005);
+        expect(res.body, makeMessage(res.body)).to.have.property('code', 3005);
         done(err);
       });
   });

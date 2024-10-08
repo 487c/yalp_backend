@@ -42,7 +42,23 @@ POST.apiDoc = {
       content: {
         "application/json": {
           schema: {
-            $ref: "#/components/schemas/User",
+            type: "object",
+            properties: {
+              profile: {
+                $ref: "#/components/schemas/User",
+              },
+              token: {
+                type: String,
+              },
+              expiresInSeconds: {
+                type: "number",
+                example: 1800
+              },
+              timestamp: {
+                type: "number",
+                example: new Date().valueOf()
+              },
+            },
           },
         },
       },

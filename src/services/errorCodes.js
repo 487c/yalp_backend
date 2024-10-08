@@ -17,10 +17,8 @@ const codes = {
   2003: "You are not the sole member of the course",
   2004: "You are already member of the course",
   2005: "You are not owner of course (delete Course/change Owner)",
-  2006: "You is something wrong, the course has no members",
-  2007: "The given name does not correspond to a user",
-  2008: "New owner is current course owner",
-  2009: "Missing course name.",
+  2006: "Somthing is wrong, the course has no members",
+  2007: "Could not find course (not the owner/new owner not member/code wrong)",
   2010: "Error updating course",
   3001: "Sript could not be found",
   3002: "Sript name is already taken",
@@ -31,6 +29,7 @@ const codes = {
   3007: "Error searching for script",
   3008: "Can't delete script with existing cards",
   4000: "Could not create Card",
+  4001: "Could not find Card",
 };
 
 const status = {
@@ -69,4 +68,8 @@ export class CodeError {
     console.error(msg);
     logger.error(msg);
   }
+}
+
+export function makeMessage(codeError) {
+  return codeError.message ? `${codeError.code} -> ${codeError.message}`: "Failed resulttest";
 }

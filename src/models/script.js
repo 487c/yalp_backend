@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import m2s from "mongoose-to-swagger";
 import Course from "./course.js";
 import ErrorCode from "../services/errorCodes.js";
+import Card from "./card.js";
 import { shortenSchema } from "../services/utils.js";
 import { createHash } from "node:crypto";
 
@@ -144,11 +145,15 @@ export default {
    * @param {String} userId
    */
   async delete(id, userId) {
-    const script = await this.get(id, userId);
+    const loadingScript = this.get(id, userId);
 
-    if (script.cards.length > 0) throw ErrorCode(3008);
+    const loadingCard = Card.model.findOne({ "anchor.scriptId": id });
 
-    return await this.model.deleteOne({ id: script.id });
+    const [script, card] = await Promise.all([loadingScript, loadingCard]);
+    if (card) throw ErrorCode(3008);
+    if (!script) throw ErrorCode(3001);
+
+    return await this.model.deleteOne({ id });
   },
 
   /**

@@ -5,6 +5,8 @@ import { app } from "./hooks.js";
 import user from "../src/models/user.js";
 import { token } from "./hooks.js";
 
+import { makeMessage } from "../src/services/errorCodes.js";
+
 describe("User", function () {
   it("succ: POST user login", function (done) {
     request(app)
@@ -14,7 +16,7 @@ describe("User", function () {
       .send({ login: "johnwhoRidesDoes" })
       .expect(200)
       .end(function (err, res) {
-        expect(res.body).to.have.keys(
+        expect(res.body, makeMessage(res.body)).to.have.keys(
           "token",
           "expiresInSeconds",
           "timestamp",
@@ -32,7 +34,7 @@ describe("User", function () {
       .set("Content-Type", "application/json")
       .send({ login: "lol", name: "Name ist zu kurz." })
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 1001);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 1001);
         done(err);
       });
   });
@@ -44,7 +46,7 @@ describe("User", function () {
       .set("Content-Type", "application/json")
       .send({ name: "lol" })
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 1000);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 1000);
         done(err);
       });
   });
@@ -56,7 +58,7 @@ describe("User", function () {
       .set("Content-Type", "application/json")
       .send({ login: "Jason" })
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 1003);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 1003);
         done(err);
       });
   });
@@ -72,7 +74,7 @@ describe("User", function () {
       })
       .expect(200)
       .end(function (err, res) {
-        expect(res.body).to.have.keys(user.fullInfo);
+        expect(res.body, makeMessage(res.body)).to.have.keys(user.fullInfo);
         done(err);
       });
   });
@@ -86,7 +88,7 @@ describe("User", function () {
       .send()
       .expect(200)
       .end(function (err, res) {
-        expect(res.body).to.have.keys(user.fullInfo);
+        expect(res.body, makeMessage(res.body)).to.have.keys(user.fullInfo);
         done(err);
       });
   });
@@ -97,16 +99,10 @@ describe("User", function () {
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "John Doe the third",
-        settings: {
-          showLastOpenedCourse: true,
-        },
-        lastOpenedCourse: "MATHISGREAT101",
-      })
+      .send({ name: "John Doe The Dirt" })
       .expect(200)
       .end(function (err, res) {
-        expect(res.body).to.have.keys(user.fullInfo);
+        expect(res.body, makeMessage(res.body)).to.have.keys(user.fullInfo);
         done(err);
       });
   });
@@ -117,10 +113,10 @@ describe("User", function () {
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .set("Authorization", `Bearer ${token}`)
-      .send({name:"te"})
+      .send({ name: "te" })
       .expect(400)
       .end(function (err, res) {
-        expect(res.body).to.have.property("code", 1004);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 1004);
         done(err);
       });
   });

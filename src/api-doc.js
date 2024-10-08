@@ -96,9 +96,9 @@ export default {
       name: "Script",
     },
     {
-      description: "Operations for Files",
-      name: "File",
-    },
+      name:"Deck",
+      description: "Operations for the decks"
+    }
   ],
   paths: {}, //TODO: Paths checken und Paramater etc. fixen
 };

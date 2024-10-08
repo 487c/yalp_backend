@@ -5,8 +5,9 @@ import ErrorCodes from "../services/errorCodes.js";
 import { shortenSchema } from "../services/utils.js";
 
 export default {
-  fullInfo: ["id", "front", "back", "author", "creationDate"],
+  fullInfo: ["id", "front", "back", "author", "creationDate", "anchor"],
   reducedInfo: ["back", "front"],
+  inputInfo: ["back", "front", "anchor"],
 
   model: mongoose.model(
     "Card",
@@ -35,6 +36,26 @@ export default {
           default: Date.now,
           immutable: true,
         },
+        anchor: {
+          scriptId: {
+            type: mongoose.Types.ObjectId,
+            ref: "Script",
+            required: true,
+          },
+          context: {
+            type: [Number],
+            validate: [
+              (array) => {
+                if (array.length === 0) {
+                  return false;
+                } else {
+                  return true;
+                }
+              },
+              "Anchor context is required.",
+            ],
+          },
+        },
       },
       {
         toJSON: {
@@ -55,8 +76,9 @@ export default {
    * @param {Object} param1 Card infos
    * @param {String} param1.front
    * @param {String} param1.back
+   * @param {String} param1.context
    */
-  async create(scriptId, userId, { front, back }) {
+  async create(scriptId, userId, { front, back, anchor }) {
     const script = await Script.get(scriptId, userId);
     let card;
     try {
@@ -64,6 +86,7 @@ export default {
         author: userId,
         front,
         back,
+        anchor,
       });
     } catch (e) {
       throw ErrorCodes(4000, e);
@@ -71,6 +94,19 @@ export default {
 
     script.cards.push(card._id);
     await script.save();
+    return card;
+  },
+
+  async get(cardId) {
+    const card = await this.model.findOne({ _id: cardId }).lean({
+      transform: function (ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+        return ret;
+      },
+    });
+    if (!card) throw ErrorCodes(4001);
     return card;
   },
 
