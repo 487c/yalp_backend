@@ -28,10 +28,11 @@ export default function () {
             $ref: "#/components/schemas/ReducedUser",
           },
           examples: {
-            PeterPan: {
+            'Max Mustermann': {
               value: {
-                name: "Peter Pan",
-                login: "peterpanisSoooStronk",
+                name: "Maxi Mustermann",
+                password: "password",
+                mail: "max@mustermann.de",
               },
             },
           },

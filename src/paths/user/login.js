@@ -27,9 +27,13 @@ POST.apiDoc = {
           type: "object",
           // required: ["login"],
           properties: {
-            login: {
+            mail: {
               type: String,
-              example: "johnwhoRidesDoes",
+              example: "john@doemail.com",
+            },
+            password: {
+              type: String,
+              example: "password",
             },
           },
         },
