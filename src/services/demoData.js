@@ -9,6 +9,7 @@ import { createHash } from "node:crypto";
 
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import argon2 from "argon2";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default async function loadDemoData() {
@@ -18,29 +19,36 @@ export default async function loadDemoData() {
   return true;
 }
 
+const password = await argon2.hash("password")
+
 async function loadUsers() {
   await User.model.deleteMany({});
   await User.model.insertMany([
     {
       name: "John Doe",
-      login: "johnwhoRidesDoes",
+      mail: "john@doemail.com",
+      password
     },
     {
       name: "Jane Doe",
-      login: "janeIsLikeSuperGreat",
+      mail: "jane@dabrane.com",
+      password,
       _id: "670538fcc348c69519024e7c",
     },
     {
       name: "Alice",
-      login: "aliceIsInWonderland",
+      password,
+      mail: "example@mail.com",
     },
     {
       name: "Bob",
-      login: "bobIsNotYourUncle",
+      password,
+      mail: "bobby@brown.com",
     },
     {
       name: "Charlie",
-      login: "charlieIsNotTheUncle",
+      password,
+      mail: "chales@barkley.com",
     },
   ]);
   console.log("Demo data loaded");
@@ -137,7 +145,7 @@ async function loadCourses() {
 
 async function loadScripts() {
   await Script.model.deleteMany({});
-  const user = await User.model.find({ login: "johnwhoRidesDoes" });
+  const user = await User.model.find({ name: "John Doe" });
 
   const scripts = [
     {
@@ -194,7 +202,7 @@ async function loadScripts() {
       _id: new mongoose.Types.ObjectId(script._id),
       name: script.name,
       description: script.description,
-      owner: user[0].id,
+      owner: user[0]._id,
       file: fileBuff,
       md5: createHash("md5").update(base64).digest("hex"),
       course: courses.find((c) => c.code === script.code)._id,

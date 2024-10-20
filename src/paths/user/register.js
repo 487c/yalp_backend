@@ -8,7 +8,8 @@ export default function () {
   async function POST(req, res) {
     const user = await User.register({
       name: req.body.name,
-      login: req.body.login,
+      mail: req.body.mail,
+      password: req.body.password,
     });
     res.status(200).json(user);
   }

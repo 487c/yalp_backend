@@ -10,7 +10,8 @@ export const mochaHooks = async () => {
   logger.silent = true;
   app = await loading();
   const response = await request(app).post("/api/user/login").send({
-    login: "johnwhoRidesDoes",
+    mail: "john@doemail.com",
+    password:"password"
   });
   if (response.statusCode !== 200) {
     // throw new Error(response.body.message);
