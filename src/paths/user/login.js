@@ -7,9 +7,9 @@ export default {
 };
 
 async function POST(req, res) {
-  const login = req.body.login;
+  const {mail, password } = req.body;
 
-  const loginResult = await User.login(login);
+  const loginResult = await User.login(mail, password);
 
   res.status(200).json(loginResult);
 }

@@ -13,7 +13,7 @@ describe("User", function () {
       .post("/api/user/login")
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
-      .send({ login: "johnwhoRidesDoes" })
+      .send({ mail: "john@doemail.com", password: "password" })
       .expect(200)
       .end(function (err, res) {
         expect(res.body, makeMessage(res.body)).to.have.keys(
@@ -27,38 +27,26 @@ describe("User", function () {
       });
   });
 
-  it("fail: POST user register, invalid values", function (done) {
-    request(app)
-      .post("/api/user/register")
-      .set("Accept", "application/json")
-      .set("Content-Type", "application/json")
-      .send({ login: "lol", name: "Name ist zu kurz." })
-      .end(function (err, res) {
-        expect(res.body, makeMessage(res.body)).to.have.property("code", 1001);
-        done(err);
-      });
-  });
-
-  it("fail: POST user login, missing login", function (done) {
+  it("fail: POST user login -> user not existing", function (done) {
     request(app)
       .post("/api/user/login")
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
-      .send({ name: "lol" })
+      .send({ mail: "mike@mikemail.com", password: "password" })
       .end(function (err, res) {
-        expect(res.body, makeMessage(res.body)).to.have.property("code", 1000);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 1002);
         done(err);
       });
   });
 
-  it("fail: POST user login, login not existing", function (done) {
+  it("fail: POST user login -> password wrong", function (done) {
     request(app)
       .post("/api/user/login")
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
-      .send({ login: "Jason" })
+      .send({ mail: "john@doemail.com", password: "pord" })
       .end(function (err, res) {
-        expect(res.body, makeMessage(res.body)).to.have.property("code", 1003);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 1002);
         done(err);
       });
   });
@@ -70,11 +58,47 @@ describe("User", function () {
       .set("Content-Type", "application/json")
       .send({
         name: "Peter Pan",
-        login: "namealreadytaken",
+        mail: "peterpan@mail.de",
+        password: "password",
       })
       .expect(200)
       .end(function (err, res) {
         expect(res.body, makeMessage(res.body)).to.have.keys(user.fullInfo);
+        done(err);
+      });
+  });
+
+  it("fail: POST user register, -> invalid values(password)", function (done) {
+    request(app)
+      .post("/api/user/register")
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .send({
+        name: "Peter Pan",
+        mail: "peter@mail.de",
+        password: "",
+      })
+      .expect(400)
+      .end(function (err, res) {
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 1001);
+        done(err);
+      });
+  });
+
+  it("fail: POST user register, -> invalid values(mail)", function (done) {
+    request(app)
+      .post("/api/user/register")
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .send({
+        name: "Peter Pan",
+        mail: "peter@",
+        password: "password",
+      })
+      .expect(400)
+      .end(function (err, res) {
+
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 1001);
         done(err);
       });
   });

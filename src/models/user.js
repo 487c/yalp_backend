@@ -4,9 +4,11 @@ import ErrorCodes from "../services/errorCodes.js";
 import { generateAccessToken } from "../services/middlewares.js";
 import { shortenSchema } from "../services/utils.js";
 import mongooseLeanVirtuals from "mongoose-lean-virtuals";
+import argon2 from "argon2";
+import errorCodes from "../services/errorCodes.js";
 
 export default {
-  fullInfo: ["name", "settings", "id"],
+  fullInfo: ["name", "settings", "id", "mail"],
   reducedInfo: ["name"],
 
   model: mongoose.model(
@@ -25,17 +27,21 @@ export default {
             message: () => `Der name muss länger als 2 Zeichen sein..`,
           },
         },
-        login: {
+        password: {
           type: String,
-          description: "String that is the password to the application.",
+          description: "Hash des Passworts",
+          required: true,
+        },
+        mail: {
+          type: String,
+          description: "Mail mit der der User sich einloggen kann.",
           required: true,
           unique: true,
           validate: {
             validator: function (v) {
-              return /^[a-zA-Z0-9]{10,}$/.test(v);
+              return /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v);
             },
-            message: () => `Der Login muss 10 Zeichen lang sein und \n
-        und darf nur aus Buchstaben und Zahlen bestehen.`,
+            message: () => `Die Mail ist invalide.`,
           },
         },
         settings: {
@@ -75,6 +81,7 @@ export default {
             delete ret._id;
             delete ret.__v;
             delete ret.login;
+            delete ret.password;
           },
         },
       }
@@ -88,12 +95,13 @@ export default {
    * @param {String} param0.login
    * @returns {User}
    */
-  register: async function ({ name, login }) {
+  register: async function ({ name, password, mail }) {
     let newUser;
     try {
       newUser = await this.model.create({
         name,
-        login,
+        mail,
+        password: password ? await argon2.hash(password) : null,
       });
     } catch (e) {
       throw ErrorCodes(1001, e);
@@ -104,16 +112,17 @@ export default {
 
   /**
    * Returns the token and user information
-   * @param {String} login password
+   * @param {String} mail
+   * @param {String} password
    * @returns {Object}
    */
-  async login(login) {
-    if (!login) throw ErrorCodes(1000, "No login provided");
+  async login(mail, password) {
     const user = await this.model.findOne({
-      login,
+      mail,
     });
 
-    if (!user) throw ErrorCodes(1003);
+    if (!user || !(await argon2.verify(user.password, password)))
+      throw errorCodes(1002);
 
     return {
       token: generateAccessToken(user._id),
@@ -134,6 +143,7 @@ export default {
       .lean({ virtuals: ["id"] });
     delete user._id;
     delete user.login;
+    delete user.password;
     return user;
   },
 
