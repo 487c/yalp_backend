@@ -159,4 +159,7 @@ it("fail: DELETE a card, card not found", function (done) {
       expect(res.body, makeMessage(res.body)).to.have.property("code", 4001);
       done(err);
     });
+
+    it("Vorschlagen einer Änderungsübernahme")
+    it("Annehmen eines Änderungsvorschlages")
 });

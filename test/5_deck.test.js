@@ -1,12 +1,15 @@
-import request from "supertest";
-import { expect } from "chai";
 import "dotenv/config";
-import { app, token } from "./hooks.js";
-import Card from "../src/models/card.js";
+// import request from "supertest";
+// import { expect } from "chai";
+// import { app, token } from "./hooks.js";
+// import Card from "../src/models/card.js";
 
-import { makeMessage } from "../src/services/errorCodes.js";
+// import { makeMessage } from "../src/services/errorCodes.js";
 
 describe("Deck", function () {
+  it("succ: GET Deck")
+  it("succ: GET Deck, Anki Format")
+
   // it("succ: POST a card", function (done) {
   //   request(app)
   //     .post(`/api/script/66fdc364ec1a0050d720b667/card`)
