@@ -80,7 +80,6 @@ export default {
             ret.id = ret._id.toString();
             delete ret._id;
             delete ret.__v;
-            delete ret.login;
             delete ret.password;
           },
         },
@@ -92,7 +91,6 @@ export default {
    * Creates a user
    * @param {Object} param0
    * @param {String} param0.name
-   * @param {String} param0.login
    * @returns {User}
    */
   register: async function ({ name, password, mail }) {
@@ -142,7 +140,6 @@ export default {
       .findOne({ _id: userId }, "-__v")
       .lean({ virtuals: ["id"] });
     delete user._id;
-    delete user.login;
     delete user.password;
     return user;
   },

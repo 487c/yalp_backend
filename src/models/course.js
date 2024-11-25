@@ -3,6 +3,7 @@ import m2s from "mongoose-to-swagger";
 import referralCodeGenerator from "referral-code-generator";
 import ErrorCodes, { CodeError } from "../services/errorCodes.js";
 import { shortenSchema } from "../services/utils.js";
+import deck from "./deck.js";
 
 function generateInviteCode() {
   return referralCodeGenerator.alphaNumeric("lowercase", 3, 3);
@@ -10,7 +11,7 @@ function generateInviteCode() {
 
 export default {
   reducedInfo: ["name", "code", "owner"],
-  patchableInfo: ["name" ],
+  patchableInfo: ["name", "description"],
   fullInfo: ["name", "members", "scripts", "code", "owner"],
   model: mongoose.model(
     "Course",
@@ -73,6 +74,7 @@ export default {
         code: code || generateInviteCode(),
         owner: owner,
       });
+      await deck.create(newCourse._id, owner);
     } catch (e) {
       throw ErrorCodes(2000, e);
     }
@@ -101,6 +103,7 @@ export default {
         select: "name -_id",
       })
       .populate("owner", "name -_id")
+      .populate("scripts", "name description -_id")
       .lean();
     if (!course) throw ErrorCodes(2001);
     return course;
@@ -113,11 +116,11 @@ export default {
    * @param {String} param2 name of the course
    * @returns {Object} course schema
    */
-  async update(code, owner, { name }) {
+  async update(code, owner, { name, description }) {
     let course;
     try {
       course = await this.model
-        .findOneAndUpdate({ code, owner }, { name }, { new: true })
+        .findOneAndUpdate({ code, owner }, { name, description }, { new: true })
         .select("name code -_id")
         .lean();
       if (!course) throw ErrorCodes(2002);
@@ -173,6 +176,7 @@ export default {
     if (!course.members.includes(userId)) {
       course.members.push(userId);
       await course.save();
+      await deck.create(course._id, userId);
     }
     return this.getCourseForUser(code, userId);
   },
@@ -189,6 +193,8 @@ export default {
     if (course.owner === userId) throw ErrorCodes(2005);
 
     if (course.members.length < 1) throw ErrorCodes(2006);
+
+    deck.delete(course._id, userId);
 
     course.members.splice(course.members.indexOf(userId), 1);
     await course.save();

@@ -19,6 +19,7 @@ export default {
   DELETE: DELETE,
   parameters: parameters,
 };
+
 async function GET(req, res) {
   const course = await Course.getCourseForUser(req.params.code, req.userId);
   res.status(200).json(course);
