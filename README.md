@@ -42,7 +42,7 @@ Implementation see: [ErrorCodes]('./src/services/errorCodes.js')
 ### Minimalanforderungen
 
 1. [x] Erstellen eines Kurses / Anzeige von bestehenden Kursen
-2. [ ] Hochladen eines Skriptes / Anzeige von Skripten zu einem bestehenden Kurs
+2. [x] Hochladen eines Skriptes / Anzeige von Skripten zu einem bestehenden Kurs
 3. [x] Erstellen eines Einladungscodes zum erstellen eines Kurses
 4. [x] Hinzufügen von Usern zu einem Kurs mithilfe des Einladungskurses
 5. [ ] Erstellen von Vorder und Rückseite als Lernkarte zu einer Seite

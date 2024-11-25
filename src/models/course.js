@@ -11,7 +11,7 @@ function generateInviteCode() {
 
 export default {
   reducedInfo: ["name", "code", "owner"],
-  patchableInfo: ["name"],
+  patchableInfo: ["name", "description"],
   fullInfo: ["name", "members", "scripts", "code", "owner"],
   model: mongoose.model(
     "Course",
@@ -103,6 +103,7 @@ export default {
         select: "name -_id",
       })
       .populate("owner", "name -_id")
+      .populate("scripts", "name description -_id")
       .lean();
     if (!course) throw ErrorCodes(2001);
     return course;
@@ -115,11 +116,11 @@ export default {
    * @param {String} param2 name of the course
    * @returns {Object} course schema
    */
-  async update(code, owner, { name }) {
+  async update(code, owner, { name, description }) {
     let course;
     try {
       course = await this.model
-        .findOneAndUpdate({ code, owner }, { name }, { new: true })
+        .findOneAndUpdate({ code, owner }, { name, description }, { new: true })
         .select("name code -_id")
         .lean();
       if (!course) throw ErrorCodes(2002);
