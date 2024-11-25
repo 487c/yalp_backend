@@ -103,9 +103,15 @@ export default {
         select: "name -_id",
       })
       .populate("owner", "name -_id")
-      .populate("scripts", "name description -_id")
+      .populate("scripts", "name description")
       .lean();
+
     if (!course) throw ErrorCodes(2001);
+
+    course.scripts.forEach(function (script) {
+      script.id = script._id;
+      delete script._id;
+    });
     return course;
   },
 
