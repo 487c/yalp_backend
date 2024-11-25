@@ -143,7 +143,7 @@ export default {
    * @param {String} cardId
    * @param {String} userId
    */
-  async delete(cardId, userId) {
+  async delete(cardId) {
     const card = await this.model.findOne({ _id: cardId }).lean();
 
     if (!card) throw ErrorCodes(4001);
