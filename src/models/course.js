@@ -10,7 +10,7 @@ function generateInviteCode() {
 
 export default {
   reducedInfo: ["name", "code", "owner"],
-  patchableInfo: ["name", "description"],
+  patchableInfo: ["name" ],
   fullInfo: ["name", "members", "scripts", "code", "owner"],
   model: mongoose.model(
     "Course",
