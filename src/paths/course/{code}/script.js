@@ -1,8 +1,24 @@
 import Script from "../../../models/script.js";
 
+const parameters = [
+  {
+    name: "code",
+    in: "path",
+    schema: {
+      type: "string",
+    },
+    example: "MATHISGREAT101",
+    required: true,
+    description: "The id of the course",
+  },
+];
+
 export default {
   POST: POST,
+  parameters: parameters,
 };
+
+
 
 async function POST(req, res) {
   const course = await Script.create(req.params.code, req.userId, {
@@ -15,10 +31,8 @@ async function POST(req, res) {
 }
 
 POST.apiDoc = {
-  summary: "Create Script (Metadata)",
-  description: `The call creates new script **metadata**, it returns an uuid for uploading the script file.
-    Use the function /script/{uuid}/file to upload the script file. 
-    Only scripts with a file will be handed out the the client.`,
+  summary: "Create Script with pdf file",
+  description: `Upload file as base64 encoded with metadata`,
   operationId: "createScript",
   tags: ["Script"],
   requestBody: {
@@ -29,10 +43,25 @@ POST.apiDoc = {
           properties: {
             name: {
               type: String,
+              example: "Mathe3"
             },
             description: {
               type: String,
+              example: "Das werden sie nie wieder brauchen."
             },
+            fileName: {
+              type: String,
+              example: "mathe3.pdf"
+            },
+            file: {
+              type: String,
+              example: "ABCDK313KD"
+            },
+            fileDateModified: {
+              type: String, 
+              format: "date-time",
+              example: "2018-03-20T09:12:28Z"
+            }  
           },
           required: ["name"],
         },
