@@ -114,7 +114,7 @@ async function DELETE(req, res) {
 
 DELETE.apiDoc = {
   summary: "Deletes a card",
-  description: "Deletes the card and removes the references from the decks",
+  description: "Deletes the card and removes the references",
   operationId: "deleteCard",
   tags: ["Card"],
   responses: {

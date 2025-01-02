@@ -28,7 +28,9 @@ describe("Script", function () {
             fileDateModified: stat.mtime,
           })
           .end(function (err, res) {
-            expect(res.body, makeMessage(res.body)).to.have.keys(Script.fullInfo);
+            expect(res.body, makeMessage(res.body)).to.have.keys(
+              Script.fullInfo
+            );
             done(err);
           });
       });
@@ -51,7 +53,10 @@ describe("Script", function () {
             fileDateModified: stat.mtime,
           })
           .end(function (err, res) {
-            expect(res.body, makeMessage(res.body)).to.have.property("code", 3001);
+            expect(res.body, makeMessage(res.body)).to.have.property(
+              "code",
+              3001
+            );
             done(err);
           });
       });
@@ -91,6 +96,21 @@ describe("Script", function () {
       .get(`/api/script/66fdc364ec1a0050d720b667`)
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send()
+      .expect(200)
+      .end(function (err, res) {
+        expect(res.body, makeMessage(res.body)).to.have.keys(Script.fullInfo);
+        done(err);
+      });
+  });
+
+  it("succ: GET script (with cards)", function (done) {
+    request(app)
+      .get(`/api/script/66fdc364ec1a0050d720b667`)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .query({ populate: "cards" })
       .set("Authorization", `Bearer ${token}`)
       .send()
       .expect(200)
@@ -151,7 +171,10 @@ describe("Script", function () {
       .send()
       .expect(200)
       .end(function (err, res) {
-        expect(res.body, makeMessage(res.body)).to.have.property("result", "OK");
+        expect(res.body, makeMessage(res.body)).to.have.property(
+          "result",
+          "OK"
+        );
         done(err);
       });
   });
@@ -202,10 +225,10 @@ describe("Script", function () {
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .set("Authorization", `Bearer ${token}`)
-      .send({name: "a", description:"Name is too short."})
+      .send({ name: "a", description: "Name is too short." })
       .expect(400)
       .end(function (err, res) {
-        expect(res.body, makeMessage(res.body)).to.have.property('code', 3005);
+        expect(res.body, makeMessage(res.body)).to.have.property("code", 3005);
         done(err);
       });
   });

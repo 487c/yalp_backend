@@ -139,7 +139,7 @@ export default {
   },
 
   /**
-   * Removes the card from all decks
+   * Removes the card 
    * @param {String} cardId
    * @param {String} userId
    */
@@ -148,7 +148,6 @@ export default {
 
     if (!card) throw ErrorCodes(4001);
 
-    // TODO: Remove Reference to deck
     // Issue URL: https://github.com/Waffelmeister/yalp_backend/issues/42
 
     return await this.model.deleteOne({ _id: cardId });

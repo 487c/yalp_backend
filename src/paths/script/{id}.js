@@ -21,7 +21,7 @@ export default {
 };
 
 async function GET(req, res) {
-  const course = await Script.get(req.params.id, req.userId);
+  const course = await Script.get(req.params.id, req.userId, req.query.populate);
   res.status(200).json(course.toJSON());
 }
 
@@ -32,6 +32,18 @@ GET.apiDoc = {
     `,
   operationId: "getScript",
   tags: ["Script"],
+  parameters: [
+    {
+      in: "query",
+      name: "populate",
+      description: "Object for setting informations that are handed out by server",
+      schema: {
+        type: "string",
+      },
+      example: "cards",
+      required: false
+    },
+  ],
   responses: {
     200: {
       description: "Getting the Script",

@@ -2,7 +2,6 @@ import User from "./models/user.js";
 import Script from "./models/script.js";
 import Course from "./models/course.js";
 import Card from "./models/card.js";
-import Deck from "./models/deck.js";
 
 export default {
   openapi: "3.0.0",
@@ -34,7 +33,6 @@ export default {
       Card: Card.getApiSchema("Card", "fullInfo"),
       ReducedCard: Card.getApiSchema("ReducedCard", "reducedInfo"),
       PatchableCard: Card.getApiSchema("PatchCard", "inputInfo"),
-      Deck: Deck.getApiSchema("Deck", "fullInfo"),
       Error: {
         type: "object",
         properties: {
@@ -99,14 +97,6 @@ export default {
       description: "Operations for Scripts",
       name: "Script",
     },
-    {
-      name:"Cards",
-      description: "Operations for the cards"
-    },
-    {
-      name:"Deck",
-      description: "Operations for the decks"
-    }
   ],
   paths: {}, //TODO: Paths checken und Paramater etc. fixen
 };
