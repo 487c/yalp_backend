@@ -199,14 +199,14 @@ export default {
    * @param {boolean} card
    * @returns {Object}
    */
-  async get(id, userId, populate = { cards: false }) {
+  async get(id, userId, populate = null) {
     if (!id) throw ErrorCode(3006);
     let script;
     try {
       const promise = this.model
         .findOne({ _id: id }, { __v: 0 })
         .populate("course", { members: 1 });
-      if (populate.cards) promise.populate("cards");
+      if (populate) promise.populate(populate);
       script = await promise;
     } catch (e) {
       throw ErrorCode(3007, e);

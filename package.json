@@ -10,7 +10,7 @@
     "test:watch:coverage": "nodemon -e yml,js,json --exec npm run test:coverage:exit",
     "test:watch": "nodemon -e yml,js,json --exec mocha --reporter=min -require test/hooks.js",
     "start:api": "nodemon -e yml,js,json ./src/yalp.js",
-    "start:databases": "sudo docker compose up -d mongodb mongo-express"
+    "start:databases": "podman-compose up -d mongodb mongo-express"
   },
   "keywords": [],
   "author": "",
