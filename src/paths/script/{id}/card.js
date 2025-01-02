@@ -7,9 +7,9 @@ const parameters = [
     schema: {
       type: "string",
     },
-    example: "1e274ba0-b772-4edd-8c04-b5291af2e8bb",
+    example: "66fdc364ec1a0050d720b667",
     required: true,
-    description: "The id of the card",
+    description: "The id of the script",
   },
 ];
 
@@ -32,16 +32,38 @@ async function POST(req, res) {
 }
 
 POST.apiDoc = {
-  summary: "Upload a file into the script",
-  description:
-    "Uploads a file to the script. The max size of the file is 16 MB.",
-  operationId: "uploadFile",
-  tags: ["Script"],
+  summary: "Add a card for the script",
+  description: "Creates a new card for the user with anchor to the script.",
+  operationId: "createCard",
+  tags: ["Card", "Script"],
   requestBody: {
     content: {
       "application/json": {
         schema: {
-          $ref: "#/components/schemas/ReducedCard",
+          type: "object",
+          properties: {
+            front: {
+              type: String,
+              example: "Ersten drei Stellen von pi."
+            },
+            back: {
+              type: String,
+              example: "3,13"
+            },
+            anchor: {
+              type: "object",
+              properties: {
+                context: {
+                  type: "array",
+                  items: {
+                    description: "Kapitel, Unterkapitl, Unterunterkapitel...",
+                    type: "number",
+                    example: 1
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -52,15 +74,7 @@ POST.apiDoc = {
       content: {
         "application/json": {
           schema: {
-            type: "object",
-            properties: {
-              name: {
-                type: String,
-              },
-              code: {
-                type: String,
-              },
-            },
+            $ref: "#/components/schemas/Card",
           },
         },
       },
