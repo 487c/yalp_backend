@@ -153,9 +153,6 @@ export default {
     if (card) throw ErrorCode(3008);
     if (!script) throw ErrorCode(3001);
 
-    //TODO: Remove Refrence to Course
-    //Issue URL: https://github.com/Waffelmeister/yalp_backend/issues/44
-
     return await this.model.deleteOne({ id });
   },
 
