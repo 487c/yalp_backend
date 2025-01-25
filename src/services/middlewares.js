@@ -26,12 +26,12 @@ export function verifyToken(req) {
 }
 
 export function handleError(err, req, res, next) {
-  logger.error(err + "");
+  logger.error(typeof error === "object" ? JSON.stringify(err) : "");
 
   let error =
     err instanceof CodeError
       ? err
-      : ErrorCodes(0, err._message || err.message || err);
+      : ErrorCodes(0, err._message || err.message || err.msg);
 
   logger.error(error.getMessage(req));
   res.status(error.status).json(error);
