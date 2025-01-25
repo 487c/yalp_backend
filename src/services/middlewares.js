@@ -26,7 +26,7 @@ export function verifyToken(req) {
 }
 
 export function handleError(err, req, res, next) {
-  logger.error(typeof error === "object" ? JSON.stringify(err) : "");
+  logger.error(typeof err === "object" ? JSON.stringify(err) : "");
 
   let error =
     err instanceof CodeError
