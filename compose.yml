@@ -23,7 +23,7 @@ services:
       - .env
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: <change_me>
+      MONGO_INITDB_ROOT_PASSWORD: testlijdfs
     ports:
       - 27017:27017
     volumes:
@@ -38,6 +38,6 @@ services:
       - 8081:8081
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: <change_me>
-      ME_CONFIG_MONGODB_URL: mongodb://root:<change_me>@mongodb:27017/
+      ME_CONFIG_MONGODB_ADMINPASSWORD: testlijdfs
+      ME_CONFIG_MONGODB_URL: mongodb://root:testlijdfs@mongodb:27017/
       ME_CONFIG_BASICAUTH: false

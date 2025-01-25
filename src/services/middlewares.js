@@ -26,9 +26,13 @@ export function verifyToken(req) {
 }
 
 export function handleError(err, req, res, next) {
+  logger.error(err + "");
+
   let error =
-    err instanceof CodeError ? err : ErrorCodes(0, err._message || err.message);
-  
+    err instanceof CodeError
+      ? err
+      : ErrorCodes(0, err._message || err.message || err);
+
   logger.error(error.getMessage(req));
   res.status(error.status).json(error);
 

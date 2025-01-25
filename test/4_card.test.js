@@ -16,7 +16,6 @@ describe("Cards", function () {
         front: "Was sind binomsiche Formel?",
         back: "Woher soll ich das wissen?",
         anchor: {
-          scriptId: "66fdc364ec1a0050d720b667",
           context: [1],
         },
       })
