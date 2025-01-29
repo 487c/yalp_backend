@@ -144,4 +144,20 @@ describe("User", function () {
         done(err);
       });
   });
+
+it("succ: GET user info (other user0", function (done) {
+    request(app)
+      .get("/api/user/670538fcc348c69519024e7c")
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .send()
+      .expect(200)
+      .end(function (err, res) {
+        expect(res.body, makeMessage(res.body)).to.have.keys(
+          "id",
+          "name"
+        );
+        done(err);
+      });
+  });
 });

@@ -20,7 +20,6 @@ export default async function loadDemoData() {
 }
 
 const password = await argon2.hash("password")
-
 async function loadUsers() {
   await User.model.deleteMany({});
   await User.model.insertMany([

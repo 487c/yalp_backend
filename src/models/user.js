@@ -144,6 +144,18 @@ export default {
     return user;
   },
 
+  /**
+   * Gets reduced infos on a user
+   * @param {String} userId 
+   */
+  async getReduced(userId){
+    const user = await this.model
+      .findOne({ _id: userId }, "-__v -password -settings -mail")
+      .lean({ virtuals: ["id"] });
+    delete user._id;
+    return user;
+  },
+
   async update(userId, data) {
     const user = await this.model.findOne({ _id: userId });
     user.set(data);
