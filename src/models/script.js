@@ -135,6 +135,7 @@ export default {
       throw ErrorCode(3003, e);
     }
     course.scripts.push(newScript._id);
+    await course.save()
     return newScript.toJSON();
   },
 
